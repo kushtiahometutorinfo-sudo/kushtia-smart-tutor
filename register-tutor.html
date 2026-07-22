@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>রেজিস্ট্রেশন — Kushtia Smart Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
+    --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
+    --red-500:#E24C4C; --blue-50:#EAF4FC; --blue-line:#CFE6F7; --blue-ink:#1A5E8C;
+    --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;min-height:100vh;font-family:'Hind Siliguri','Poppins',sans-serif;
+    background:linear-gradient(160deg,var(--mint-50),var(--paper) 60%);
+    color:var(--ink);display:flex;flex-direction:column;
+  }
+  .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+
+  .topbar{padding:20px 24px;display:flex;justify-content:center;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(155deg,var(--green-600),var(--green-900));display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  .brand-mark svg{width:22px;height:22px;}
+  .brand-text .en{font-weight:700;font-size:16px;color:var(--green-900);}
+  .brand-text .tag{font-size:10px;color:var(--ink-soft);}
+
+  .wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:20px 18px 60px;}
+  .card{
+    width:100%;max-width:460px;background:#fff;border:1px solid var(--line);
+    border-radius:24px;box-shadow:var(--shadow-lg);padding:34px 30px;
+    animation:rise .5s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+  .step{display:none;}
+  .step.active{display:block;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateX(8px);}to{opacity:1;transform:translateX(0);}}
+
+  .step-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--mint-100);color:var(--green-700);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;}
+  h1.step-title{font-size:22px;margin:16px 0 6px;font-weight:700;font-family:'Baloo Da 2','Hind Siliguri',sans-serif;color:var(--green-900);}
+  p.step-sub{margin:0 0 22px;color:var(--ink-soft);font-size:14px;line-height:1.7;}
+
+  label{display:block;font-size:13.5px;font-weight:600;color:var(--ink);margin:14px 0 6px;}
+  input[type=text],input[type=email],input[type=tel],input[type=password]{
+    width:100%;padding:13px 14px;border-radius:12px;border:1.5px solid var(--line);
+    font-size:15px;font-family:inherit;outline:none;transition:border-color .2s ease,box-shadow .2s ease;
+    background:var(--paper);
+  }
+  input:focus{border-color:var(--green-500);box-shadow:0 0 0 4px rgba(47,168,90,.15);}
+
+  /* method tabs */
+  .tab-toggle{display:flex;background:var(--mint-50);border:1px solid var(--line);border-radius:12px;padding:4px;margin-top:6px;}
+  .tab-btn{flex:1;text-align:center;padding:10px 8px;border-radius:9px;font-size:13.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:background .2s ease,color .2s ease,box-shadow .2s ease;}
+  .tab-btn.active{background:#fff;color:var(--green-800,var(--green-900));box-shadow:0 4px 12px -4px rgba(14,59,34,.25);}
+
+  .pw-wrap{position:relative;}
+  .pw-wrap input{padding-right:44px;}
+  .pw-toggle{
+    position:absolute;right:6px;top:50%;transform:translateY(-50%);
+    width:34px;height:34px;border:none;background:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;border-radius:8px;color:var(--ink-soft);
+  }
+  .pw-toggle:hover{background:var(--mint-100);color:var(--green-700);}
+
+  .info-box{
+    display:flex;gap:10px;margin-top:18px;background:var(--blue-50);border:1px solid var(--blue-line);
+    border-radius:12px;padding:12px 14px;font-size:12.5px;color:var(--blue-ink);line-height:1.65;
+  }
+  .info-box svg{flex-shrink:0;margin-top:2px;}
+
+  .otp-row{display:flex;gap:8px;margin-top:6px;}
+  .otp-row input{
+    text-align:center;font-size:20px;font-weight:700;padding:12px 0;width:100%;letter-spacing:0;
+  }
+
+  .btn{
+    width:100%;margin-top:20px;padding:14px 20px;border-radius:14px;border:none;
+    font-size:15.5px;font-weight:700;color:#fff;font-family:'Hind Siliguri',sans-serif;
+    background:linear-gradient(135deg,var(--green-600),var(--green-900));
+    box-shadow:0 14px 26px -12px rgba(15,59,34,.55);
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    position:relative;overflow:hidden;transition:transform .2s ease,filter .2s ease;cursor:pointer;
+  }
+  .btn::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);}
+  .btn:hover::before{transform:translateX(120%);transition:transform .8s ease;}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-2px);}
+  .btn:disabled{opacity:.55;cursor:not-allowed;filter:none;transform:none;}
+  .btn .spinner{width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite;display:none;}
+  .btn.loading .spinner{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .link-btn{background:none;border:none;color:var(--green-700);font-weight:700;font-size:13.5px;cursor:pointer;padding:0;}
+  .row-between{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;color:var(--ink-soft);}
+
+  .error-msg{
+    background:#FDECEC;color:var(--red-500);border:1px solid #F6C6C6;
+    padding:10px 14px;border-radius:10px;font-size:13.5px;margin-top:14px;
+    display:none;
+  }
+  .error-msg.show{display:block;animation:shake .35s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+
+  /* Role selector */
+  .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+  .role-card{
+    border:1.5px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;cursor:pointer;
+    transition:border-color .2s ease,transform .2s ease,background .2s ease;
+  }
+  .role-card:hover{transform:translateY(-3px);}
+  .role-card.selected{border-color:var(--green-500);background:var(--mint-50);}
+  .role-card .r-icon{width:38px;height:38px;margin:0 auto 8px;border-radius:10px;background:var(--mint-100);display:flex;align-items:center;justify-content:center;}
+  .role-card.selected .r-icon{background:var(--green-lime);}
+  .role-card .r-title{font-size:13.5px;font-weight:700;}
+
+  .terms-box{
+    margin-top:18px;background:var(--mint-50);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+    max-height:110px;overflow-y:auto;font-size:12.5px;color:var(--ink-soft);line-height:1.6;
+  }
+  .terms-check{display:flex;align-items:flex-start;gap:8px;margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .terms-check input{width:16px;height:16px;margin-top:2px;accent-color:var(--green-600);}
+
+  /* success step */
+  .success-wrap{text-align:center;}
+  .check-circle{
+    width:74px;height:74px;border-radius:50%;background:var(--mint-100);
+    display:flex;align-items:center;justify-content:center;margin:6px auto 18px;
+    animation:pop .5s cubic-bezier(.2,.9,.3,1.4);
+  }
+  @keyframes pop{from{transform:scale(.4);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:10px;cursor:pointer;}
+  .back-link:hover{color:var(--green-700);}
+
+  .switch-row{text-align:center;font-size:13.5px;color:var(--ink-soft);margin-top:18px;}
+  .switch-row a{color:var(--green-700);font-weight:700;}
+  .switch-row a:hover{text-decoration:underline;}
+
+  .hidden{display:none !important;}
+
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="home.html" class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg>
+    </div>
+    <div class="brand-text">
+      <div class="en">Kushtia Smart Tutor</div>
+      <div class="tag bn">আপনার হোম লার্নিং পার্টনার</div>
+    </div>
+  </a>
+</div>
+
+<div class="wrap">
+  <div class="card">
+
+    <!-- STEP 1: method + credentials -->
+    <div class="step active" id="step1">
+      <span class="step-eyebrow en">STEP 1 / 4</span>
+      <h1 class="step-title en">Create Account</h1>
+      <p class="step-sub bn">Step 1: সাইনআপ মেথড বেছে নিন এবং OTP দিয়ে ভেরিফাই করুন</p>
+
+      <div class="tab-toggle">
+        <div class="tab-btn active bn" data-tab="mobile">মোবাইল</div>
+        <div class="tab-btn bn" data-tab="email">ইমেইল</div>
+      </div>
+
+      <!-- mobile tab fields -->
+      <div id="mobileFields">
+        <label class="bn" for="mobilePrimary">মোবাইল নম্বর</label>
+        <input type="tel" id="mobilePrimary" placeholder="01XXXXXXXXX">
+        <label class="bn" for="emailOptional">ইমেইল ঠিকানা (ঐচ্ছিক)</label>
+        <input type="email" id="emailOptional" placeholder="you@example.com">
+      </div>
+
+      <!-- email tab fields -->
+      <div id="emailFields" class="hidden">
+        <label class="bn" for="emailPrimary">ইমেইল ঠিকানা</label>
+        <input type="email" id="emailPrimary" placeholder="you@example.com">
+        <label class="bn" for="mobileOptional">মোবাইল নম্বর (ঐচ্ছিক)</label>
+        <input type="tel" id="mobileOptional" placeholder="01XXXXXXXXX">
+      </div>
+
+      <label class="bn" for="pw1">পাসওয়ার্ড</label>
+      <div class="pw-wrap">
+        <input type="password" id="pw1" placeholder="কমপক্ষে ৬ ক্যারেক্টার" autocomplete="new-password">
+        <button type="button" class="pw-toggle" data-target="pw1" aria-label="Show password">
+          <svg class="eyeIcon" width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+        </button>
+      </div>
+
+      <label class="bn" for="pw2">কনফার্ম পাসওয়ার্ড</label>
+      <div class="pw-wrap">
+        <input type="password" id="pw2" placeholder="পাসওয়ার্ড আবার দিন" autocomplete="new-password">
+        <button type="button" class="pw-toggle" data-target="pw2" aria-label="Show password">
+          <svg class="eyeIcon" width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+        </button>
+      </div>
+
+      <div class="error-msg bn" id="err1"></div>
+      <button class="btn bn" id="sendOtpBtn">
+        <span class="spinner"></span><span class="btn-label">Create Account & Send OTP</span>
+      </button>
+
+      <div class="info-box bn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8h.01M11 11.5h1v5h1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>মোবাইল দিয়ে সাইনআপ করলে ফোনে, ইমেইল দিয়ে সাইনআপ করলে ইমেইলে OTP পাঠানো হবে। OTP ভেরিফাই না করা পর্যন্ত আপনার অ্যাকাউন্ট <b>inactive</b> থাকবে।</span>
+      </div>
+
+      <div class="switch-row bn">অ্যাকাউন্ট আছে? <a href="login.html">এখানে লগইন করুন</a></div>
+    </div>
+
+    <!-- STEP 2: OTP -->
+    <div class="step" id="step2">
+      <span class="back-link bn" id="backTo1">← তথ্য পরিবর্তন করুন</span>
+      <span class="step-eyebrow en">STEP 2 / 4</span>
+      <h1 class="step-title bn">ওটিপি যাচাই করুন</h1>
+      <p class="step-sub bn"><span id="otpSentTo"></span>-এ পাঠানো ৬-সংখ্যার কোডটি দিন।</p>
+      <label class="bn">ওটিপি কোড</label>
+      <div class="otp-row">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+      </div>
+      <div class="error-msg bn" id="err2"></div>
+      <button class="btn bn" id="verifyOtpBtn">
+        <span class="spinner"></span><span class="btn-label">ভেরিফাই করুন</span>
+      </button>
+      <div class="row-between">
+        <span class="bn" id="cooldownText"></span>
+        <button class="link-btn bn" id="resendBtn">আবার পাঠান</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Role + profile -->
+    <div class="step" id="step3">
+      <span class="step-eyebrow en">STEP 3 / 4</span>
+      <h1 class="step-title bn">প্রোফাইল সম্পন্ন করুন</h1>
+      <p class="step-sub bn">আপনি কী হিসেবে যুক্ত হতে চান?</p>
+
+      <div class="role-grid">
+        <div class="role-card" data-role="tutor">
+          <div class="r-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.3" stroke="#1B7A3D" stroke-width="1.7"/><path d="M5 20c1.3-3.8 4-5.7 7-5.7s5.7 1.9 7 5.7" stroke="#1B7A3D" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <div class="r-title bn">আমি টিউটর</div>
+        </div>
+        <div class="role-card" data-role="user">
+          <div class="r-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#1B7A3D" stroke-width="1.7"/><path d="m20 20-3.5-3.5" stroke="#1B7A3D" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <div class="r-title bn">আমি টিউটর খুঁজছি</div>
+        </div>
+      </div>
+
+      <label class="bn">পুরো নাম</label>
+      <input type="text" id="nameInput" placeholder="আপনার নাম">
+
+      <div id="tutorFieldsWrap" class="hidden">
+        <label class="bn" for="subjectInput">সাবজেক্ট</label>
+        <input type="text" id="subjectInput" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান, ইংরেজি">
+        <label class="bn" for="qualificationInput">শিক্ষাগত যোগ্যতা</label>
+        <input type="text" id="qualificationInput" placeholder="যেমন: অনার্স ৩য় বর্ষ, গণিত বিভাগ">
+        <label class="bn" for="areaInput">এলাকা</label>
+        <input type="text" id="areaInput" placeholder="যেমন: কুষ্টিয়া সদর, মজমপুর">
+      </div>
+
+      <div id="phoneFieldWrap" class="hidden">
+        <label class="bn">মোবাইল নম্বর</label>
+        <input type="tel" id="phoneInput" placeholder="01XXXXXXXXX">
+      </div>
+      <div id="emailFieldWrap" class="hidden">
+        <label class="bn">ইমেইল ঠিকানা</label>
+        <input type="email" id="emailInputStep3" placeholder="you@example.com">
+      </div>
+
+      <div class="terms-box bn" id="termsBox">উপরে আপনার ধরন বাছাই করলে এখানে সংশ্লিষ্ট শর্তাবলী দেখাবে।</div>
+      <label class="terms-check bn">
+        <input type="checkbox" id="agreeCheck">
+        <span>আমি উপরের <b>শর্তাবলী ও প্রাইভেসি পলিসি</b>-তে সম্মত।</span>
+      </label>
+
+      <div class="error-msg bn" id="err3"></div>
+      <button class="btn bn" id="createProfileBtn">
+        <span class="spinner"></span><span class="btn-label">প্রোফাইল তৈরি করুন</span>
+      </button>
+    </div>
+
+    <!-- STEP 4: Success -->
+    <div class="step" id="step4">
+      <div class="success-wrap">
+        <div class="check-circle">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#1B7A3D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h1 class="step-title bn" id="step4Title">স্বাগতম!</h1>
+        <p class="step-sub bn" id="step4Sub">আপনার প্রোফাইল তৈরি হয়ে গেছে।</p>
+        <a href="home.html" class="btn bn" style="text-decoration:none;">হোমে যান</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ⚠️ Update this once your Cloudflare Worker is deployed:
+  const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
+
+  const TERMS = {
+    tutor: `টিউটর হিসেবে আপনাকে সঠিক ও সত্য তথ্য দিতে হবে, প্রোফাইল ভেরিফিকেশনে সহযোগিতা করতে হবে এবং শিক্ষার্থীর সাথে পেশাদার আচরণ বজায় রাখতে হবে। Kushtia Smart Tutor কোনো পক্ষের মধ্যে সরাসরি আর্থিক লেনদেনের নিশ্চয়তা দেয় না।`,
+    user: `শিক্ষার্থী/অভিভাবক হিসেবে আপনাকে টিউশন রিকুয়েস্টে সঠিক তথ্য দিতে হবে। টিউটর নির্বাচনের চূড়ান্ত সিদ্ধান্ত আপনার। প্ল্যাটফর্মে দেওয়া তথ্যের অপব্যবহার নিষিদ্ধ।`,
+  };
+
+  // state.method: "mobile" | "email" — which tab was used to sign up
+  // state.identifier: the value that OTP verification is tied to (primary contact)
+  // state.email / state.phone: whichever of the two were collected
+  let state = { method: "mobile", identifier: "", email: "", phone: "", role: "", password: "" };
+
+  function showStep(id){
+    document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+  function showError(id, msg){
+    const el = document.getElementById(id);
+    el.textContent = msg; el.classList.add("show");
+  }
+  function clearError(id){ document.getElementById(id).classList.remove("show"); }
+  function setLoading(btn, loading){
+    btn.disabled = loading;
+    btn.classList.toggle("loading", loading);
+  }
+
+  // ---------- password show/hide (both fields) ----------
+  document.querySelectorAll(".pw-toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = document.getElementById(btn.dataset.target);
+      const icon = btn.querySelector(".eyeIcon");
+      const showing = target.type === "text";
+      target.type = showing ? "password" : "text";
+      icon.innerHTML = showing
+        ? `<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>`
+        : `<path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M10.6 5.2A11.6 11.6 0 0 1 12 5c7 0 11 7 11 7a14.6 14.6 0 0 1-3.3 3.9M6.5 6.6C3.4 8.6 1 12 1 12s4 7 11 7c1.3 0 2.5-.2 3.6-.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`;
+    });
+  });
+
+  // ---------- method tabs ----------
+  document.querySelectorAll(".tab-btn").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      state.method = tab.dataset.tab;
+      const isMobile = state.method === "mobile";
+      document.getElementById("mobileFields").classList.toggle("hidden", !isMobile);
+      document.getElementById("emailFields").classList.toggle("hidden", isMobile);
+    });
+  });
+
+  // ---------- Step 1: create account + send OTP ----------
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  sendOtpBtn.addEventListener("click", async () => {
+    clearError("err1");
+
+    let identifier = "", email = "", phone = "";
+    if(state.method === "mobile"){
+      phone = document.getElementById("mobilePrimary").value.trim();
+      email = document.getElementById("emailOptional").value.trim();
+      if(!/^01[0-9]{9}$/.test(phone)){ showError("err1", "সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)"); return; }
+      if(email && !/^\S+@\S+\.\S+$/.test(email)){ showError("err1", "ইমেইলের ফরম্যাট সঠিক নয়"); return; }
+      identifier = phone;
+    } else {
+      email = document.getElementById("emailPrimary").value.trim();
+      phone = document.getElementById("mobileOptional").value.trim();
+      if(!/^\S+@\S+\.\S+$/.test(email)){ showError("err1", "সঠিক ইমেইল দিন"); return; }
+      if(phone && !/^01[0-9]{9}$/.test(phone)){ showError("err1", "মোবাইল নম্বরের ফরম্যাট সঠিক নয়"); return; }
+      identifier = email;
+    }
+
+    const pw1 = document.getElementById("pw1").value;
+    const pw2 = document.getElementById("pw2").value;
+    if(pw1.length < 6){ showError("err1", "পাসওয়ার্ড কমপক্ষে ৬ ক্যারেক্টার হতে হবে"); return; }
+    if(pw1 !== pw2){ showError("err1", "পাসওয়ার্ড দুটো মিলছে না"); return; }
+
+    setLoading(sendOtpBtn, true);
+    try{
+      // Generalized /api/send-otp — { contact, method, fallbackEmail }.
+      // method "email": sends OTP via Resend to `contact` (works today).
+      // method "mobile": TODO — SMS gateway not wired up yet. Until then, the
+      // Worker falls back to sending the OTP to `fallbackEmail` if provided,
+      // otherwise it returns an error asking the user to add an email.
+      const res = await fetch(`${API_BASE}/api/send-otp`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact: identifier, method: state.method, fallbackEmail: email && state.method === "mobile" ? email : undefined })
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || "একটা সমস্যা হয়েছে");
+
+      state.identifier = identifier;
+      state.email = email;
+      state.phone = phone;
+      state.password = pw1;
+
+      document.getElementById("otpSentTo").textContent = data.sentTo || identifier;
+      startCooldown(45);
+      showStep("step2");
+    }catch(err){
+      showError("err1", err.message);
+    }finally{
+      setLoading(sendOtpBtn, false);
+    }
+  });
+
+  document.getElementById("backTo1").addEventListener("click", () => showStep("step1"));
+
+  // ---------- OTP digit auto-advance ----------
+  const otpDigits = Array.from(document.querySelectorAll(".otp-digit"));
+  otpDigits.forEach((input, idx) => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/\D/g,"");
+      if(input.value && idx < otpDigits.length - 1) otpDigits[idx+1].focus();
+    });
+    input.addEventListener("keydown", (e) => {
+      if(e.key === "Backspace" && !input.value && idx > 0) otpDigits[idx-1].focus();
+    });
+  });
+
+  // ---------- Step 2: verify OTP ----------
+  const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+  verifyOtpBtn.addEventListener("click", async () => {
+    clearError("err2");
+    const otp = otpDigits.map(d => d.value).join("");
+    if(otp.length !== 6){ showError("err2", "৬ সংখ্যার কোডটি পূরণ করুন"); return; }
+    setLoading(verifyOtpBtn, true);
+    try{
+      const res = await fetch(`${API_BASE}/api/verify-otp`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact: state.identifier, otp })
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || "OTP সঠিক নয়");
+
+      // show whichever secondary contact field is still missing in step 3
+      document.getElementById("phoneFieldWrap").classList.toggle("hidden", !(state.method === "email" && !state.phone));
+      document.getElementById("emailFieldWrap").classList.toggle("hidden", !(state.method === "mobile" && !state.email));
+
+      showStep("step3");
+    }catch(err){
+      showError("err2", err.message);
+    }finally{
+      setLoading(verifyOtpBtn, false);
+    }
+  });
+
+  let cooldownTimer;
+  function startCooldown(seconds){
+    const resendBtn = document.getElementById("resendBtn");
+    const text = document.getElementById("cooldownText");
+    resendBtn.disabled = true;
+    let remaining = seconds;
+    clearInterval(cooldownTimer);
+    cooldownTimer = setInterval(() => {
+      remaining--;
+      text.textContent = remaining > 0 ? `আবার পাঠানো যাবে ${remaining}s পর` : "";
+      if(remaining <= 0){ clearInterval(cooldownTimer); resendBtn.disabled = false; }
+    }, 1000);
+  }
+  document.getElementById("resendBtn").addEventListener("click", () => sendOtpBtn.click());
+
+  // ---------- Step 3: role + terms + profile ----------
+  document.querySelectorAll(".role-card").forEach(card => {
+    card.addEventListener("click", () => {
+      document.querySelectorAll(".role-card").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+      state.role = card.dataset.role;
+      document.getElementById("termsBox").textContent = TERMS[state.role];
+      document.getElementById("tutorFieldsWrap").classList.toggle("hidden", state.role !== "tutor");
+    });
+  });
+
+  const createProfileBtn = document.getElementById("createProfileBtn");
+  createProfileBtn.addEventListener("click", async () => {
+    clearError("err3");
+    const name = document.getElementById("nameInput").value.trim();
+    const agreed = document.getElementById("agreeCheck").checked;
+
+    let phone = state.phone;
+    let email = state.email;
+    if(!document.getElementById("phoneFieldWrap").classList.contains("hidden")){
+      phone = document.getElementById("phoneInput").value.trim();
+      if(!/^01[0-9]{9}$/.test(phone)){ showError("err3", "সঠিক মোবাইল নম্বর দিন"); return; }
+    }
+    if(!document.getElementById("emailFieldWrap").classList.contains("hidden")){
+      email = document.getElementById("emailInputStep3").value.trim();
+      if(email && !/^\S+@\S+\.\S+$/.test(email)){ showError("err3", "ইমেইলের ফরম্যাট সঠিক নয়"); return; }
+    }
+
+    if(!state.role){ showError("err3", "আপনি টিউটর নাকি টিউটর খুঁজছেন, তা বাছাই করুন"); return; }
+    if(!name){ showError("err3", "নাম দিন"); return; }
+    if(state.method === "mobile" && !phone){ showError("err3", "মোবাইল নম্বর প্রয়োজন"); return; }
+    if(state.method === "email" && !email){ showError("err3", "ইমেইল প্রয়োজন"); return; }
+    if(!agreed){ showError("err3", "শর্তাবলীতে সম্মত হতে হবে"); return; }
+
+    let subject = "", qualification = "", area = "";
+    if(state.role === "tutor"){
+      subject = document.getElementById("subjectInput").value.trim();
+      qualification = document.getElementById("qualificationInput").value.trim();
+      area = document.getElementById("areaInput").value.trim();
+      if(!subject){ showError("err3", "সাবজেক্ট দিন"); return; }
+      if(!area){ showError("err3", "এলাকা দিন"); return; }
+    }
+
+    setLoading(createProfileBtn, true);
+    try{
+      const res = await fetch(`${API_BASE}/api/register`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier: state.identifier,   // the OTP-verified contact
+          email, phone, name,
+          role: state.role,
+          password: state.password,
+          agreedTerms: true,
+          subject, qualification, area
+        })
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || "প্রোফাইল তৈরি করা যায়নি");
+
+      if(data.pending){
+        // Tutor accounts wait for admin approval — don't log them in yet.
+        document.getElementById("step4Title").textContent = "আবেদন জমা হয়েছে";
+        document.getElementById("step4Sub").textContent = data.message || "আপনার আবেদন Admin রিভিউ করছেন, অনুমোদন হলে জানানো হবে";
+      }else{
+        // Local UI flag so home.html can swap Login -> Profile
+        localStorage.setItem("kst_profile", JSON.stringify({ name, role: state.role, email, phone }));
+        document.getElementById("step4Title").textContent = "স্বাগতম!";
+        document.getElementById("step4Sub").textContent = "আপনার প্রোফাইল তৈরি হয়ে গেছে।";
+      }
+
+      showStep("step4");
+    }catch(err){
+      showError("err3", err.message);
+    }finally{
+      setLoading(createProfileBtn, false);
+    }
+  });
+</script>
+
+</body>
+</html>

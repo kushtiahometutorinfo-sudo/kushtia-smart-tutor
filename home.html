@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kushtia Smart Tutor — কুষ্টিয়ার হোম টিউটর সার্ভিস</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#0E3B22;
+    --green-700:#1B7A3D;
+    --green-600:#219653;
+    --green-500:#2FA85A;
+    --green-lime:#7ED957;
+    --mint-50:#EFFAF3;
+    --mint-100:#DFF3E6;
+    --ink:#0F2318;
+    --ink-soft:#43594C;
+    --paper:#FCFDFB;
+    --line:#D8ECDF;
+    --orange-500:#F2994A;
+    --orange-700:#EB5E28;
+    --red-500:#E24C4C;
+    --shadow: 0 20px 45px -22px rgba(14,59,34,0.35);
+    --shadow-lg: 0 30px 60px -28px rgba(14,59,34,0.45);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Hind Siliguri','Poppins',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .bn{font-family:'Hind Siliguri',sans-serif;}
+  .en{font-family:'Poppins',sans-serif;}
+  .display{font-family:'Baloo Da 2','Hind Siliguri',sans-serif;}
+
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;scroll-behavior:auto !important;}
+  }
+
+  /* ---------- Reveal-on-scroll ---------- */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  .reveal-scale{opacity:0;transform:scale(.92);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);}
+  .reveal-scale.in{opacity:1;transform:scale(1);}
+  .stagger > *{transition-delay:calc(var(--i,0) * 90ms);}
+
+  /* ---------- Top Nav (desktop) ---------- */
+  header.topnav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(252,253,251,0.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    transition:box-shadow .3s ease;
+  }
+  header.topnav.scrolled{box-shadow:0 8px 24px -18px rgba(14,59,34,.4);}
+  .nav-inner{
+    max-width:1180px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 28px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{
+    width:42px;height:42px;border-radius:12px;
+    background:linear-gradient(155deg,var(--green-600),var(--green-900));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);
+    flex-shrink:0;
+    transition:transform .35s cubic-bezier(.2,.8,.3,1.3);
+  }
+  .brand:hover .brand-mark{transform:rotate(-8deg) scale(1.06);}
+  .brand-mark svg{width:24px;height:24px;}
+  .brand-text{line-height:1.05;}
+  .brand-text .en{font-weight:700;font-size:17px;color:var(--green-900);letter-spacing:.2px;}
+  .brand-text .tag{font-size:10.5px;color:var(--ink-soft);font-weight:500;}
+
+  nav.primary-links{display:flex;align-items:center;gap:30px;}
+  nav.primary-links a{
+    font-size:14.5px;font-weight:600;color:var(--ink);
+    position:relative;padding:6px 0;
+  }
+  nav.primary-links a::after{
+    content:"";position:absolute;left:0;bottom:0;height:2px;width:0;
+    background:var(--green-600);transition:width .25s ease;
+  }
+  nav.primary-links a:hover::after{width:100%;}
+
+  .nav-actions{display:flex;align-items:center;gap:10px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:999px;
+    font-size:14px;font-weight:600;border:1.5px solid transparent;
+    white-space:nowrap;position:relative;overflow:hidden;
+    transition:transform .25s ease,box-shadow .25s ease,filter .25s ease;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-outline{border-color:var(--line);color:var(--green-900);background:#fff;}
+  .btn-outline:hover{border-color:var(--green-500);transform:translateY(-2px);}
+  .btn-solid{
+    background:linear-gradient(135deg,var(--green-600),var(--green-900));
+    color:#fff;box-shadow:0 10px 22px -10px rgba(15,59,34,.55);
+  }
+  .btn-solid::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
+    transform:translateX(-120%);
+  }
+  .btn-solid:hover::before{transform:translateX(120%);transition:transform .9s ease;}
+  .btn-solid:hover{filter:brightness(1.07);transform:translateY(-2px);box-shadow:0 16px 28px -12px rgba(15,59,34,.6);}
+  .btn-lg{padding:15px 26px;font-size:15.5px;border-radius:16px;}
+  .btn-ghost-lg{
+    padding:15px 26px;font-size:15.5px;border-radius:16px;
+    border:1.5px solid var(--line);background:#fff;color:var(--green-900);
+  }
+  .btn-ghost-lg:hover{transform:translateY(-2px);border-color:var(--green-500);box-shadow:var(--shadow);}
+  .btn-orange{
+    background:linear-gradient(135deg,var(--orange-500),var(--orange-700));
+    color:#fff;box-shadow:0 14px 26px -12px rgba(235,94,40,.55);
+    padding:15px 30px;border-radius:16px;font-size:15.5px;
+  }
+  .btn-orange:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 18px 30px -12px rgba(235,94,40,.65);}
+
+  /* 3-dot overflow menu (desktop) */
+  .more-wrap{position:relative;}
+  .more-btn{
+    width:38px;height:38px;border-radius:50%;
+    border:1.5px solid var(--line);background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--green-900);transition:border-color .2s ease,transform .2s ease;
+  }
+  .more-btn:hover{border-color:var(--green-500);transform:rotate(90deg);}
+  .more-menu{
+    position:absolute;right:0;top:46px;
+    background:#fff;border:1px solid var(--line);
+    border-radius:14px;box-shadow:var(--shadow);
+    min-width:200px;padding:8px;display:none;flex-direction:column;gap:2px;
+  }
+  .more-menu.open{display:flex;animation:pop .18s ease;}
+  @keyframes pop{from{opacity:0;transform:translateY(-6px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .more-menu a{
+    padding:10px 12px;border-radius:10px;font-size:14px;font-weight:600;
+  }
+  .more-menu a:hover{background:var(--mint-50);}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:70px 28px 50px;}
+  .hero-glow{
+    position:absolute;inset:-20% -10% auto -10%;height:520px;
+    background:radial-gradient(60% 60% at 30% 20%,rgba(126,217,87,.30),transparent 70%),
+               radial-gradient(50% 50% at 80% 10%,rgba(33,150,83,.22),transparent 70%);
+    filter:blur(10px);pointer-events:none;
+    animation:drift 14s ease-in-out infinite alternate;
+  }
+  @keyframes drift{from{transform:translate(0,0) scale(1);}to{transform:translate(2%,3%) scale(1.05);}}
+  .hero-inner{max-width:900px;margin:0 auto;text-align:center;position:relative;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--mint-100);color:var(--green-700);
+    padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:700;
+    letter-spacing:.4px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green-lime);animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.5);}}
+  h1.headline{
+    margin:22px 0 0;font-weight:700;line-height:1.18;
+    font-size:clamp(30px,5.4vw,54px);color:var(--ink);
+  }
+  h1.headline .accent{
+    color:var(--green-600);
+    background:linear-gradient(90deg,var(--green-500),var(--green-lime));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{
+    max-width:640px;margin:20px auto 0;color:var(--ink-soft);
+    font-size:16px;line-height:1.75;
+  }
+  .hero-cta{
+    display:flex;justify-content:center;gap:14px;margin-top:32px;flex-wrap:wrap;
+  }
+  .hero-badges{
+    display:flex;justify-content:center;gap:12px;margin-top:26px;flex-wrap:wrap;
+  }
+  .badge-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fff;border:1.5px solid var(--line);
+    padding:9px 16px;border-radius:999px;font-size:13px;font-weight:600;color:var(--green-900);
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+  }
+  .badge-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--green-500);}
+  .badge-btn svg{width:15px;height:15px;flex-shrink:0;}
+
+  .growth-rule{
+    width:120px;height:4px;margin:26px auto 0;border-radius:4px;
+    background:linear-gradient(90deg,var(--green-700),var(--green-lime));
+  }
+
+  /* ---------- Section shell ---------- */
+  section.block{padding:70px 28px;position:relative;}
+  .block-inner{max-width:1100px;margin:0 auto;}
+  .section-head{max-width:700px;margin:0 auto 42px;text-align:center;}
+  .section-tag{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--mint-100);color:var(--green-700);
+    padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:700;
+  }
+  .section-title{
+    margin:16px 0 0;font-weight:700;line-height:1.28;
+    font-size:clamp(24px,3.6vw,36px);color:var(--ink);
+  }
+  .section-title .hl-orange{color:var(--red-500);}
+  .section-title .hl-green{
+    background:linear-gradient(90deg,var(--green-600),var(--green-lime));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-sub{margin-top:14px;color:var(--ink-soft);font-size:15.5px;line-height:1.8;}
+
+  /* ---------- Trust cards ---------- */
+  .trust-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+  }
+  .trust-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:30px 26px;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,border-color .35s ease;
+  }
+  .trust-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:transparent;}
+  .icon-tile{
+    width:54px;height:54px;border-radius:15px;background:var(--mint-100);
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+    transition:transform .3s ease,background .3s ease;
+  }
+  .trust-card:hover .icon-tile{transform:scale(1.08) rotate(-4deg);background:var(--green-lime);}
+  .icon-tile svg{width:26px;height:26px;}
+  .trust-card h3{margin:0 0 8px;font-size:19px;color:var(--green-900);}
+  .trust-card p{margin:0;color:var(--ink-soft);font-size:14.5px;line-height:1.7;}
+
+  /* ---------- Problem section ---------- */
+  .problem-section{background:var(--mint-50);}
+  .problem-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:900px;margin:0 auto;
+  }
+  .problem-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius-md);
+    padding:22px;display:flex;gap:14px;align-items:flex-start;
+    transition:transform .3s ease,box-shadow .3s ease;
+  }
+  .problem-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
+  .problem-emoji{
+    width:42px;height:42px;border-radius:12px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:19px;
+  }
+  .problem-card h4{margin:2px 0 5px;font-size:15.5px;color:var(--ink);}
+  .problem-card p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+  .problem-cta{text-align:center;margin-top:36px;}
+
+  /* ---------- Solution section ---------- */
+  .solution-wrap{
+    display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;
+  }
+  .solution-art{position:relative;}
+  .art-card{
+    background:linear-gradient(160deg,#fff,var(--mint-50));
+    border:1px solid var(--line);border-radius:28px;
+    padding:26px;box-shadow:var(--shadow-lg);position:relative;overflow:visible;
+  }
+  .float-chip{
+    position:absolute;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:9px 14px;font-size:12.5px;font-weight:700;color:var(--green-800,var(--green-700));
+    box-shadow:var(--shadow);display:flex;align-items:center;gap:6px;
+    animation:float 4.5s ease-in-out infinite;
+  }
+  .float-chip.c1{top:-16px;right:-18px;animation-delay:0s;}
+  .float-chip.c2{bottom:-14px;left:-20px;animation-delay:1.4s;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  .solution-copy .section-tag{margin-bottom:16px;}
+  .solution-copy h2{
+    font-size:clamp(24px,3.4vw,34px);font-weight:700;line-height:1.3;margin:0;
+  }
+  .solution-copy p{margin-top:16px;color:var(--ink-soft);font-size:15.5px;line-height:1.85;}
+
+  /* ---------- Benefits ---------- */
+  .benefit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:900px;margin:0 auto;}
+  .benefit-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius-md);
+    padding:22px;display:flex;gap:14px;align-items:flex-start;
+    transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+  }
+  .benefit-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:var(--green-500);}
+  .benefit-icon{
+    width:42px;height:42px;border-radius:12px;background:var(--mint-100);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .benefit-card h4{margin:2px 0 5px;font-size:15.5px;color:var(--ink);}
+  .benefit-card p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+
+  /* ---------- Stats ---------- */
+  .stats-section{background:linear-gradient(135deg,var(--green-900),var(--green-700));}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;}
+  .stat-num{font-size:clamp(26px,3.6vw,40px);font-weight:800;color:#fff;font-family:'Baloo Da 2',sans-serif;}
+  .stat-label{margin-top:6px;color:rgba(255,255,255,.82);font-size:13px;font-weight:600;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    background:var(--mint-50);
+    padding:38px 28px 20px;
+  }
+  .footer-inner{
+    max-width:1180px;margin:0 auto;
+    display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;
+  }
+  .footer-brand{display:flex;align-items:center;gap:8px;color:var(--green-900);font-weight:700;}
+  .footer-links{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;}
+  .footer-links a{font-size:13.5px;font-weight:600;color:var(--ink-soft);transition:color .2s ease;}
+  .footer-links a:hover{color:var(--green-700);}
+  .footer-copy{font-size:12.5px;color:var(--ink-soft);opacity:.8;}
+  .footer-credit{
+    margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);width:100%;
+    font-size:12.5px;color:var(--ink-soft);
+  }
+  .footer-credit a{font-weight:700;color:var(--green-700);}
+  .footer-credit a:hover{text-decoration:underline;}
+  .footer-bottom-space{height:70px;}
+
+  /* ---------- Mobile bottom nav ---------- */
+  .bottom-nav{
+    display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:#fff;border-top:1px solid var(--line);
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+    box-shadow:0 -10px 25px -18px rgba(14,59,34,.35);
+  }
+  .bottom-nav-inner{
+    display:flex;justify-content:space-between;align-items:center;max-width:520px;margin:0 auto;
+  }
+  .bn-item{
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    color:var(--ink-soft);font-size:10.5px;font-weight:600;
+    padding:6px 10px;border-radius:12px;transition:color .2s ease,transform .2s ease;
+  }
+  .bn-item:active{transform:scale(.9);}
+  .bn-item svg{width:21px;height:21px;}
+  .bn-item.active{color:var(--green-700);}
+  .bn-fab{
+    width:46px;height:46px;border-radius:50%;
+    background:linear-gradient(135deg,var(--green-600),var(--green-900));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    margin-top:-22px;box-shadow:0 12px 20px -8px rgba(15,59,34,.6);
+    transition:transform .2s ease;
+  }
+  .bn-fab:active{transform:scale(.9) rotate(90deg);}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:860px){
+    nav.primary-links{display:none;}
+    .more-wrap{display:none;}
+    .nav-actions{gap:8px;}
+    header.topnav .nav-actions .btn-outline,
+    header.topnav .nav-actions .btn-solid{padding:8px 14px;font-size:12.5px;}
+    .bottom-nav{display:block;}
+    body{padding-bottom:78px;}
+    .hero{padding:44px 20px 34px;}
+    .hero-cta .btn-ghost-lg,.hero-cta .btn-solid{width:100%;justify-content:center;}
+    .hero-cta{flex-direction:column;align-items:stretch;max-width:360px;margin-left:auto;margin-right:auto;}
+    section.block{padding:52px 20px;}
+    .trust-grid{grid-template-columns:1fr;}
+    .problem-grid{grid-template-columns:1fr;}
+    .solution-wrap{grid-template-columns:1fr;gap:60px;}
+    .solution-art{order:1;}
+    .solution-copy{order:2;text-align:center;}
+    .benefit-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);row-gap:26px;}
+    .float-chip{font-size:11px;padding:7px 10px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav" id="siteHeader">
+  <div class="nav-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/>
+          <path d="M12 9.2l3.4 2.6" stroke="#EFFAF3" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="en">Kushtia Smart Tutor</div>
+        <div class="tag bn">আপনার হোম লার্নিং পার্টনার</div>
+      </div>
+    </div>
+
+    <nav class="primary-links">
+      <a href="hire-tutor.html" class="bn">Hire Tutor</a>
+      <a href="register-tutor.html" class="bn">Register As Tutor</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline en" id="navLoginBtn">Login</a>
+      <a href="register-tutor.html" class="btn btn-solid en" id="navRegisterBtn">Register</a>
+      <div class="more-wrap">
+        <button class="more-btn" id="moreBtn" aria-label="More options">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="19" cy="12" r="1.7" fill="currentColor"/></svg>
+        </button>
+        <div class="more-menu" id="moreMenu">
+          <a href="hire-tutor.html" class="bn">Hire Tutor</a>
+          <a href="register-tutor.html" class="bn">Register As Tutor</a>
+          <a href="#post-request" class="bn">টিউশন রিকুয়েস্ট পোস্ট করুন</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <span class="eyebrow en"><span class="dot"></span>HOME TUTOR SERVICE</span>
+    <h1 class="headline bn">
+      মিনিটের মধ্যে খুঁজুন আপনার<br>
+      <span class="accent">উপযুক্ত টিউটর</span>
+    </h1>
+    <div class="growth-rule"></div>
+    <p class="hero-sub bn">
+      ভার্সিটি, ডিপার্টমেন্ট, সেশন বা সাবজেক্ট অনুযায়ী ভেরিফাইড টিউটর—সব এক জায়গায়।
+      চাইলে আপনার টিউশন রিকুয়েস্টও পোস্ট করতে পারেন।
+    </p>
+    <div class="hero-cta">
+      <a href="hire-tutor.html" class="btn btn-solid btn-lg bn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z" stroke="white" stroke-width="1.7"/><path d="M4 20c1.2-3.6 4-5.5 8-5.5s6.8 1.9 8 5.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Find The Best Tutor
+      </a>
+      <a href="register-tutor.html" class="btn btn-ghost-lg bn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 19.5V6a2 2 0 0 1 2-2h9l5 5v10.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5Z" stroke="#0E3B22" stroke-width="1.6"/><path d="M9 12.5h6M9 16h4" stroke="#0E3B22" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Register As a Tutor
+      </a>
+    </div>
+    <div class="hero-badges">
+      <span class="badge-btn bn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" stroke="#219653" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="#219653" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ভেরিফাইড প্রোফাইল
+      </span>
+      <span class="badge-btn bn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" stroke="#219653" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        দ্রুত ম্যাচিং
+      </span>
+      <span class="badge-btn bn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16l-6 8v6l-4 2v-8L4 5Z" stroke="#219653" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        সহজ ফিল্টার
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUST / FEATURE CARDS ================= -->
+<section class="block">
+  <div class="block-inner">
+    <div class="section-head reveal">
+      <span class="section-tag en">WHY KUSHTIA SMART TUTOR</span>
+      <h2 class="section-title bn">কেন আমাদের উপর ভরসা রাখবেন</h2>
+      <p class="section-sub bn">প্রতিটি ধাপে নিরাপত্তা আর মান নিশ্চিত করেই আমরা আপনার পাশে থাকি।</p>
+    </div>
+    <div class="trust-grid stagger">
+      <div class="trust-card reveal" style="--i:0">
+        <div class="icon-tile">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" stroke="#1B7A3D" stroke-width="1.7"/><path d="M9 12l2 2 4-4" stroke="#1B7A3D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="bn">ভেরিফাইড টিউটর</h3>
+        <p class="bn">প্রতিটি টিউটরের প্রোফাইল যাচাইকৃত এবং রিভিউ-ভিত্তিক। নিরাপদ শেখার পরিবেশ নিশ্চিত করতে আমরা সচেষ্ট।</p>
+      </div>
+      <div class="trust-card reveal" style="--i:1">
+        <div class="icon-tile">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" stroke="#1B7A3D" stroke-width="1.7"/></svg>
+        </div>
+        <h3 class="bn">নির্ভরযোগ্য সেবা</h3>
+        <p class="bn">নিরাপদ পেমেন্ট প্রক্রিয়া এবং সার্বক্ষণিক সহায়তা। আপনার সন্তুষ্টিই আমাদের প্রধান লক্ষ্য।</p>
+      </div>
+      <div class="trust-card reveal" style="--i:2">
+        <div class="icon-tile">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 13a8 8 0 0 1 16 0" stroke="#1B7A3D" stroke-width="1.7" stroke-linecap="round"/><rect x="3" y="13" width="4" height="6" rx="1.4" stroke="#1B7A3D" stroke-width="1.7"/><rect x="17" y="13" width="4" height="6" rx="1.4" stroke="#1B7A3D" stroke-width="1.7"/></svg>
+        </div>
+        <h3 class="bn">২৪/৭ সহায়তা</h3>
+        <p class="bn">যেকোনো সমস্যায় আমাদের সাপোর্ট টিম সবসময় প্রস্তুত—কল, চ্যাট বা মেসেঞ্জারে যোগাযোগ করুন।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROBLEM SECTION ================= -->
+<section class="block problem-section">
+  <div class="block-inner">
+    <div class="section-head reveal">
+      <h2 class="section-title bn">যখন পড়ালেখা <span class="hl-orange">কঠিন</span> মনে হয়...</h2>
+      <p class="section-sub bn">একা একা পড়তে গিয়ে অনেক সময় আগ্রহ কমে যায়—জমে থাকা জটিল বিষয়, বাড়তি হোমওয়ার্কের চাপ আর সময়মতো সঠিক দিকনির্দেশনার অভাবে দুশ্চিন্তা বাড়ে।</p>
+    </div>
+    <div class="problem-grid stagger">
+      <div class="problem-card reveal" style="--i:0">
+        <div class="problem-emoji" style="background:#FDE9E9;">😟</div>
+        <div>
+          <h4 class="bn">বিষয়গুলো বুঝতে কষ্ট হয়</h4>
+          <p class="bn">সঠিক গাইডলাইন না থাকলে পড়ার বিষয়গুলো প্রতিদিন আরও জটিল মনে হয়।</p>
+        </div>
+      </div>
+      <div class="problem-card reveal" style="--i:1">
+        <div class="problem-emoji" style="background:#FFF1DE;">⏰</div>
+        <div>
+          <h4 class="bn">হোমওয়ার্কের তীব্র চাপ</h4>
+          <p class="bn">জমে থাকা কাজের পাহাড়ের কারণে পড়ালেখায় অনীহা ও ক্লান্তি বাড়ে।</p>
+        </div>
+      </div>
+      <div class="problem-card reveal" style="--i:2">
+        <div class="problem-emoji" style="background:#EAECFB;">🧑‍🎓</div>
+        <div>
+          <h4 class="bn">ব্যক্তিগত গাইডেন্সের অভাব</h4>
+          <p class="bn">ভিড়ের মধ্যে প্রতিটি শিক্ষার্থীর জন্য আলাদা মনোযোগ পাওয়া কঠিন হয়ে ওঠে।</p>
+        </div>
+      </div>
+      <div class="problem-card reveal" style="--i:3">
+        <div class="problem-emoji" style="background:#FDE9E9;">📉</div>
+        <div>
+          <h4 class="bn">আত্মবিশ্বাস কমে যাচ্ছে</h4>
+          <p class="bn">আশানুরূপ ফল না পেলে পড়ালেখার প্রতি নিজের ভরসা ধীরে ধীরে হারিয়ে ফেলে।</p>
+        </div>
+      </div>
+    </div>
+    <div class="problem-cta reveal">
+      <a href="#solution" class="btn btn-orange bn">সঠিক সমাধান দেখুন →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOLUTION SECTION ================= -->
+<section class="block" id="solution">
+  <div class="block-inner">
+    <div class="solution-wrap">
+      <div class="solution-art reveal-scale">
+        <div class="art-card">
+          <svg viewBox="0 0 420 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+            <rect x="0" y="0" width="420" height="320" rx="20" fill="#EFFAF3"/>
+            <circle cx="340" cy="60" r="46" fill="#DFF3E6"/>
+            <circle cx="55" cy="270" r="60" fill="#DFF3E6"/>
+            <rect x="40" y="190" width="150" height="14" rx="7" fill="#D8ECDF"/>
+            <rect x="40" y="150" width="330" height="90" rx="16" fill="#FFFFFF" stroke="#D8ECDF"/>
+            <circle cx="90" cy="195" r="26" fill="#2FA85A"/>
+            <rect x="130" y="178" width="140" height="10" rx="5" fill="#DFF3E6"/>
+            <rect x="130" y="198" width="100" height="10" rx="5" fill="#DFF3E6"/>
+            <rect x="240" y="170" width="70" height="46" rx="10" fill="#0E3B22"/>
+            <path d="M255 193l10 10 20-20" stroke="#7ED957" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <g>
+              <rect x="60" y="60" width="60" height="70" rx="8" fill="#fff" stroke="#D8ECDF"/>
+              <rect x="70" y="75" width="40" height="6" rx="3" fill="#B9E6C6"/>
+              <rect x="70" y="88" width="30" height="6" rx="3" fill="#B9E6C6"/>
+              <rect x="70" y="101" width="35" height="6" rx="3" fill="#B9E6C6"/>
+            </g>
+            <g>
+              <rect x="150" y="45" width="60" height="70" rx="8" fill="#219653"/>
+              <rect x="160" y="60" width="40" height="6" rx="3" fill="#DFF3E6"/>
+              <rect x="160" y="73" width="30" height="6" rx="3" fill="#DFF3E6"/>
+              <rect x="160" y="86" width="35" height="6" rx="3" fill="#DFF3E6"/>
+            </g>
+            <circle cx="245" cy="70" r="22" fill="#7ED957"/>
+            <path d="M236 70l6 6 12-12" stroke="#0E3B22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <span class="float-chip c1 bn">✅ সমাধান নিশ্চিত</span>
+          <span class="float-chip c2 bn">💪 আত্মবিশ্বাসী শিক্ষার্থী</span>
+        </div>
+      </div>
+      <div class="solution-copy reveal">
+        <span class="section-tag en">SOLUTION</span>
+        <h2 class="bn">এখানেই আসে <span class="hl-green">সঠিক সমাধান</span></h2>
+        <p class="bn">একজন যোগ্য ও দায়িত্বশীল টিউটর শিক্ষার্থীর পাশে থাকলে পড়ালেখা অনেক সহজ হয়ে যায়। আমাদের ভেরিফাইড টিউটররা প্রতিটি শিক্ষার্থীকে তার নিজস্ব চাহিদা অনুযায়ী সর্বোচ্চ মনোযোগ দিয়ে গড়ে তোলেন।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BENEFITS SECTION ================= -->
+<section class="block" style="background:var(--mint-50);">
+  <div class="block-inner">
+    <div class="section-head reveal">
+      <span class="section-tag en">WHAT YOU GET</span>
+      <h2 class="section-title bn">আমাদের টিউটররা যা নিশ্চিত করেন</h2>
+    </div>
+    <div class="benefit-grid stagger">
+      <div class="benefit-card reveal" style="--i:0">
+        <div class="benefit-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#1B7A3D" stroke-width="1.6"/><circle cx="12" cy="12" r="3.2" stroke="#1B7A3D" stroke-width="1.6"/></svg></div>
+        <div><h4 class="bn">১:১ ব্যক্তিগত মনোযোগ</h4><p class="bn">সম্পূর্ণ আন্তরিকতার সাথে শুধুমাত্র একজন শিক্ষার্থীর পড়াশোনা তদারকি করা।</p></div>
+      </div>
+      <div class="benefit-card reveal" style="--i:1">
+        <div class="benefit-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.45 1.1 1.3 1.1 2.2h5c0-.9.5-1.75 1.1-2.2A6 6 0 0 0 12 3Z" stroke="#1B7A3D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><h4 class="bn">সহজ ও প্রাঞ্জল ব্যাখ্যা</h4><p class="bn">যেকোনো কঠিন সূত্র বাস্তব জীবনের উদাহরণের মাধ্যমে সহজ ভাষায় শেখানো হয়।</p></div>
+      </div>
+      <div class="benefit-card reveal" style="--i:2">
+        <div class="benefit-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.4-7-10a4.2 4.2 0 0 1 7-3.2A4.2 4.2 0 0 1 19 10c0 5.6-7 10-7 10Z" stroke="#1B7A3D" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <div><h4 class="bn">ধৈর্যশীল ও বন্ধুত্বপূর্ণ মেন্টর</h4><p class="bn">শিক্ষকতার পাশাপাশি বড় ভাই-বোনের মতো বন্ধুত্বপূর্ণ উপায়ে শিক্ষার্থীদের গাইড করা।</p></div>
+      </div>
+      <div class="benefit-card reveal" style="--i:3">
+        <div class="benefit-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.2 4.6 5 .7-3.6 3.6.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.6 5-.7L12 3Z" stroke="#1B7A3D" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div><h4 class="bn">আত্মবিশ্বাস বৃদ্ধি</h4><p class="bn">ভয় দূর করে পড়ালেখাকে ফলাফল উন্নয়নের অন্যতম হাতিয়ারে পরিণত করা।</p></div>
+      </div>
+    </div>
+    <div class="problem-cta reveal">
+      <a href="hire-tutor.html" class="btn btn-solid btn-lg bn">ভেরিফাইড টিউটর বেছে নিন →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="stats-section" style="padding:54px 28px;">
+  <div class="block-inner stats-grid stagger">
+    <div class="reveal" style="--i:0"><div class="stat-num" data-count="500">0</div><div class="stat-label bn">ভেরিফাইড টিউটর</div></div>
+    <div class="reveal" style="--i:1"><div class="stat-num" data-count="1200">0</div><div class="stat-label bn">সফল টিউশন</div></div>
+    <div class="reveal" style="--i:2"><div class="stat-num" data-count="40">0</div><div class="stat-label bn">সাবজেক্ট কভারেজ</div></div>
+    <div class="reveal" style="--i:3"><div class="stat-num" data-count="4.8">0</div><div class="stat-label bn">গড় রেটিং (৫-এ)</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand en">Kushtia Smart Tutor</div>
+    <div class="footer-links">
+      <a href="terms.html" class="bn">টার্মস অ্যান্ড কন্ডিশনস</a>
+      <a href="privacy.html" class="bn">প্রাইভেসি পলিসি</a>
+      <a href="#" class="bn">যোগাযোগ</a>
+    </div>
+    <div class="footer-copy bn">© 2026 Kushtia Smart Tutor। সর্বস্বত্ব সংরক্ষিত।</div>
+    <div class="footer-credit en">
+      Developed by <a href="#" id="devLink">Md Nabil</a>
+    </div>
+    <div class="footer-bottom-space"></div>
+  </div>
+</footer>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="home.html" class="bn-item active">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" stroke-width="1.7"/></svg>
+      হোম
+    </a>
+    <a href="hire-tutor.html" class="bn-item">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      খুঁজুন
+    </a>
+    <a href="#post-request" class="bn-fab" aria-label="Post a tuition request">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </a>
+    <a href="register-tutor.html" class="bn-item">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.3" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.3-3.8 4-5.7 7-5.7s5.7 1.9 7 5.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M17 6v4M15 8h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      টিউটর হন
+    </a>
+    <a href="login.html" class="bn-item" id="bottomNavLoginItem">
+      <svg id="bottomNavLoginIcon" viewBox="0 0 24 24" fill="none"><path d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M10 8l-4 4 4 4M6 12h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="bottomNavLoginLabel">লগইন</span>
+    </a>
+  </div>
+</nav>
+
+<script>
+  // Swap Login -> Profile if a local session exists (set by login.html after profile creation)
+  (function applyProfileState(){
+    let profile = null;
+    try{ profile = JSON.parse(localStorage.getItem('kst_profile')); }catch(e){}
+    if(!profile) return;
+
+    const profileIconSvg = `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.3-3.8 4-5.7 7-5.7s5.7 1.9 7 5.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
+
+    const navLoginBtn = document.getElementById('navLoginBtn');
+    if(navLoginBtn){
+      navLoginBtn.href = 'profile.html';
+      navLoginBtn.textContent = 'Profile';
+    }
+    const navRegisterBtn = document.getElementById('navRegisterBtn');
+    if(navRegisterBtn){
+      navRegisterBtn.href = 'profile.html';
+      navRegisterBtn.textContent = profile.name || 'Profile';
+    }
+    const bottomItem = document.getElementById('bottomNavLoginItem');
+    const bottomIcon = document.getElementById('bottomNavLoginIcon');
+    const bottomLabel = document.getElementById('bottomNavLoginLabel');
+    if(bottomItem){
+      bottomItem.href = 'profile.html';
+      if(bottomIcon) bottomIcon.innerHTML = '<circle cx="12" cy="8" r="3.3" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.3-3.8 4-5.7 7-5.7s5.7 1.9 7 5.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>';
+      if(bottomLabel) bottomLabel.textContent = 'প্রোফাইল';
+    }
+  })();
+
+  // 3-dot menu
+  const moreBtn = document.getElementById('moreBtn');
+  const moreMenu = document.getElementById('moreMenu');
+  if(moreBtn){
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moreMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', () => moreMenu.classList.remove('open'));
+  }
+
+  // Sticky header shadow on scroll
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 8);
+  }, {passive:true});
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+  revealEls.forEach(el => io.observe(el));
+
+  // Count-up stats
+  const statEls = document.querySelectorAll('.stat-num');
+  const counted = new WeakSet();
+  const statsIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && !counted.has(entry.target)){
+        counted.add(entry.target);
+        const target = parseFloat(entry.target.dataset.count);
+        const isDecimal = String(target).includes('.');
+        const duration = 1400;
+        const start = performance.now();
+        function tick(now){
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const val = target * eased;
+          entry.target.textContent = isDecimal ? val.toFixed(1) : Math.round(val) + '+';
+          if(p < 1) requestAnimationFrame(tick);
+          else entry.target.textContent = isDecimal ? target.toFixed(1) : target + '+';
+        }
+        requestAnimationFrame(tick);
+      }
+    });
+  }, {threshold:0.4});
+  statEls.forEach(el => statsIO.observe(el));
+</script>
+
+</body>
+</html>

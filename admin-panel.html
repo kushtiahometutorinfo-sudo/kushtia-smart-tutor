@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Kushtia Smart Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
+    --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
+    --red-500:#E24C4C; --red-50:#FDECEC; --red-line:#F6C6C6;
+    --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;min-height:100vh;font-family:'Hind Siliguri','Poppins',sans-serif;
+    background:linear-gradient(160deg,var(--mint-50),var(--paper) 60%);
+    color:var(--ink);
+  }
+  .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:16px 24px;background:#fff;border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(155deg,var(--green-600),var(--green-900));display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  .brand-mark svg{width:20px;height:20px;}
+  .brand-text .en{font-weight:700;font-size:15px;color:var(--green-900);}
+  .brand-text .tag{font-size:10px;color:var(--ink-soft);}
+
+  .topbar-right{display:flex;align-items:center;gap:14px;}
+  .admin-email{font-size:13px;color:var(--ink-soft);}
+  .logout-btn{
+    padding:9px 16px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+    font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:'Hind Siliguri',sans-serif;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  .logout-btn:hover{border-color:var(--red-500);color:var(--red-500);}
+
+  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px;}
+
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+  h1.page-title{font-size:22px;margin:0 0 4px;font-weight:700;font-family:'Baloo Da 2','Hind Siliguri',sans-serif;color:var(--green-900);}
+  p.page-sub{margin:0;color:var(--ink-soft);font-size:13.5px;}
+  .count-pill{
+    background:var(--mint-100);color:var(--green-700);font-weight:700;font-size:13px;
+    padding:6px 14px;border-radius:999px;
+  }
+  .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green-500);margin-right:6px;animation:pulse 1.6s ease infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+
+  .empty-state{
+    text-align:center;padding:60px 20px;color:var(--ink-soft);
+  }
+  .empty-state svg{margin-bottom:14px;opacity:.55;}
+  .empty-state p{font-size:14px;margin:0;}
+
+  .req-list{display:flex;flex-direction:column;gap:14px;}
+  .req-card{
+    background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;
+    box-shadow:var(--shadow);animation:rise .4s cubic-bezier(.2,.8,.2,1);
+    transition:transform .35s ease,opacity .35s ease,max-height .35s ease,padding .35s ease,margin .35s ease;
+  }
+  .req-card.new-highlight{border-color:var(--green-500);box-shadow:0 0 0 4px rgba(47,168,90,.18),var(--shadow);}
+  .req-card.removing{opacity:0;transform:scale(.96) translateY(-6px);max-height:0;padding-top:0;padding-bottom:0;margin:0;overflow:hidden;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  .req-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+  .req-name{font-size:16.5px;font-weight:700;color:var(--ink);}
+  .req-role-badge{
+    display:inline-flex;align-items:center;gap:5px;background:var(--mint-100);color:var(--green-700);
+    font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;margin-left:8px;vertical-align:middle;
+  }
+  .req-meta{font-size:12.5px;color:var(--ink-soft);margin-top:3px;}
+  .req-time{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
+
+  .req-info-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;
+    margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);
+  }
+  .req-info-item .k{font-size:11px;color:var(--ink-soft);font-weight:600;margin-bottom:2px;}
+  .req-info-item .v{font-size:13.5px;font-weight:600;color:var(--ink);}
+
+  .req-actions{display:flex;gap:10px;margin-top:16px;}
+  .act-btn{
+    flex:1;padding:11px 14px;border-radius:11px;border:none;font-size:13.5px;font-weight:700;
+    cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:filter .2s ease,transform .2s ease;
+  }
+  .act-btn:hover{transform:translateY(-1px);}
+  .act-btn.approve{background:linear-gradient(135deg,var(--green-600),var(--green-900));color:#fff;box-shadow:0 10px 20px -10px rgba(15,59,34,.55);}
+  .act-btn.reject{background:var(--red-50);color:var(--red-500);border:1.5px solid var(--red-line);}
+  .act-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  .reject-note-row{display:none;margin-top:12px;gap:8px;}
+  .reject-note-row.show{display:flex;}
+  .reject-note-row input{
+    flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:13px;
+    font-family:inherit;outline:none;background:var(--paper);
+  }
+  .reject-note-row input:focus{border-color:var(--red-500);}
+  .reject-note-row button{
+    padding:10px 16px;border-radius:10px;border:none;background:var(--red-500);color:#fff;
+    font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;
+  }
+
+  .card-error{
+    margin-top:10px;background:var(--red-50);color:var(--red-500);border:1px solid var(--red-line);
+    padding:8px 12px;border-radius:9px;font-size:12.5px;display:none;
+  }
+  .card-error.show{display:block;}
+
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="home.html" class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg>
+    </div>
+    <div class="brand-text">
+      <div class="en">Kushtia Smart Tutor</div>
+      <div class="tag bn">Admin Panel</div>
+    </div>
+  </a>
+  <div class="topbar-right">
+    <span class="admin-email bn" id="adminEmailLabel"></span>
+    <button class="logout-btn bn" id="logoutBtn">লগআউট</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-head">
+    <div>
+      <h1 class="page-title en">Tutor Approval Requests</h1>
+      <p class="page-sub bn"><span class="live-dot"></span>প্রতি ৭ সেকেন্ডে অটো-রিফ্রেশ হচ্ছে</p>
+    </div>
+    <span class="count-pill bn" id="countPill">0 পেন্ডিং</span>
+  </div>
+
+  <div id="listWrap">
+    <div class="req-list" id="reqList"></div>
+    <div class="empty-state" id="emptyState">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#7ED957" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#DFF3E6" stroke-width="1.5"/></svg>
+      <p class="bn">এই মুহূর্তে কোনো পেন্ডিং আবেদন নেই।</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ⚠️ Update this once your Cloudflare Worker is deployed (same as login.html / register-tutor.html):
+  const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
+  const POLL_MS = 7000;
+
+  const token = localStorage.getItem("kst_admin_token");
+  const adminRaw = localStorage.getItem("kst_admin");
+  if(!token){
+    window.location.href = "admin-login.html";
+  }
+
+  try{
+    const admin = adminRaw ? JSON.parse(adminRaw) : null;
+    document.getElementById("adminEmailLabel").textContent = admin && admin.email ? admin.email : "";
+  }catch(e){}
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("kst_admin_token");
+    localStorage.removeItem("kst_admin");
+    window.location.href = "admin-login.html";
+  });
+
+  const reqList = document.getElementById("reqList");
+  const emptyState = document.getElementById("emptyState");
+  const countPill = document.getElementById("countPill");
+
+  let knownIds = new Set();
+  let firstLoad = true;
+
+  function fmtTime(ms){
+    if(!ms) return "";
+    const d = new Date(ms);
+    return d.toLocaleString("bn-BD", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" });
+  }
+
+  function cardHtml(r){
+    return `
+      <div class="req-card" data-id="${r.request_id}">
+        <div class="req-top">
+          <div>
+            <span class="req-name">${escapeHtml(r.name || "")}</span>
+            <span class="req-role-badge bn">টিউটর আবেদন</span>
+            <div class="req-meta bn">${escapeHtml(r.phone || "")}${r.phone && r.email ? " • " : ""}${escapeHtml(r.email || "")}</div>
+          </div>
+          <span class="req-time bn">${fmtTime(r.created_at)}</span>
+        </div>
+
+        <div class="req-info-grid">
+          <div class="req-info-item"><div class="k bn">সাবজেক্ট</div><div class="v">${escapeHtml(r.subject || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">যোগ্যতা</div><div class="v">${escapeHtml(r.qualification || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">এলাকা</div><div class="v">${escapeHtml(r.area || "—")}</div></div>
+        </div>
+
+        <div class="req-actions">
+          <button class="act-btn approve bn" data-action="approve">Approve</button>
+          <button class="act-btn reject bn" data-action="reject">Reject</button>
+        </div>
+
+        <div class="reject-note-row" id="rejectRow-${r.request_id}">
+          <input type="text" placeholder="বাতিলের কারণ (ঐচ্ছিক)" id="rejectNote-${r.request_id}">
+          <button class="bn" data-action="confirm-reject">নিশ্চিত করুন</button>
+        </div>
+
+        <div class="card-error bn"></div>
+      </div>
+    `;
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  }
+
+  async function fetchRequests(){
+    try{
+      const res = await fetch(`${API_BASE}/api/admin/requests`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if(res.status === 401){
+        localStorage.removeItem("kst_admin_token");
+        localStorage.removeItem("kst_admin");
+        window.location.href = "admin-login.html";
+        return;
+      }
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || "লোড করা যায়নি");
+      renderRequests(data.requests || []);
+    }catch(err){
+      console.error("Failed to load requests:", err.message);
+    }
+  }
+
+  function renderRequests(requests){
+    countPill.textContent = `${requests.length} পেন্ডিং`;
+    emptyState.style.display = requests.length === 0 ? "block" : "none";
+
+    const currentIds = new Set(requests.map(r => r.request_id));
+
+    // remove cards that are gone (approved/rejected elsewhere) with animation
+    Array.from(reqList.children).forEach(card => {
+      if(!currentIds.has(card.dataset.id)){
+        removeCard(card.dataset.id);
+      }
+    });
+
+    requests.forEach(r => {
+      const existing = reqList.querySelector(`[data-id="${r.request_id}"]`);
+      const isNew = !firstLoad && !knownIds.has(r.request_id);
+      if(!existing){
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = cardHtml(r);
+        const card = wrapper.firstElementChild;
+        if(isNew) card.classList.add("new-highlight");
+        reqList.prepend(card);
+        bindCardEvents(card, r.request_id);
+        if(isNew) setTimeout(() => card.classList.remove("new-highlight"), 2200);
+      }
+    });
+
+    knownIds = currentIds;
+    firstLoad = false;
+  }
+
+  function bindCardEvents(card, requestId){
+    const errBox = card.querySelector(".card-error");
+
+    card.querySelector('[data-action="approve"]').addEventListener("click", async (e) => {
+      setCardLoading(card, true);
+      try{
+        await callAdminAction("/api/admin/approve", { requestId });
+        removeCard(requestId);
+      }catch(err){
+        showCardError(errBox, err.message);
+        setCardLoading(card, false);
+      }
+    });
+
+    card.querySelector('[data-action="reject"]').addEventListener("click", () => {
+      document.getElementById(`rejectRow-${requestId}`).classList.toggle("show");
+    });
+
+    card.querySelector('[data-action="confirm-reject"]').addEventListener("click", async () => {
+      const note = document.getElementById(`rejectNote-${requestId}`).value.trim();
+      setCardLoading(card, true);
+      try{
+        await callAdminAction("/api/admin/reject", { requestId, note });
+        removeCard(requestId);
+      }catch(err){
+        showCardError(errBox, err.message);
+        setCardLoading(card, false);
+      }
+    });
+  }
+
+  function setCardLoading(card, loading){
+    card.querySelectorAll("button").forEach(b => b.disabled = loading);
+  }
+
+  function showCardError(box, msg){
+    box.textContent = msg;
+    box.classList.add("show");
+  }
+
+  async function callAdminAction(path, body){
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    if(res.status === 401){
+      localStorage.removeItem("kst_admin_token");
+      localStorage.removeItem("kst_admin");
+      window.location.href = "admin-login.html";
+      throw new Error("Session শেষ হয়ে গেছে");
+    }
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || "সমস্যা হয়েছে");
+    return data;
+  }
+
+  function removeCard(requestId){
+    const card = reqList.querySelector(`[data-id="${requestId}"]`);
+    if(!card) return;
+    card.classList.add("removing");
+    setTimeout(() => {
+      card.remove();
+      if(reqList.children.length === 0) emptyState.style.display = "block";
+    }, 380);
+  }
+
+  fetchRequests();
+  setInterval(fetchRequests, POLL_MS);
+</script>
+
+</body>
+</html>

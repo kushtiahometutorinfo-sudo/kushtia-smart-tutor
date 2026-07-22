@@ -1,0 +1,28 @@
+name = "kushtia-smart-tutor-auth"
+main = "index.js"
+compatibility_date = "2026-07-01"
+
+# Create this KV namespace with:
+#   npx wrangler kv namespace create OTP_KV
+# then paste the id it prints below.
+[[kv_namespaces]]
+binding = "OTP_KV"
+id = "3c14f2dedb0b4686a98d4999fd1104a0"
+
+# Create this D1 database with:
+#   npx wrangler d1 create kushtia-smart-tutor-db
+# then paste the database_id it prints below, and apply schema.sql:
+#   npx wrangler d1 execute kushtia-smart-tutor-db --file=./schema.sql
+[[d1_databases]]
+binding = "DB"
+database_name = "kushtia-smart-tutor-db"
+database_id = "626daf09-81a5-4ae2-9f8a-a9b9de06f9d2"
+
+[vars]
+ALLOWED_ORIGIN = "https://your-site.com"
+RESEND_FROM = "Kushtia Smart Tutor <onboarding@resend.dev>"
+
+# Set these secrets (not committed to code) with:
+#   npx wrangler secret put RESEND_API_KEY
+#   npx wrangler secret put ADMIN_SECRET      (long random string — signs admin session tokens)
+#   npx wrangler secret put ADMIN_SETUP_KEY   (random string — protects the one-time admin bootstrap route)

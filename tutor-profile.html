@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>টিউটর প্রোফাইল — Kushtia Smart Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
+    --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
+    --red-500:#E24C4C; --blue-500:#2563EB;
+    --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);}
+  .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
+  a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;}
+
+  header.topnav{position:sticky;top:0;z-index:50;background:rgba(252,253,251,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(155deg,var(--green-600),var(--green-900));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .brand-mark svg{width:21px;height:21px;}
+  .brand-text .en{font-weight:700;font-size:15.5px;color:var(--green-900);}
+  .back-btn{font-size:13.5px;font-weight:600;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+  .back-btn:hover{color:var(--green-700);}
+
+  .container{max-width:1000px;margin:0 auto;padding:32px 24px 100px;}
+
+  /* Profile Header */
+  .profile-header{
+    background:linear-gradient(135deg,var(--green-900),var(--green-700));
+    border-radius:24px;padding:32px;color:#fff;box-shadow:var(--shadow-lg);
+    display:grid;grid-template-columns:100px 1fr;gap:24px;align-items:center;
+  }
+  .avatar-box{
+    width:100px;height:100px;border-radius:50%;background:var(--mint-100);
+    border:3px solid rgba(255,255,255,.6);overflow:hidden;display:flex;align-items:center;justify-content:center;
+    font-size:36px;font-weight:800;color:var(--green-900);font-family:'Baloo Da 2',sans-serif;
+  }
+  .avatar-box img{width:100%;height:100%;object-fit:cover;}
+
+  .header-info h1{margin:0 0 6px;font-size:24px;font-family:'Baloo Da 2',sans-serif;}
+  .univ-tag{font-size:14.5px;color:rgba(255,255,255,.9);font-weight:600;}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .v-badge{background:var(--green-lime);color:var(--green-900);font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;}
+  .id-badge{background:rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px;}
+
+  /* Layout grid */
+  .layout-grid{display:grid;grid-template-columns:1fr 320px;gap:24px;margin-top:24px;}
+
+  /* Quick Info Box */
+  .side-card{
+    background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;
+    box-shadow:0 12px 30px -22px rgba(14,59,34,.25);height:fit-content;
+  }
+  .side-card h3{margin:0 0 16px;font-size:16px;color:var(--green-900);padding-bottom:8px;border-bottom:1.5px solid var(--line);}
+  .info-list{display:flex;flex-direction:column;gap:14px;}
+  .info-row .k{font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;}
+  .info-row .v{font-size:14.5px;font-weight:700;color:var(--ink);margin-top:2px;}
+
+  .status-tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:6px;}
+  .status-tag.available{background:var(--mint-100);color:var(--green-800);}
+  .status-tag.busy{background:#FDECEC;color:var(--red-500);}
+
+  /* Action Buttons */
+  .action-group{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+  .btn-primary{
+    width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-600),var(--green-900));
+    color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;box-shadow:0 10px 20px -10px rgba(15,59,34,.5);
+    text-align:center;transition:transform .2s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-outline{
+    width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:#fff;
+    color:var(--ink);font-size:13.5px;font-weight:700;cursor:pointer;text-align:center;
+  }
+  .btn-outline:hover{border-color:var(--green-500);color:var(--green-700);}
+
+  /* Main Content Tabs */
+  .tabs-card{
+    background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;
+    box-shadow:0 12px 30px -22px rgba(14,59,34,.25);
+  }
+  .tab-nav{display:flex;gap:8px;border-bottom:1.5px solid var(--line);padding-bottom:12px;margin-bottom:20px;overflow-x:auto;}
+  .tab-item{
+    padding:8px 16px;border-radius:10px;font-size:14px;font-weight:700;color:var(--ink-soft);
+    cursor:pointer;white-space:nowrap;transition:background .2s ease,color .2s ease;
+  }
+  .tab-item:hover{background:var(--mint-50);color:var(--green-700);}
+  .tab-item.active{background:var(--green-900);color:#fff;}
+
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;animation:fadein .3s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .edu-block{
+    background:var(--mint-50);border:1px solid var(--line);border-radius:14px;
+    padding:16px;margin-bottom:14px;
+  }
+  .edu-title{font-size:15px;font-weight:700;color:var(--green-900);margin-bottom:6px;}
+  .edu-sub{font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+
+  .subject-pill{
+    display:inline-block;padding:8px 16px;border-radius:10px;background:var(--mint-100);
+    color:var(--green-900);font-size:14px;font-weight:700;margin:0 8px 8px 0;
+  }
+
+  .text-box{font-size:14.5px;line-height:1.8;color:var(--ink);white-space:pre-line;}
+
+  /* Contact Modal */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(14,59,34,.45);backdrop-filter:blur(2px);
+    display:none;align-items:center;justify-content:center;z-index:100;padding:20px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    background:#fff;border-radius:20px;padding:28px;max-width:380px;width:100%;text-align:center;
+    box-shadow:var(--shadow-lg);
+  }
+  .modal-box h3{margin:0 0 10px;font-size:18px;color:var(--green-900);}
+  .modal-box p{margin:0 0 18px;color:var(--ink-soft);font-size:13.5px;}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--green-900);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;
+    opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;box-shadow:var(--shadow-lg);z-index:100;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:800px){
+    .layout-grid{grid-template-columns:1fr;}
+    .profile-header{grid-template-columns:1fr;text-align:center;}
+    .avatar-box{margin:0 auto;}
+    .badge-row{justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="nav-inner">
+    <a href="home.html" class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg></div>
+      <div class="brand-text"><div class="en">Kushtia Smart Tutor</div></div>
+    </a>
+    <a href="hire-tutor.html" class="back-btn bn">← টিউটর তালিকায় ফিরুন</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="profile-header">
+    <div class="avatar-box" id="tutorAvatar">ST</div>
+    <div class="header-info">
+      <h1 class="bn" id="tutorName">টিউটর লোড হচ্ছে...</h1>
+      <div class="univ-tag bn" id="tutorUniv">—</div>
+      <div class="badge-row">
+        <span class="v-badge bn">✓ ভেরিফাইড টিউটর</span>
+        <span class="id-badge en" id="tutorIdBadge">ID: #---</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-grid">
+    
+    <!-- Main Tabs -->
+    <div class="tabs-card">
+      <div class="tab-nav">
+        <div class="tab-item active bn" data-tab="education">🎓 শিক্ষা (Education)</div>
+        <div class="tab-item bn" data-tab="subjects">📚 বিষয় (Subjects)</div>
+        <div class="tab-item bn" data-tab="experience">💼 অভিজ্ঞতা & বেতন</div>
+        <div class="tab-item bn" data-tab="extra">📝 অতিরিক্ত বায়ো (Extra)</div>
+      </div>
+
+      <!-- Tab 1: Education -->
+      <div class="tab-pane active" id="tab-education">
+        <div id="educationContent">
+          <div class="edu-block">
+            <div class="edu-title bn" id="bachelorTitle">বিশ্ববিদ্যালয় (Bachelor)</div>
+            <div class="edu-sub bn" id="bachelorSub">তথ্য লোড হচ্ছে...</div>
+          </div>
+          <div class="edu-block">
+            <div class="edu-title bn">উচ্চ মাধ্যমিক (HSC)</div>
+            <div class="edu-sub bn" id="hscSub">তথ্য উপলব্ধ নয়</div>
+          </div>
+          <div class="edu-block">
+            <div class="edu-title bn">মাধ্যমিক (SSC)</div>
+            <div class="edu-sub bn" id="sscSub">তথ্য উপলব্ধ নয়</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Subjects -->
+      <div class="tab-pane" id="tab-subjects">
+        <h3 class="bn" style="margin-top:0;font-size:16px;color:var(--green-900);">যেসব বিষয় পড়াতে আগ্রহী:</h3>
+        <div id="subjectsContent" style="margin-top:14px;"></div>
+      </div>
+
+      <!-- Tab 3: Experience -->
+      <div class="tab-pane" id="tab-experience">
+        <div class="edu-block">
+          <div class="edu-title bn">অভিজ্ঞতা (Experience)</div>
+          <div class="edu-sub bn" id="expSub">—</div>
+        </div>
+        <div class="edu-block">
+          <div class="edu-title bn">প্রত্যাশিত বেতন (Expected Salary)</div>
+          <div class="edu-sub bn" id="salarySub">—</div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Extra -->
+      <div class="tab-pane" id="tab-extra">
+        <h3 class="bn" style="margin-top:0;font-size:16px;color:var(--green-900);">টিউটরের বায়ো ও পড়ানোর কৌশল:</h3>
+        <div class="text-box bn" id="extraContent">—</div>
+      </div>
+
+    </div>
+
+    <!-- Quick Info Side Box -->
+    <div class="side-card">
+      <h3 class="bn">📌 এক নজরে তথ্য (Quick Info)</h3>
+      <div class="info-list">
+        <div class="info-row">
+          <div class="k bn">টিউটর আইডি</div>
+          <div class="v en" id="quickId" style="color:var(--green-700);">#---</div>
+        </div>
+        <div class="info-row">
+          <div class="k bn">বর্তমান অবস্থান (Location)</div>
+          <div class="v bn" id="quickLoc">—</div>
+        </div>
+        <div class="info-row">
+          <div class="k bn">প্রত্যাশিত বেতন</div>
+          <div class="v bn" id="quickSalary">—</div>
+        </div>
+        <div class="info-row">
+          <div class="k bn">অভিজ্ঞতা</div>
+          <div class="v bn" id="quickExp">—</div>
+        </div>
+        <div class="info-row">
+          <div class="k bn">স্ট্যাটাস (Status)</div>
+          <div class="v bn" id="quickStatus">
+            <span class="status-tag available">অ্যাভেলেবল</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-group">
+        <button class="btn-primary bn" id="requestBtn">📞 টিউটর রিকুয়েস্ট করুন</button>
+        <button class="btn-outline bn" id="shareBtn">🔗 প্রোফাইল শেয়ার করুন</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Request Modal -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-box">
+    <h3 class="bn" id="modalTitle">টিউশন রিকুয়েস্ট</h3>
+    <p class="bn">এই টিউটরকে হায়ার করার জন্য Kushtia Smart Tutor অফিশিয়াল WhatsApp টিমকে মেসেজ দিন।</p>
+    <a class="btn-primary bn" id="whatsappLink" target="_blank" rel="noopener">WhatsApp-এ যোগাযোগ করুন</a>
+    <button class="btn-outline bn" style="margin-top:10px;" id="closeModal">বন্ধ করুন</button>
+  </div>
+</div>
+
+<div class="toast bn" id="toast"></div>
+
+<script>
+  const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
+  const CONTACT_WHATSAPP = "8801700000000";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const tutorId = urlParams.get("id");
+
+  if(!tutorId){
+    window.location.href = "hire-tutor.html";
+  }
+
+  // Tabs logic
+  document.querySelectorAll(".tab-item").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+      
+      item.classList.add("active");
+      document.getElementById(`tab-${item.dataset.tab}`).classList.add("active");
+    });
+  });
+
+  function toast(msg){
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 2500);
+  }
+
+  function escapeHtml(str){
+    return String(str || "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  }
+
+  let currentTutor = null;
+
+  async function fetchProfile(){
+    try{
+      const res = await fetch(`${API_BASE}/api/public/tutors/${tutorId}`);
+      const data = await res.json();
+      if(!res.ok || !data.tutor) throw new Error(data.error || "প্রোফাইল পাওয়া যায়নি");
+
+      const t = data.tutor;
+      currentTutor = t;
+
+      // Header
+      document.getElementById("tutorName").textContent = t.name;
+      document.getElementById("tutorUniv").textContent = `🎓 ${t.university || "ইসলামী বিশ্ববিদ্যালয়"}` + (t.department ? ` (${t.department})` : "");
+      document.getElementById("tutorIdBadge").textContent = `ID: #${t.tutorId || t.id}`;
+
+      const avatarBox = document.getElementById("tutorAvatar");
+      if(t.photoUrl || t.avatarUrl){
+        avatarBox.innerHTML = `<img src="${escapeHtml(t.photoUrl || t.avatarUrl)}" alt="${escapeHtml(t.name)}">`;
+      } else {
+        avatarBox.textContent = (t.name || "ST").slice(0,2).toUpperCase();
+      }
+
+      // Quick Info
+      document.getElementById("quickId").textContent = `#${t.tutorId || t.id}`;
+      document.getElementById("quickLoc").textContent = t.currentLocation || t.area || "কুষ্টিয়া সদর";
+      document.getElementById("quickSalary").textContent = t.expectedSalary || "আলোচনা সাপেক্ষে";
+      document.getElementById("quickExp").textContent = t.experienceYears || "১+ বছর";
+      
+      const isAvail = (t.availability || "available") === "available";
+      document.getElementById("quickStatus").innerHTML = `
+        <span class="status-tag ${isAvail ? 'available' : 'busy'}">${isAvail ? 'অ্যাভেলেবল (টিউশন করাচ্ছেন)' : 'বর্তমানে ব্যস্ত'}</span>
+      `;
+
+      // Tab 1: Education
+      document.getElementById("bachelorTitle").textContent = t.university || "বিশ্ববিদ্যালয় তথ্য";
+      document.getElementById("bachelorSub").textContent = `ডিপার্টমেন্ট: ${t.department || "N/A"} | সেশন: ${t.session || "N/A"}`;
+
+      if(t.hscYear || t.hscCollege){
+        document.getElementById("hscSub").textContent = `প্রতিষ্ঠানের নাম: ${t.hscCollege || "N/A"} | বছর: ${t.hscYear || "N/A"} | রেজাল্ট: ${t.hscResult || "N/A"}`;
+      }
+      if(t.sscYear || t.sscSchool){
+        document.getElementById("sscSub").textContent = `প্রতিষ্ঠানের নাম: ${t.sscSchool || "N/A"} | বছর: ${t.sscYear || "N/A"} | রেজাল্ট: ${t.sscResult || "N/A"}`;
+      }
+
+      // Tab 2: Subjects
+      const subs = (t.subjects || t.subject || "সাধারণ বিষয়াবলী").split(",");
+      document.getElementById("subjectsContent").innerHTML = subs.map(s => `
+        <span class="subject-pill bn">📖 ${escapeHtml(s.trim())}</span>
+      `).join("");
+
+      // Tab 3: Experience
+      document.getElementById("expSub").textContent = t.experienceYears || "অভিজ্ঞতা উল্লেখ নেই";
+      document.getElementById("salarySub").textContent = t.expectedSalary || "আলোচনা সাপেক্ষে";
+
+      // Tab 4: Extra
+      document.getElementById("extraContent").textContent = t.extraInfo || "কোনো অতিরিক্ত বায়ো যুক্ত করা হয়নি।";
+
+    }catch(err){
+      alert("প্রোফাইল লোড করতে সমস্যা হয়েছে: " + err.message);
+      window.location.href = "hire-tutor.html";
+    }
+  }
+
+  fetchProfile();
+
+  // Share profile
+  document.getElementById("shareBtn").addEventListener("click", () => {
+    navigator.clipboard.writeText(window.location.href).then(() => toast("প্রোফাইল লিংক কপি হয়েছে! 📋"));
+  });
+
+  // Request modal
+  document.getElementById("requestBtn").addEventListener("click", () => {
+    if(!currentTutor) return;
+    document.getElementById("modalTitle").textContent = `${currentTutor.name} (ID: #${currentTutor.tutorId || currentTutor.id})`;
+    const msg = encodeURIComponent(`হ্যালো! আমি Kushtia Smart Tutor ওয়েবসাইট থেকে টিউটর ${currentTutor.name} (Tutor ID: #${currentTutor.tutorId || currentTutor.id}) এর সাথে যোগাযোগের জন্য রিকুয়েস্ট দিতে চাই।`);
+    document.getElementById("whatsappLink").href = `https://wa.me/${CONTACT_WHATSAPP}?text=${msg}`;
+    document.getElementById("contactModal").classList.add("show");
+  });
+
+  document.getElementById("closeModal").addEventListener("click", () => {
+    document.getElementById("contactModal").classList.remove("show");
+  });
+</script>
+
+</body>
+</html>

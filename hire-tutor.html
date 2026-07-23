@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>টিউটর খুঁজুন — Kushtia Smart Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
+    --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
+    --red-500:#E24C4C; --red-50:#FDECEC;
+    --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);}
+  .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
+  a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;}
+
+  header.topnav{position:sticky;top:0;z-index:50;background:rgba(252,253,251,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(155deg,var(--green-600),var(--green-900));display:flex;align-items:center;justify-content:center;}
+  .brand-mark svg{width:20px;height:20px;}
+  .brand-text .en{font-weight:700;font-size:15.5px;color:var(--green-900);}
+  .back-link{font-size:13.5px;font-weight:600;color:var(--ink-soft);}
+  .back-link:hover{color:var(--green-700);}
+
+  .page-head{max-width:1180px;margin:0 auto;padding:32px 24px 0;}
+  h1{font-size:clamp(24px,3.4vw,32px);margin:0 0 6px;font-weight:700;}
+  h1 .accent{background:linear-gradient(90deg,var(--green-600),var(--green-lime));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .page-sub{margin:0;color:var(--ink-soft);font-size:14.5px;}
+
+  .filter-bar{
+    max-width:1180px;margin:20px auto 0;padding:0 24px;
+    display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+  }
+  select, .search-input{
+    padding:11px 16px;border-radius:12px;border:1.5px solid var(--line);
+    font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink);outline:none;
+    transition:border-color .2s ease;
+  }
+  select:focus, .search-input:focus{border-color:var(--green-500);}
+  .search-input{flex:1;min-width:200px;}
+  .reset-btn{
+    padding:11px 16px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
+    font-size:13px;font-weight:700;color:var(--ink-soft);
+  }
+  .reset-btn:hover{border-color:var(--green-500);color:var(--green-700);}
+  .result-count{font-size:13px;color:var(--ink-soft);margin-left:auto;}
+
+  .grid-wrap{max-width:1180px;margin:26px auto 0;padding:0 24px 80px;}
+  .tutor-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+  }
+  .tutor-card{
+    background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;
+    box-shadow:0 12px 30px -22px rgba(14,59,34,.25);
+    transition:transform .3s ease,box-shadow .3s ease;
+    display:flex;flex-direction:column;
+  }
+  .tutor-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+
+  .tutor-photo-wrap{
+    position:relative;width:100%;aspect-ratio:16/10;background:var(--mint-100);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .tutor-photo-wrap img{width:100%;height:100%;object-fit:cover;}
+  .tutor-photo-wrap .initials{font-size:36px;font-weight:800;color:var(--green-700);font-family:'Baloo Da 2',sans-serif;}
+  
+  .verified-badge{
+    position:absolute;top:12px;right:12px;background:rgba(14,59,34,.85);color:#fff;
+    backdrop-filter:blur(6px);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;
+    display:flex;align-items:center;gap:4px;
+  }
+  .verified-badge .check{color:var(--green-lime);}
+
+  .tutor-body{padding:20px;display:flex;flex-direction:column;flex:1;}
+  .tutor-name{font-size:17.5px;font-weight:700;margin:0 0 2px;color:var(--green-900);}
+  .tutor-univ{font-size:13px;font-weight:600;color:var(--green-700);margin-bottom:10px;}
+
+  .tag-group{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+  .tag{
+    font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:8px;
+    background:var(--mint-100);color:var(--green-800);
+  }
+  .tag.gender{background:#EAF1FE;color:#2563EB;}
+  .tag.session{background:#FFF3E0;color:#B05B00;}
+
+  /* Quick Info Box inside Card */
+  .info-box{
+    background:var(--mint-50);border:1px solid var(--line);border-radius:14px;
+    padding:12px 14px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  }
+  .info-item .lbl{font-size:10.5px;font-weight:600;color:var(--ink-soft);}
+  .info-item .val{font-size:12.5px;font-weight:700;color:var(--ink);margin-top:1px;}
+  
+  .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;}
+  .status-dot.available{background:var(--green-500);}
+  .status-dot.busy{background:var(--red-500);}
+
+  .view-btn{
+    margin-top:auto;width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;color:#fff;
+    background:linear-gradient(135deg,var(--green-600),var(--green-900));
+    box-shadow:0 10px 20px -10px rgba(15,59,34,.5);transition:transform .2s ease,filter .2s ease;
+    text-align:center;display:block;
+  }
+  .view-btn:hover{filter:brightness(1.06);transform:translateY(-2px);}
+
+  .empty-state{text-align:center;padding:70px 20px;color:var(--ink-soft);grid-column:1/-1;}
+  .skeleton{background:linear-gradient(90deg,var(--mint-50) 25%,var(--mint-100) 37%,var(--mint-50) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;}
+  @keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
+
+  @media (max-width:960px){ .tutor-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:600px){
+    .tutor-grid{grid-template-columns:1fr;}
+    .filter-bar{flex-direction:column;align-items:stretch;}
+    .result-count{margin-left:0;text-align:right;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="nav-inner">
+    <a href="home.html" class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg></div>
+      <div class="brand-text"><div class="en">Kushtia Smart Tutor</div></div>
+    </a>
+    <a href="home.html" class="back-link bn">← হোমে ফিরুন</a>
+  </div>
+</header>
+
+<div class="page-head">
+  <h1 class="bn">সব <span class="accent">ভেরিফাইড টিউটর</span></h1>
+  <p class="page-sub bn">কুষ্টিয়ার সেরা সকল বিশ্ববিদ্যালয় শিক্ষার্থী ও পেশাদার টিউটরদের সম্পূর্ণ প্রোফাইল বেছে নিন</p>
+</div>
+
+<div class="filter-bar">
+  <select id="subjectFilter"><option value="">সব বিষয় (Subjects)</option></select>
+  <select id="areaFilter"><option value="">সব এলাকা (Location)</option></select>
+  <input type="text" class="search-input bn" id="searchInput" placeholder="নাম, বিশ্ববিদ্যালয় বা আইডি দিয়ে খুঁজুন...">
+  <button class="reset-btn bn" id="resetBtn">রিসেট</button>
+  <span class="result-count bn" id="resultCount"></span>
+</div>
+
+<div class="grid-wrap">
+  <div class="tutor-grid" id="tutorGrid"></div>
+</div>
+
+<script>
+  const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
+  let allTutors = [];
+
+  function escapeHtml(str){
+    return String(str || "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  }
+
+  function skeletonCards(n){
+    return Array.from({length:n}).map(() => `
+      <div class="tutor-card">
+        <div class="tutor-photo-wrap skeleton"></div>
+        <div class="tutor-body">
+          <div class="skeleton" style="height:18px;border-radius:6px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:14px;"></div>
+          <div class="skeleton" style="height:50px;border-radius:12px;"></div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function tutorCardHtml(t){
+    const initials = (t.name || "?").slice(0,2).toUpperCase();
+    const photoUrl = t.photoUrl || t.avatarUrl;
+    const isAvailable = (t.availability || "available") === "available";
+    const tutorIdDisplay = t.tutorId ? `#${t.tutorId}` : `#${t.id}`;
+
+    return `
+      <div class="tutor-card">
+        <div class="tutor-photo-wrap">
+          ${photoUrl ? `<img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(t.name)}">` : `<span class="initials">${initials}</span>`}
+          <div class="verified-badge bn"><span class="check">✓</span> ভেরিফাইড</div>
+        </div>
+        <div class="tutor-body">
+          <h3 class="tutor-name bn">${escapeHtml(t.name)}</h3>
+          <div class="tutor-univ bn">🎓 ${escapeHtml(t.university || "ইসলামী বিশ্ববিদ্যালয়")}${t.department ? ' (' + escapeHtml(t.department) + ')' : ''}</div>
+          
+          <div class="tag-group">
+            ${t.subjects || t.subject ? `<span class="tag bn">📚 ${escapeHtml(t.subjects || t.subject)}</span>` : ''}
+            ${t.session ? `<span class="tag session bn">Session: ${escapeHtml(t.session)}</span>` : ''}
+            ${t.gender ? `<span class="tag gender bn">👤 ${escapeHtml(t.gender === 'Male' ? 'পুরুষ' : (t.gender === 'Female' ? 'মহিলা' : t.gender))}</span>` : ''}
+          </div>
+
+          <div class="info-box">
+            <div class="info-item">
+              <div class="lbl bn">TUTOR ID</div>
+              <div class="val en" style="color:var(--green-700);">${escapeHtml(tutorIdDisplay)}</div>
+            </div>
+            <div class="info-item">
+              <div class="lbl bn">LOCATION</div>
+              <div class="val bn">${escapeHtml(t.currentLocation || t.area || "কুষ্টিয়া সদর")}</div>
+            </div>
+            <div class="info-item" style="grid-column:span 2;">
+              <div class="lbl bn">STATUS</div>
+              <div class="val bn">
+                <span class="status-dot ${isAvailable ? 'available' : 'busy'}"></span>
+                ${isAvailable ? 'টিউশন করাচ্ছেন (অ্যাভেলেবল)' : 'বর্তমানে ব্যস্ত (Busy)'}
+              </div>
+            </div>
+          </div>
+
+          <a href="tutor-profile.html?id=${t.id}" class="view-btn bn">সম্পূর্ণ প্রোফাইল দেখুন →</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderTutors(list){
+    const grid = document.getElementById("tutorGrid");
+    document.getElementById("resultCount").textContent = `${list.length} জন টিউটর পাওয়া গেছে`;
+
+    if(list.length === 0){
+      grid.innerHTML = `
+        <div class="empty-state bn">
+          <p>এই সার্চ বা ফিল্টারে কোনো টিউটর পাওয়া যায়নি।</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = list.map(tutorCardHtml).join("");
+  }
+
+  function populateFilterOptions(){
+    const subjectSet = new Set();
+    const areaSet = new Set();
+
+    allTutors.forEach(t => {
+      if(t.subjects) t.subjects.split(',').forEach(s => subjectSet.add(s.trim()));
+      else if(t.subject) subjectSet.add(t.subject.trim());
+
+      if(t.currentLocation) areaSet.add(t.currentLocation.trim());
+      else if(t.area) areaSet.add(t.area.trim());
+    });
+
+    const subjectSel = document.getElementById("subjectFilter");
+    const areaSel = document.getElementById("areaFilter");
+
+    [...subjectSet].filter(Boolean).sort().forEach(s => {
+      subjectSel.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`);
+    });
+    [...areaSet].filter(Boolean).sort().forEach(a => {
+      areaSel.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`);
+    });
+  }
+
+  function applyFilters(){
+    const subject = document.getElementById("subjectFilter").value;
+    const area = document.getElementById("areaFilter").value;
+    const search = document.getElementById("searchInput").value.trim().toLowerCase();
+
+    const filtered = allTutors.filter(t => {
+      const subs = (t.subjects || t.subject || "").toLowerCase();
+      const loc = (t.currentLocation || t.area || "").toLowerCase();
+      const univ = (t.university || "").toLowerCase();
+      const name = (t.name || "").toLowerCase();
+      const tid = String(t.tutorId || t.id || "").toLowerCase();
+
+      if(subject && !subs.includes(subject.toLowerCase())) return false;
+      if(area && !loc.includes(area.toLowerCase())) return false;
+      if(search){
+        const match = name.includes(search) || univ.includes(search) || subs.includes(search) || loc.includes(search) || tid.includes(search);
+        if(!match) return false;
+      }
+      return true;
+    });
+
+    renderTutors(filtered);
+  }
+
+  document.getElementById("subjectFilter").addEventListener("change", applyFilters);
+  document.getElementById("areaFilter").addEventListener("change", applyFilters);
+  document.getElementById("searchInput").addEventListener("input", applyFilters);
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("subjectFilter").value = "";
+    document.getElementById("areaFilter").value = "";
+    document.getElementById("searchInput").value = "";
+    applyFilters();
+  });
+
+  async function loadTutors(){
+    document.getElementById("tutorGrid").innerHTML = skeletonCards(6);
+    try{
+      const res = await fetch(`${API_BASE}/api/public/tutors`);
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || "লোড করতে সমস্যা হয়েছে");
+      allTutors = data.tutors || [];
+      populateFilterOptions();
+      renderTutors(allTutors);
+    }catch(err){
+      document.getElementById("tutorGrid").innerHTML = `
+        <div class="empty-state bn"><p>টিউটর লোড করা সম্ভব হয়নি। Worker সংযোগ পরীক্ষা করুন।</p></div>`;
+      console.error(err);
+    }
+  }
+
+  loadTutors();
+</script>
+
+</body>
+</html>

@@ -11,7 +11,7 @@
   :root{
     --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
     --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
-    --red-500:#E24C4C; --orange-500:#F2994A; --orange-700:#EB5E28;
+    --red-500:#E24C4C; --orange-500:#F2994A; --orange-700:#EB5E28; --blue-500:#2563EB;
     --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
   }
   *{box-sizing:border-box;}
@@ -30,15 +30,6 @@
 
   .page{max-width:1000px;margin:0 auto;padding:32px 24px 100px;}
 
-  /* Demo-only role switcher */
-  .demo-note{
-    background:#FFF7E6;border:1px dashed #F0C36B;border-radius:12px;padding:12px 16px;
-    font-size:12.5px;color:#8A5A00;margin-bottom:24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;
-  }
-  .demo-toggle{display:flex;gap:6px;}
-  .demo-toggle button{padding:6px 14px;border-radius:999px;border:1.5px solid #F0C36B;background:#fff;font-size:12.5px;font-weight:700;color:#8A5A00;}
-  .demo-toggle button.active{background:#F0C36B;color:#402d00;}
-
   /* Profile header card */
   .profile-head{
     background:linear-gradient(135deg,var(--green-900),var(--green-700));
@@ -49,22 +40,15 @@
   .avatar{
     width:84px;height:84px;border-radius:50%;background:var(--mint-100);
     display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;
-    color:var(--green-800,var(--green-700));border:3px solid rgba(255,255,255,.5);overflow:hidden;
+    color:var(--green-700);border:3px solid rgba(255,255,255,.5);overflow:hidden;
   }
   .avatar img{width:100%;height:100%;object-fit:cover;}
-  .avatar-edit{
-    position:absolute;bottom:-2px;right:-2px;width:28px;height:28px;border-radius:50%;
-    background:#fff;border:2px solid var(--green-700);display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:transform .2s ease;
-  }
-  .avatar-edit:hover{transform:scale(1.1);}
   .profile-head h1{margin:0 0 4px;font-size:21px;font-family:'Baloo Da 2',sans-serif;}
   .role-chip{
     display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);
     padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-top:4px;
   }
   .verify-chip{background:var(--green-lime);color:var(--green-900);}
-  .pending-chip{background:#FFE3B3;color:#7A4A00;}
 
   /* Section cards */
   .section-card{
@@ -74,15 +58,24 @@
   .section-card h2{margin:0 0 4px;font-size:17.5px;color:var(--green-900);display:flex;align-items:center;gap:8px;}
   .section-card .desc{margin:0 0 18px;font-size:13.5px;color:var(--ink-soft);}
 
-  /* Payment box */
+  .form-sub-title{
+    font-size:15px;font-weight:700;color:var(--green-900);margin:20px 0 10px;
+    padding-bottom:6px;border-bottom:1.5px solid var(--line);display:flex;align-items:center;gap:8px;
+  }
+
+  /* Status banner */
   .status-banner{
-    display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;margin-bottom:18px;
+    display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;margin-bottom:20px;
   }
   .status-banner.pending{background:#FFF3E0;border:1px solid #FBD9A0;}
-  .status-banner.active{background:var(--mint-50);border:1px solid var(--line);}
-  .status-banner .s-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .status-banner.pending .s-icon{background:#F0C36B;}
-  .status-banner.active .s-icon{background:var(--green-lime);}
+  .status-banner.running{background:var(--mint-50);border:1px solid var(--line);}
+  .status-banner.paused{background:#EAF1FE;border:1px solid #C7D9FB;}
+  .status-banner.rejected{background:#FDECEC;border:1px solid #F6C6C6;}
+  .status-banner .s-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;}
+  .status-banner.pending .s-icon{background:#F0C36B;color:#7A4A00;}
+  .status-banner.running .s-icon{background:var(--green-lime);color:var(--green-900);}
+  .status-banner.paused .s-icon{background:#2563EB;color:#fff;}
+  .status-banner.rejected .s-icon{background:var(--red-500);color:#fff;}
   .status-banner strong{display:block;font-size:14px;}
   .status-banner span{font-size:12.5px;color:var(--ink-soft);}
 
@@ -97,26 +90,34 @@
   .pay-steps{margin:18px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink-soft);line-height:1.9;}
 
   label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;}
-  input[type=text],input[type=tel]{
+  input[type=text],input[type=tel],select,textarea{
     width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);
-    font-size:14.5px;font-family:inherit;outline:none;background:var(--paper);
+    font-size:14px;font-family:inherit;outline:none;background:var(--paper);color:var(--ink);
   }
-  input:focus{border-color:var(--green-500);box-shadow:0 0 0 4px rgba(47,168,90,.15);}
+  textarea{resize:vertical;min-height:80px;}
+  input:focus,select:focus,textarea:focus{border-color:var(--green-500);box-shadow:0 0 0 4px rgba(47,168,90,.15);}
+  
+  .checkbox-label{
+    display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;cursor:pointer;margin:12px 0;
+  }
+  .checkbox-label input[type=checkbox]{width:18px;height:18px;accent-color:var(--green-600);}
+
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    padding:13px 22px;border-radius:14px;border:none;font-size:14.5px;font-weight:700;color:#fff;
+    padding:14px 24px;border-radius:14px;border:none;font-size:15px;font-weight:700;color:#fff;
     background:linear-gradient(135deg,var(--green-600),var(--green-900));
-    box-shadow:0 14px 26px -12px rgba(15,59,34,.5);margin-top:16px;transition:transform .2s ease,filter .2s ease;
+    box-shadow:0 14px 26px -12px rgba(15,59,34,.5);margin-top:24px;transition:transform .2s ease,filter .2s ease;
+    width:100%;
   }
   .btn:hover{filter:brightness(1.06);transform:translateY(-2px);}
-  .btn-outline{background:#fff;color:var(--green-900);border:1.5px solid var(--line);box-shadow:none;}
-  .btn-outline:hover{border-color:var(--green-500);}
+  .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
-  /* Upload box */
   .upload-box{
-    border:2px dashed var(--line);border-radius:16px;padding:26px;text-align:center;
+    border:2px dashed var(--line);border-radius:16px;padding:24px;text-align:center;
     background:var(--mint-50);transition:border-color .2s ease,background .2s ease;cursor:pointer;
   }
   .upload-box:hover,.upload-box.drag{border-color:var(--green-500);background:var(--mint-100);}
@@ -125,19 +126,8 @@
   .preview-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
   .preview-thumb{width:70px;height:70px;border-radius:12px;object-fit:cover;border:1.5px solid var(--line);}
 
-  /* Requests list */
-  .req-card{
-    display:flex;justify-content:space-between;align-items:center;gap:14px;
-    padding:16px;border:1px solid var(--line);border-radius:14px;margin-top:12px;flex-wrap:wrap;
-    transition:box-shadow .2s ease;
-  }
-  .req-card:hover{box-shadow:var(--shadow);}
-  .req-card h4{margin:0 0 4px;font-size:14.5px;}
-  .req-card p{margin:0;font-size:12.5px;color:var(--ink-soft);}
-  .req-status{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;}
-  .req-status.applied{background:#EAF1FE;color:#2563EB;}
-  .req-status.confirmed{background:var(--mint-100);color:var(--green-700);}
-  .req-status.open{background:#FFF3E0;color:#B05B00;}
+  .error-msg{margin-top:12px;color:var(--red-500);font-size:13px;font-weight:600;display:none;}
+  .error-msg.show{display:block;}
 
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
@@ -146,11 +136,10 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  @media (max-width:640px){
-    .pay-grid{grid-template-columns:1fr;}
-    .grid2{grid-template-columns:1fr;}
-    .profile-head{padding:22px;}
-    body{padding-bottom:70px;}
+  @media (max-width:768px){
+    .grid2,.grid3,.grid4,.pay-grid{grid-template-columns:1fr;}
+    .profile-head{padding:20px;}
+    .page{padding:20px 16px 80px;}
   }
 </style>
 </head>
@@ -168,95 +157,185 @@
 
 <div class="page">
 
-  <div class="demo-note bn">
-    <span>⚠️ এটা ডেমো ডেটা দিয়ে UI shell — এখনো D1/Worker API-এর সাথে জোড়া হয়নি।</span>
-    <div class="demo-toggle">
-      <button id="showTutor" class="active">টিউটর ভিউ দেখুন</button>
-      <button id="showUser">ইউজার ভিউ দেখুন</button>
-    </div>
-  </div>
-
   <div class="profile-head">
     <div class="avatar-wrap">
-      <div class="avatar" id="avatarCircle">MN</div>
-      <div class="avatar-edit" id="avatarEditBtn" title="ছবি পরিবর্তন করুন">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 20.5h16M6 16.5l9-9 3 3-9 9H6v-3Z" stroke="#1B7A3D" stroke-width="1.8" stroke-linejoin="round"/></svg>
-      </div>
+      <div class="avatar" id="avatarCircle">ST</div>
     </div>
     <div>
-      <h1 id="profileName" class="bn">MD Nabil</h1>
+      <h1 id="profileName" class="bn">টিউটর প্রোফাইল</h1>
       <span class="role-chip bn" id="roleChip">টিউটর</span>
       <span class="role-chip verify-chip bn" id="verifyChip" style="margin-left:6px;">✓ ভেরিফাইড</span>
       <div class="bn" id="profileContact" style="margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.85);"></div>
     </div>
   </div>
 
-  <!-- ===== TUTOR-ONLY: Ad Request (details + photo + payment, one submit) ===== -->
+  <!-- Ad Request Form & Profile Editor (Always accessible) -->
   <div class="section-card" id="adRequestSection">
-    <h2 class="bn">🧾 আপনার টিউটর অ্যাড রিকুয়েস্ট</h2>
-    <p class="desc bn">নিচের তথ্য, ছবি ও পেমেন্ট প্রমাণ একসাথে জমা দিন — Admin যাচাই করে আপনার প্রোফাইল Hire Tutor পেজে লাইভ করে দিবে।</p>
+    <h2 class="bn">🧾 আপনার টিউটর প্রোফাইল ও অ্যাড আপডেট</h2>
+    <p class="desc bn">আপনার প্রোফাইলের সকল তথ্য নিচে জমা বা আপডেট করুন। ইতিমধ্যে অনুমোদিত থাকলেও যেকোনো সময় তথ্য পরিবর্তন করতে পারবেন।</p>
 
+    <!-- Dynamic Status Banner -->
     <div class="status-banner pending" id="adReqStatusBanner">
-      <div class="s-icon" id="adReqStatusIcon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 8v5l3 2" stroke="#7A4A00" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7A4A00" stroke-width="1.8"/></svg>
-      </div>
+      <div class="s-icon" id="adReqStatusIcon">ℹ️</div>
       <div>
-        <strong class="bn" id="adReqStatusTitle">এখনো কোনো রিকুয়েস্ট পাঠাননি</strong>
-        <span class="bn" id="adReqStatusSub">নিচের ফর্ম পূরণ করে জমা দিন, Admin ২৪ ঘণ্টার মধ্যে রিভিউ করবে।</span>
+        <strong class="bn" id="adReqStatusTitle">তথ্য লোড হচ্ছে...</strong>
+        <span class="bn" id="adReqStatusSub">আপনার অ্যাডের স্ট্যাটাস চেক করা হচ্ছে</span>
       </div>
     </div>
 
-    <label class="bn">সাবজেক্ট</label>
-    <input type="text" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান, ইংরেজি" id="reqSubjectInput">
+    <!-- SECTION 1: BASIC INFO -->
+    <div class="form-sub-title bn">👤 ১. মৌলিক তথ্য (Basic Info)</div>
     <div class="grid2">
       <div>
-        <label class="bn">শিক্ষাগত যোগ্যতা</label>
-        <input type="text" placeholder="যেমন: অনার্স ৩য় বর্ষ" id="reqQualificationInput">
+        <label class="bn">জেন্ডার (Gender)</label>
+        <select id="genderInput">
+          <option value="Male">পুরুষ (Male)</option>
+          <option value="Female">মহিলা (Female)</option>
+          <option value="Other">অন্যান্য (Other)</option>
+        </select>
       </div>
       <div>
-        <label class="bn">এলাকা</label>
-        <input type="text" placeholder="যেমন: কুষ্টিয়া সদর" id="reqAreaInput">
+        <label class="bn">বর্তমান অবস্থান/এলাকা (Current Location)</label>
+        <input type="text" placeholder="যেমন: মজমপুর, কুষ্টিয়া সদর" id="reqAreaInput">
       </div>
     </div>
-    <label class="bn">যোগাযোগের মোবাইল নম্বর</label>
-    <input type="tel" placeholder="01XXXXXXXXX" id="reqPhoneInput">
 
-    <label class="bn">আপনার অ্যাডের ছবি</label>
+    <div class="grid3">
+      <div>
+        <label class="bn">বিশ্ববিদ্যালয় (University)</label>
+        <input type="text" placeholder="যেমন: ইসলামী বিশ্ববিদ্যালয়, কুষ্টিয়া" id="universityInput">
+      </div>
+      <div>
+        <label class="bn">ডিপার্টমেন্ট (Department)</label>
+        <input type="text" placeholder="যেমন: Computer Science & Eng." id="departmentInput">
+      </div>
+      <div>
+        <label class="bn">সেশন/বর্ষ (Session)</label>
+        <input type="text" placeholder="যেমন: 2020-21" id="sessionInput">
+      </div>
+    </div>
+
+    <!-- SECTION 2: EDUCATION -->
+    <div class="form-sub-title bn">🎓 ২. শিক্ষাগত যোগ্যতা (Education)</div>
+    
+    <label class="checkbox-label bn">
+      <input type="checkbox" id="currentlyStudyingInput" checked>
+      বর্তমানে অধ্যয়নরত (Currently Studying in University)
+    </label>
+
+    <label class="bn" style="margin-top:10px;font-weight:700;color:var(--green-700);">SSC তথ্য:</label>
+    <div class="grid4">
+      <div>
+        <label class="bn">পাসের বছর</label>
+        <input type="text" placeholder="2018" id="sscYearInput">
+      </div>
+      <div>
+        <label class="bn">স্কুল/প্রতিষ্ঠান</label>
+        <input type="text" placeholder="কুষ্টিয়া জিলা স্কুল" id="sscSchoolInput">
+      </div>
+      <div>
+        <label class="bn">গ্রুপ</label>
+        <input type="text" placeholder="বিজ্ঞান (Science)" id="sscGroupInput">
+      </div>
+      <div>
+        <label class="bn">রেজাল্ট (GPA)</label>
+        <input type="text" placeholder="5.00" id="sscResultInput">
+      </div>
+    </div>
+
+    <label class="bn" style="margin-top:14px;font-weight:700;color:var(--green-700);">HSC তথ্য:</label>
+    <div class="grid4">
+      <div>
+        <label class="bn">পাসের বছর</label>
+        <input type="text" placeholder="2020" id="hscYearInput">
+      </div>
+      <div>
+        <label class="bn">কলেজ/প্রতিষ্ঠান</label>
+        <input type="text" placeholder="কুষ্টিয়া সরকারি কলেজ" id="hscCollegeInput">
+      </div>
+      <div>
+        <label class="bn">গ্রুপ</label>
+        <input type="text" placeholder="বিজ্ঞান (Science)" id="hscGroupInput">
+      </div>
+      <div>
+        <label class="bn">রেজাল্ট (GPA)</label>
+        <input type="text" placeholder="5.00" id="hscResultInput">
+      </div>
+    </div>
+
+    <!-- SECTION 3: SUBJECTS -->
+    <div class="form-sub-title bn">📚 ৩. যেসকল বিষয় পড়াতে চান (Subjects)</div>
+    <label class="bn">বিষয়সমূহ (কমা দিয়ে আলাদা করুন)</label>
+    <input type="text" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান, রসায়ন, ইংরেজি, ICT" id="reqSubjectInput">
+
+    <!-- SECTION 4: EXPERIENCE & SALARY -->
+    <div class="form-sub-title bn">💼 ৪. অভিজ্ঞতা ও প্রত্যাশিত বেতন</div>
+    <div class="grid2">
+      <div>
+        <label class="bn">অভিজ্ঞতা (Experience)</label>
+        <input type="text" placeholder="যেমন: ৩ বছর (১০+ ছাত্র পড়িয়েছি)" id="experienceYearsInput">
+      </div>
+      <div>
+        <label class="bn">প্রত্যাশিত বেতন (Expected Salary)</label>
+        <input type="text" placeholder="যেমন: ৪,০০০ - ৬,০০০ ৳/মাস" id="expectedSalaryInput">
+      </div>
+    </div>
+
+    <!-- SECTION 5: EXTRA / BIO -->
+    <div class="form-sub-title bn">📝 ৫. বায়ো ও অতিরিক্ত তথ্য (Extra Info)</div>
+    <label class="bn">পড়ানোর ধরন বা সংক্ষিপ্ত বায়ো</label>
+    <textarea id="extraInfoInput" placeholder="যেমন: যত্নসহকারে বেসিক থেকে পড়ানো হয়। সপ্তাহে ৩-৪ দিন। নিয়মিত শনি-সোম পরীক্ষা নেওয়া হয়।"></textarea>
+
+    <!-- SECTION 6: CONTACT & PHOTO -->
+    <div class="form-sub-title bn">📷 ৬. ছবি ও পরিচিতি</div>
+    <div class="grid2">
+      <div>
+        <label class="bn">নাম</label>
+        <input type="text" id="reqNameInput" placeholder="আপনার পূর্ণ নাম">
+      </div>
+      <div>
+        <label class="bn">যোগাযোগের ফোন নম্বর</label>
+        <input type="tel" id="reqPhoneInput" placeholder="01XXXXXXXXX">
+      </div>
+    </div>
+
+    <label class="bn">আপনার প্রোফাইল ছবি / অ্যাডের ছবি</label>
     <div class="upload-box" id="uploadBox">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="#1B7A3D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" stroke="#1B7A3D" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="#1B7A3D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a1 1 0 0 1 1 1h14a1 1 0 0 0 1-1v-3" stroke="#1B7A3D" stroke-width="1.8" stroke-linecap="round"/></svg>
       <div class="bn" style="font-weight:700;" id="uploadBoxLabel">ছবি টেনে আনুন বা ক্লিক করে বেছে নিন</div>
-      <div class="hint bn">JPG/PNG, সর্বোচ্চ ৫MB — Cloudinary-তে ফ্রি হোস্ট হবে</div>
+      <div class="hint bn">JPG/PNG, সর্বোচ্চ ৫MB</div>
       <input type="file" id="fileInput" accept="image/*" style="display:none;">
     </div>
     <div class="preview-row" id="previewRow"></div>
 
-    <div class="divider" style="margin:22px 0;"></div>
-
+    <!-- SECTION 7: PAYMENT -->
+    <div class="form-sub-title bn">💳 ৭. পেমেন্ট ভেরিফিকেশন (নতুন সাবমিট বা রিনিউ এর জন্য)</div>
     <div class="pay-grid">
       <div class="pay-tile">
-        <div class="lbl en">SEND MONEY NUMBER</div>
+        <div class="lbl en">SEND MONEY NUMBER (bKash/Nagad)</div>
         <div class="val en">01700-000000</div>
-        <button class="copy-btn bn" onclick="copyText('01700000000')">📋 কপি করুন</button>
+        <button class="copy-btn bn" onclick="copyText('01700000000')">📋 কপি নম্বর</button>
       </div>
       <div class="pay-tile">
-        <div class="lbl en">আপনার অ্যাকাউন্ট আইডি (Reference)</div>
-        <div class="val en" id="accountIdVal">482913</div>
-        <button class="copy-btn bn" onclick="copyText('482913')">📋 কপি করুন</button>
+        <div class="lbl en">আপনার রেফারেন্স অ্যাকাউন্ট আইডি</div>
+        <div class="val en" id="accountIdVal">—</div>
+        <button class="copy-btn bn" onclick="copyText(document.getElementById('accountIdVal').textContent)">📋 কপি আইডি</button>
       </div>
     </div>
 
     <ol class="pay-steps bn">
-      <li>bKash / Nagad অ্যাপ থেকে <b>"Send Money"</b> অপশনে যান (Payment নয়)।</li>
-      <li>উপরের নম্বরে ৳৩০০ (উদাহরণ) পাঠান।</li>
-      <li><b>Reference</b> ঘরে অবশ্যই আপনার Account ID <b id="accountIdInline">482913</b> লিখুন।</li>
-      <li>নিচে ট্রানজেকশন তথ্য দিয়ে "রিকুয়েস্ট জমা দিন" চাপুন।</li>
+      <li>bKash / Nagad থেকে <b>Send Money</b> করে ফি প্রদান করুন।</li>
+      <li>Reference হিসেবে আপনার Account ID লিখুন।</li>
+      <li>প্রয়োজনে পূর্বের ফি ট্রানজেকশন আইডি দিয়েই তথ্য আপডেট জমা দিতে পারেন।</li>
     </ol>
 
-    <label class="bn">যে নম্বর থেকে পাঠিয়েছেন</label>
-    <input type="tel" placeholder="01XXXXXXXXX" id="paySenderInput">
-    <div class="grid2">
+    <div class="grid3">
       <div>
-        <label class="bn">bKash/Nagad ট্রানজেকশন আইডি</label>
+        <label class="bn">প্রেষণকারী নম্বর (Sender Phone)</label>
+        <input type="tel" placeholder="01XXXXXXXXX" id="paySenderInput">
+      </div>
+      <div>
+        <label class="bn">ট্রানজেকশন আইডি (TrxID)</label>
         <input type="text" placeholder="যেমন: 9AC3F7X2" id="payTrxInput">
       </div>
       <div>
@@ -267,25 +346,8 @@
 
     <div class="error-msg bn" id="adReqErr"></div>
     <button class="btn bn" id="submitAdRequestBtn">
-      <span class="spinner"></span><span class="btn-label">রিকুয়েস্ট জমা দিন</span>
+      <span>প্রোফাইল / অ্যাড রিকুয়েস্ট জমা দিন</span>
     </button>
-  </div>
-
-  <!-- ===== TUTOR-ONLY: Applications ===== -->
-  <div class="section-card" id="tutorReqSection">
-    <h2 class="bn">📌 আমার আবেদন করা টিউশন</h2>
-    <p class="desc bn">আপনি যেসব টিউশন রিকুয়েস্টে আবেদন করেছেন তার অবস্থা।</p>
-    <div class="req-card"><div><h4 class="bn">Class 10 — গণিত</h4><p class="bn">আলুপট্টি, কুষ্টিয়া · ৳৩০০০/মাস</p></div><span class="req-status confirmed bn">কনফার্মড</span></div>
-    <div class="req-card"><div><h4 class="bn">Class 8 — ইংরেজি</h4><p class="bn">মজমপুর, কুষ্টিয়া · ৳২৫০০/মাস</p></div><span class="req-status applied bn">আবেদন করা হয়েছে</span></div>
-  </div>
-
-  <!-- ===== USER-ONLY: My posted requests ===== -->
-  <div class="section-card" id="userReqSection" style="display:none;">
-    <h2 class="bn">📋 আমার পোস্ট করা টিউশন রিকুয়েস্ট</h2>
-    <p class="desc bn">আপনার পোস্ট করা রিকুয়েস্টগুলোর বর্তমান অবস্থা।</p>
-    <div class="req-card"><div><h4 class="bn">Class 6 — বিজ্ঞান</h4><p class="bn">থানাপাড়া, কুষ্টিয়া · ৳২০০০/মাস</p></div><span class="req-status confirmed bn">টিউটর কনফার্মড</span></div>
-    <div class="req-card"><div><h4 class="bn">HSC — পদার্থবিজ্ঞান</h4><p class="bn">এনএস রোড, কুষ্টিয়া · ৳৪০০০/মাস</p></div><span class="req-status open bn">টিউটর খোঁজা হচ্ছে</span></div>
-    <a href="hire-tutor.html" class="btn btn-outline bn">+ নতুন রিকুয়েস্ট পোস্ট করুন</a>
   </div>
 
 </div>
@@ -293,43 +355,10 @@
 <div class="toast bn" id="toast"></div>
 
 <script>
-  // ⚠️ Update this once your Cloudflare Worker is deployed:
   const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
-
-  // ⚠️ Cloudinary — free image hosting, uploads go straight from the browser
-  // (no need to route the image through your Worker). Create a free account
-  // at cloudinary.com, then Settings -> Upload -> add an "Unsigned" upload
-  // preset, and paste your cloud name + preset name below.
   const CLOUDINARY_CLOUD_NAME = "mtjt6bsz";
   const CLOUDINARY_UPLOAD_PRESET = "kushtia_ad_uploads";
 
-  // ---------- Demo role switcher (UI-only, no backend yet) ----------
-  const adRequestSection = document.getElementById("adRequestSection");
-  const tutorReqSection = document.getElementById("tutorReqSection");
-  const userReqSection = document.getElementById("userReqSection");
-  const roleChip = document.getElementById("roleChip");
-  const verifyChip = document.getElementById("verifyChip");
-  const showTutorBtn = document.getElementById("showTutor");
-  const showUserBtn = document.getElementById("showUser");
-
-  function setDemoRole(role){
-    const isTutor = role === "tutor";
-    adRequestSection.style.display = isTutor ? "block" : "none";
-    tutorReqSection.style.display = isTutor ? "block" : "none";
-    userReqSection.style.display = isTutor ? "none" : "block";
-    roleChip.textContent = isTutor ? "টিউটর" : "ইউজার";
-    verifyChip.style.display = isTutor ? "inline-flex" : "none";
-    showTutorBtn.classList.toggle("active", isTutor);
-    showUserBtn.classList.toggle("active", !isTutor);
-  }
-  showTutorBtn.addEventListener("click", () => setDemoRole("tutor"));
-  showUserBtn.addEventListener("click", () => setDemoRole("user"));
-
-  // ---------- Route guard: login.html --(kst_profile)--> profile.html ----------
-  // login.html সফল লগইনের পর user object টাকে localStorage("kst_profile")-এ সেভ করে
-  // home.html-এ পাঠিয়ে দেয়। এই পেজ সেই একই key পড়ে প্রোফাইল সাজায়।
-  // লগইন সেশন না থাকলে সরাসরি login.html-এ পাঠিয়ে দেওয়া হচ্ছে, যাতে কেউ profile.html
-  // ডিরেক্ট লিংক দিয়ে ঢুকতে না পারে।
   let currentProfile = null;
   try{
     currentProfile = JSON.parse(localStorage.getItem("kst_profile"));
@@ -337,106 +366,151 @@
 
   if(!currentProfile || !currentProfile.id){
     window.location.href = "login.html";
-  } else {
-    // আসল সেশন পাওয়া গেছে — এখন demo role-switcher বন্ধ করে আসল ডেটা বসানো হচ্ছে
-    document.querySelector(".demo-note").style.display = "none";
-
-    if(currentProfile.name){
-      document.getElementById("profileName").textContent = currentProfile.name;
-      document.getElementById("avatarCircle").textContent = currentProfile.name.slice(0,2).toUpperCase();
-    }
-    if(currentProfile.role) setDemoRole(currentProfile.role === "tutor" ? "tutor" : "user");
-    if(currentProfile.accountId){
-      document.getElementById("accountIdVal").textContent = currentProfile.accountId;
-      document.getElementById("accountIdInline").textContent = currentProfile.accountId;
-    }
-    if(currentProfile.avatarUrl){
-      document.getElementById("avatarCircle").innerHTML = `<img src="${currentProfile.avatarUrl}" alt="avatar">`;
-    }
-    // ---------- Ad request status banner (none / pending / active / rejected) ----------
-    const adBanner = document.getElementById("adReqStatusBanner");
-    const adTitle = document.getElementById("adReqStatusTitle");
-    const adSub = document.getElementById("adReqStatusSub");
-    const status = currentProfile.adStatus || "none";
-    if(status === "active"){
-      adBanner.className = "status-banner active";
-      adTitle.textContent = "আপনার অ্যাড সক্রিয় আছে ✅";
-      adSub.textContent = "আপনার প্রোফাইল এখন Hire Tutor পেজে সবার জন্য দৃশ্যমান।";
-    }else if(status === "pending"){
-      adBanner.className = "status-banner pending";
-      adTitle.textContent = "রিকুয়েস্ট পর্যালোচনাধীন";
-      adSub.textContent = "Admin পেমেন্ট যাচাই করছেন, অনুমোদন হলে জানানো হবে।";
-    }else if(status === "rejected"){
-      adBanner.className = "status-banner pending";
-      adTitle.textContent = "রিকুয়েস্ট বাতিল হয়েছে";
-      adSub.textContent = currentProfile.adRejectNote || "তথ্য ঠিক করে আবার জমা দিন।";
-    }else{
-      adBanner.className = "status-banner pending";
-      adTitle.textContent = "এখনো কোনো রিকুয়েস্ট পাঠাননি";
-      adSub.textContent = "নিচের ফর্ম পূরণ করে জমা দিন, Admin ২৪ ঘণ্টার মধ্যে রিভিউ করবে।";
-    }
-    // প্রোফাইলে যা আগে থেকে আছে সেটা দিয়ে ফর্ম prefill করা
-    if(currentProfile.phone) document.getElementById("reqPhoneInput").value = currentProfile.phone;
-    if(currentProfile.subject) document.getElementById("reqSubjectInput").value = currentProfile.subject;
-    if(currentProfile.qualification) document.getElementById("reqQualificationInput").value = currentProfile.qualification;
-    if(currentProfile.area) document.getElementById("reqAreaInput").value = currentProfile.area;
-
-    // ফোন/ইমেইল (যেটাই লগইনে দেওয়া হয়েছিল — identifier হিসেবে) প্রোফাইল হেডারে দেখানো
-    const contactEl = document.getElementById("profileContact");
-    const contactBits = [];
-    if(currentProfile.phone) contactBits.push("📞 " + currentProfile.phone);
-    if(currentProfile.email) contactBits.push("✉️ " + currentProfile.email);
-    if(!currentProfile.phone && !currentProfile.email && currentProfile.identifier) contactBits.push(currentProfile.identifier);
-    contactEl.textContent = contactBits.join("   ·   ");
   }
 
-  // ---------- Toast ----------
+  // Populate basic header
+  document.getElementById("profileName").textContent = currentProfile.name || "টিউটর";
+  document.getElementById("reqNameInput").value = currentProfile.name || "";
+  document.getElementById("avatarCircle").textContent = (currentProfile.name || "ST").slice(0,2).toUpperCase();
+  document.getElementById("accountIdVal").textContent = currentProfile.accountId || currentProfile.id || "10001";
+  
+  if(currentProfile.phone) document.getElementById("reqPhoneInput").value = currentProfile.phone;
+
+  const contactEl = document.getElementById("profileContact");
+  const bits = [];
+  if(currentProfile.phone) bits.push("📞 " + currentProfile.phone);
+  if(currentProfile.email) bits.push("✉️ " + currentProfile.email);
+  contactEl.textContent = bits.join("   ·   ");
+
+  let uploadedPhotoUrl = currentProfile.adPhotoUrl || currentProfile.avatarUrl || "";
+  let photoUploading = false;
+
+  if(uploadedPhotoUrl){
+    renderPreview(uploadedPhotoUrl);
+  }
+
+  function renderPreview(url){
+    const row = document.getElementById("previewRow");
+    row.innerHTML = `<img class="preview-thumb" src="${url}" alt="preview">`;
+  }
+
+  // Fetch Fresh Ad Status from Backend
+  async function fetchFreshStatus(){
+    try{
+      const res = await fetch(`${API_BASE}/api/user/ad-status?userId=${currentProfile.id}`);
+      if(!res.ok) return;
+      const data = await res.json();
+      if(data.ok && data.ad){
+        const ad = data.ad;
+        updateStatusBanner(ad);
+        // Pre-fill form if backend has newer data
+        if(ad.subject) document.getElementById("reqSubjectInput").value = ad.subject;
+        if(ad.gender) document.getElementById("genderInput").value = ad.gender;
+        if(ad.university) document.getElementById("universityInput").value = ad.university;
+        if(ad.department) document.getElementById("departmentInput").value = ad.department;
+        if(ad.session) document.getElementById("sessionInput").value = ad.session;
+        if(ad.currentLocation || ad.area) document.getElementById("reqAreaInput").value = ad.currentLocation || ad.area;
+        if(ad.sscYear) document.getElementById("sscYearInput").value = ad.sscYear;
+        if(ad.sscSchool) document.getElementById("sscSchoolInput").value = ad.sscSchool;
+        if(ad.sscGroup) document.getElementById("sscGroupInput").value = ad.sscGroup;
+        if(ad.sscResult) document.getElementById("sscResultInput").value = ad.sscResult;
+        if(ad.hscYear) document.getElementById("hscYearInput").value = ad.hscYear;
+        if(ad.hscCollege) document.getElementById("hscCollegeInput").value = ad.hscCollege;
+        if(ad.hscGroup) document.getElementById("hscGroupInput").value = ad.hscGroup;
+        if(ad.hscResult) document.getElementById("hscResultInput").value = ad.hscResult;
+        if(ad.experienceYears) document.getElementById("experienceYearsInput").value = ad.experienceYears;
+        if(ad.expectedSalary) document.getElementById("expectedSalaryInput").value = ad.expectedSalary;
+        if(ad.extraInfo) document.getElementById("extraInfoInput").value = ad.extraInfo;
+        if(ad.photoUrl){
+          uploadedPhotoUrl = ad.photoUrl;
+          renderPreview(ad.photoUrl);
+        }
+      } else {
+        updateStatusBanner({ status: "none" });
+      }
+    }catch(err){
+      console.warn("Could not fetch fresh ad status", err);
+      updateStatusBanner({ status: currentProfile.adStatus || "none" });
+    }
+  }
+
+  function formatDate(dStr){
+    if(!dStr) return "N/A";
+    try{
+      const d = new Date(dStr);
+      return d.toLocaleDateString('bn-BD', { year:'numeric', month:'long', day:'numeric' });
+    }catch(e){ return dStr; }
+  }
+
+  function updateStatusBanner(ad){
+    const banner = document.getElementById("adReqStatusBanner");
+    const icon = document.getElementById("adReqStatusIcon");
+    const title = document.getElementById("adReqStatusTitle");
+    const sub = document.getElementById("adReqStatusSub");
+
+    const st = ad.status || "none";
+    const autoExpired = ad.autoExpired || ad.auto_expired;
+
+    if(st === "running" || st === "active"){
+      banner.className = "status-banner running";
+      icon.textContent = "✅";
+      title.textContent = "আপনার অ্যাড বর্তমানে লাইভ (Running) আছে";
+      sub.textContent = `মেয়াদ শেষ হবে: ${formatDate(ad.expiresAt || ad.expires_at)}`;
+    } else if(st === "pending"){
+      banner.className = "status-banner pending";
+      icon.textContent = "⏳";
+      title.textContent = "আবেদন / আপডেট পর্যালোচনাধীন (Pending)";
+      sub.textContent = "এডমিন তথ্য ও পেমেন্ট যাচাই করছেন। কিছুক্ষণের মধ্যে লাইভ হবে।";
+    } else if(st === "paused"){
+      if(autoExpired){
+        banner.className = "status-banner rejected";
+        icon.textContent = "⚠️";
+        title.textContent = "আপনার অ্যাডের মেয়াদ শেষ হয়ে গেছে (Expired)";
+        sub.textContent = "বিজ্ঞপ্তি পুনর্নবীকরণ করতে পুনরায় ফি প্রদান করে নিচের ফর্ম জমা দিন।";
+      } else {
+        banner.className = "status-banner paused";
+        icon.textContent = "⏸️";
+        title.textContent = "আপনার অ্যাড সাময়িক স্থগিত (Paused) করা আছে";
+        sub.textContent = "এডমিন থেকে সাময়িক বন্ধ রাখা হয়েছে। তথ্য পরিবর্তন করে আবার সাবমিট করতে পারেন।";
+      }
+    } else if(st === "rejected"){
+      banner.className = "status-banner rejected";
+      icon.textContent = "❌";
+      title.textContent = "আবেদন বাতিল করা হয়েছে (Rejected)";
+      sub.textContent = ad.rejectNote || "সঠিক তথ্য ও পেমেন্ট দিয়ে পুনরায় আবেদন করুন।";
+    } else {
+      banner.className = "status-banner pending";
+      icon.textContent = "ℹ️";
+      title.textContent = "এখনো কোনো অ্যাড পোস্ট করেননি";
+      sub.textContent = "নিচের ফর্ম পূরণ করে আপনার টিউটর কার্ড পাবলিক করুন।";
+    }
+  }
+
+  fetchFreshStatus();
+
+  // Toast
   function toast(msg){
     const el = document.getElementById("toast");
     el.textContent = msg;
     el.classList.add("show");
-    setTimeout(() => el.classList.remove("show"), 2200);
+    setTimeout(() => el.classList.remove("show"), 2500);
   }
   function copyText(text){
+    if(!text || text === "—") return;
     navigator.clipboard.writeText(text).then(() => toast("কপি হয়েছে ✅"));
   }
 
-  // ---------- Photo select + upload straight to Cloudinary (free hosting) ----------
-  // ছবি বাছাই করা মাত্রই Cloudinary-তে আপলোড হয়ে যায় এবং uploadedPhotoUrl-এ URL জমা থাকে।
-  // "রিকুয়েস্ট জমা দিন" চাপলে ওই URL-সহ বাকি সব তথ্য একসাথে Worker-এ পাঠানো হয়।
+  // Upload photo
   const uploadBox = document.getElementById("uploadBox");
   const uploadBoxLabel = document.getElementById("uploadBoxLabel");
   const fileInput = document.getElementById("fileInput");
-  const previewRow = document.getElementById("previewRow");
-  let uploadedPhotoUrl = currentProfile && currentProfile.adPhotoUrl ? currentProfile.adPhotoUrl : "";
-  let photoUploading = false;
-
-  if(uploadedPhotoUrl){
-    const img = document.createElement("img");
-    img.className = "preview-thumb";
-    img.src = uploadedPhotoUrl;
-    previewRow.appendChild(img);
-  }
 
   uploadBox.addEventListener("click", () => fileInput.click());
-  ["dragover","dragenter"].forEach(evt => uploadBox.addEventListener(evt, e => { e.preventDefault(); uploadBox.classList.add("drag"); }));
-  ["dragleave","drop"].forEach(evt => uploadBox.addEventListener(evt, e => { e.preventDefault(); uploadBox.classList.remove("drag"); }));
-  uploadBox.addEventListener("drop", e => handleFiles(e.dataTransfer.files));
   fileInput.addEventListener("change", e => handleFiles(e.target.files));
 
   function handleFiles(files){
     const file = Array.from(files).find(f => f.type.startsWith("image/"));
     if(!file) return;
-
-    previewRow.innerHTML = "";
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.createElement("img");
-      img.className = "preview-thumb";
-      img.src = e.target.result;
-      previewRow.appendChild(img);
-    };
-    reader.readAsDataURL(file);
 
     photoUploading = true;
     uploadBoxLabel.textContent = "আপলোড হচ্ছে...";
@@ -447,9 +521,10 @@
     fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: form })
       .then(res => res.json())
       .then(data => {
-        if(!data.secure_url) throw new Error(data.error?.message || "আপলোড ব্যর্থ হয়েছে");
+        if(!data.secure_url) throw new Error(data.error?.message || "আপলোড ব্যর্থ");
         uploadedPhotoUrl = data.secure_url;
-        uploadBoxLabel.textContent = "ছবি আপলোড হয়েছে ✅ — বদলাতে আবার ক্লিক করুন";
+        renderPreview(uploadedPhotoUrl);
+        uploadBoxLabel.textContent = "ছবি আপলোড সম্পন্ন ✅ (বদলাতে আবার ক্লিক করুন)";
       })
       .catch(err => {
         toast(err.message);
@@ -458,75 +533,80 @@
       .finally(() => { photoUploading = false; });
   }
 
-  // ---------- Ad Request: submit everything (details + photo URL + payment) together ----------
-  const submitAdRequestBtn = document.getElementById("submitAdRequestBtn");
-  submitAdRequestBtn.addEventListener("click", async () => {
+  // Form Submit
+  document.getElementById("submitAdRequestBtn").addEventListener("click", async () => {
     const errEl = document.getElementById("adReqErr");
     errEl.classList.remove("show");
 
-    const subject = document.getElementById("reqSubjectInput").value.trim();
-    const qualification = document.getElementById("reqQualificationInput").value.trim();
-    const area = document.getElementById("reqAreaInput").value.trim();
-    const phone = document.getElementById("reqPhoneInput").value.trim();
-    const sender = document.getElementById("paySenderInput").value.trim();
-    const trx = document.getElementById("payTrxInput").value.trim();
-    const amount = document.getElementById("payAmountInput").value.trim();
+    const payload = {
+      userId: currentProfile.id,
+      name: document.getElementById("reqNameInput").value.trim() || currentProfile.name,
+      phone: document.getElementById("reqPhoneInput").value.trim(),
+      gender: document.getElementById("genderInput").value,
+      currentLocation: document.getElementById("reqAreaInput").value.trim(),
+      area: document.getElementById("reqAreaInput").value.trim(),
+      university: document.getElementById("universityInput").value.trim(),
+      department: document.getElementById("departmentInput").value.trim(),
+      session: document.getElementById("sessionInput").value.trim(),
+      
+      currentlyStudying: document.getElementById("currentlyStudyingInput").checked ? 1 : 0,
+      sscYear: document.getElementById("sscYearInput").value.trim(),
+      sscSchool: document.getElementById("sscSchoolInput").value.trim(),
+      sscGroup: document.getElementById("sscGroupInput").value.trim(),
+      sscResult: document.getElementById("sscResultInput").value.trim(),
+      
+      hscYear: document.getElementById("hscYearInput").value.trim(),
+      hscCollege: document.getElementById("hscCollegeInput").value.trim(),
+      hscGroup: document.getElementById("hscGroupInput").value.trim(),
+      hscResult: document.getElementById("hscResultInput").value.trim(),
 
-    if(!subject || !area || !phone){
-      errEl.textContent = "সাবজেক্ট, এলাকা ও মোবাইল নম্বর দিন";
+      subject: document.getElementById("reqSubjectInput").value.trim(),
+      subjects: document.getElementById("reqSubjectInput").value.trim(),
+
+      experienceYears: document.getElementById("experienceYearsInput").value.trim(),
+      expectedSalary: document.getElementById("expectedSalaryInput").value.trim(),
+      extraInfo: document.getElementById("extraInfoInput").value.trim(),
+
+      photoUrl: uploadedPhotoUrl,
+      paySender: document.getElementById("paySenderInput").value.trim(),
+      payTrx: document.getElementById("payTrxInput").value.trim(),
+      payAmount: document.getElementById("payAmountInput").value.trim()
+    };
+
+    if(!payload.phone || !payload.subject || !payload.university){
+      errEl.textContent = "মোবাইল নম্বর, বিষয় এবং বিশ্ববিদ্যালয় নাম পূরণ করা বাধ্যতামূলক";
       errEl.classList.add("show");
       return;
     }
-    if(!sender || !trx || !amount){
-      errEl.textContent = "পেমেন্টের সব ঘর পূরণ করুন";
-      errEl.classList.add("show");
-      return;
-    }
+
     if(photoUploading){
       errEl.textContent = "ছবি আপলোড শেষ হওয়া পর্যন্ত অপেক্ষা করুন";
       errEl.classList.add("show");
       return;
     }
-    if(!currentProfile || !currentProfile.id){
-      errEl.textContent = "লগইন সেশন পাওয়া যায়নি, আবার লগইন করুন";
-      errEl.classList.add("show");
-      return;
-    }
 
-    submitAdRequestBtn.disabled = true;
-    submitAdRequestBtn.classList.add("loading");
+    const btn = document.getElementById("submitAdRequestBtn");
+    btn.disabled = true;
+
     try{
       const res = await fetch(`${API_BASE}/api/ad-request-submit`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: currentProfile.id,
-          name: currentProfile.name, subject, qualification, area, phone,
-          photoUrl: uploadedPhotoUrl,
-          paySender: sender, payTrx: trx, payAmount: amount
-        })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
-      if(!res.ok) throw new Error(data.error || "জমা দেওয়া যায়নি");
+      if(!res.ok) throw new Error(data.error || "জমা দিতে ব্যর্থ হয়েছে");
 
-      currentProfile.adStatus = "pending";
-      currentProfile.subject = subject; currentProfile.qualification = qualification;
-      currentProfile.area = area; currentProfile.phone = phone; currentProfile.adPhotoUrl = uploadedPhotoUrl;
-      localStorage.setItem("kst_profile", JSON.stringify(currentProfile));
-
-      document.getElementById("adReqStatusBanner").className = "status-banner pending";
-      document.getElementById("adReqStatusTitle").textContent = "রিকুয়েস্ট পর্যালোচনাধীন";
-      document.getElementById("adReqStatusSub").textContent = "Admin পেমেন্ট যাচাই করছেন, অনুমোদন হলে জানানো হবে।";
-      toast(data.message || "রিকুয়েস্ট জমা হয়েছে ✅");
+      toast("আবেদন সফলভাবে জমা হয়েছে ✅");
+      fetchFreshStatus();
     }catch(err){
       errEl.textContent = err.message;
       errEl.classList.add("show");
     }finally{
-      submitAdRequestBtn.disabled = false;
-      submitAdRequestBtn.classList.remove("loading");
+      btn.disabled = false;
     }
   });
 
-  // ---------- Logout ----------
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("kst_profile");
     window.location.href = "home.html";

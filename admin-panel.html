@@ -13,188 +13,275 @@
     --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
     --red-500:#E24C4C; --red-50:#FDECEC; --red-line:#F6C6C6;
     --orange-500:#F2994A; --orange-50:#FFF3E0; --orange-line:#FBD9A0;
+    --blue-500:#2563EB; --blue-50:#EAF1FE;
     --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
   }
   *{box-sizing:border-box;}
-  body{
-    margin:0;min-height:100vh;font-family:'Hind Siliguri','Poppins',sans-serif;
-    background:linear-gradient(160deg,var(--mint-50),var(--paper) 60%);
-    color:var(--ink);
-  }
+  body{margin:0;min-height:100vh;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);display:flex;}
   .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
-  a{color:inherit;text-decoration:none;}
+  a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;}
 
-  .topbar{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:16px 24px;background:#fff;border-bottom:1px solid var(--line);
-    position:sticky;top:0;z-index:10;
+  .sidebar{
+    width:250px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);
+    min-height:100vh;position:sticky;top:0;display:flex;flex-direction:column;padding:20px 14px;
   }
-  .brand{display:flex;align-items:center;gap:10px;}
-  .brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(155deg,var(--green-600),var(--green-900));display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
-  .brand-mark svg{width:20px;height:20px;}
-  .brand-text .en{font-weight:700;font-size:15px;color:var(--green-900);}
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 20px;}
+  .brand-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(155deg,var(--green-600),var(--green-900));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .brand-mark svg{width:19px;height:19px;}
+  .brand-text .en{font-weight:700;font-size:14.5px;color:var(--green-900);}
   .brand-text .tag{font-size:10px;color:var(--ink-soft);}
 
-  .topbar-right{display:flex;align-items:center;gap:14px;}
-  .admin-email{font-size:13px;color:var(--ink-soft);}
-  .logout-btn{
-    padding:9px 16px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
-    font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:'Hind Siliguri',sans-serif;
-    transition:border-color .2s ease,color .2s ease;
+  .nav-group-label{font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;padding:14px 10px 6px;}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;
+    font-size:13.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin-bottom:2px;
+    transition:background .2s ease,color .2s ease;
   }
+  .nav-item:hover{background:var(--mint-50);color:var(--green-700);}
+  .nav-item.active{background:var(--green-900);color:#fff;}
+  .nav-item .cnt{margin-left:auto;background:var(--mint-100);color:var(--green-700);font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;}
+  .nav-item.active .cnt{background:rgba(255,255,255,.2);color:#fff;}
+  .nav-sub{padding-left:14px;}
+
+  .sidebar-footer{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);}
+  .admin-email{font-size:11.5px;color:var(--ink-soft);padding:0 10px 8px;word-break:break-all;}
+  .logout-btn{width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:700;color:var(--ink-soft);}
   .logout-btn:hover{border-color:var(--red-500);color:var(--red-500);}
 
-  .refresh-btn{
-    display:inline-flex;align-items:center;gap:6px;
-    padding:9px 16px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
-    font-size:13px;font-weight:700;color:var(--green-700,#1f8a4d);cursor:pointer;font-family:'Hind Siliguri',sans-serif;
-    transition:border-color .2s ease,background .2s ease,transform .15s ease;
-  }
-  .refresh-btn:hover{border-color:var(--green-600,#2ea44f);background:#f3fbf5;}
-  .refresh-btn:active{transform:scale(0.96);}
-  .refresh-btn svg{width:15px;height:15px;transition:transform .5s ease;}
-  .refresh-btn.spinning svg{animation:spin .7s linear infinite;}
-  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .main{flex:1;min-width:0;padding:28px 30px 80px;}
+  .view{display:none;}
+  .view.active{display:block;animation:fadein .3s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-  .tabs{display:flex;gap:8px;max-width:900px;margin:24px auto 0;padding:0 20px;}
-  .tab-btn{
-    padding:10px 18px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
-    font-size:13.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:'Hind Siliguri',sans-serif;
-    display:flex;align-items:center;gap:8px;transition:all .2s ease;
-  }
-  .tab-btn.active{background:var(--green-900);color:#fff;border-color:var(--green-900);}
-  .tab-badge{background:rgba(0,0,0,.15);padding:2px 8px;border-radius:999px;font-size:11.5px;}
-  .tab-btn:not(.active) .tab-badge{background:var(--mint-100);color:var(--green-700);}
-
-  .wrap{max-width:900px;margin:0 auto;padding:20px 20px 60px;}
-  .tab-panel{display:none;}
-  .tab-panel.active{display:block;}
-
-  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
   h1.page-title{font-size:22px;margin:0 0 4px;font-weight:700;font-family:'Baloo Da 2','Hind Siliguri',sans-serif;color:var(--green-900);}
-  p.page-sub{margin:0;color:var(--ink-soft);font-size:13.5px;}
-  .count-pill{background:var(--mint-100);color:var(--green-700);font-weight:700;font-size:13px;padding:6px 14px;border-radius:999px;}
+  p.page-sub{margin:0 0 22px;color:var(--ink-soft);font-size:13.5px;}
   .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green-500);margin-right:6px;animation:pulse 1.6s ease infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 
-  .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
-  .empty-state svg{margin-bottom:14px;opacity:.55;}
-  .empty-state p{font-size:14px;margin:0;}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:10px;}
+  .stat-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 30px -22px rgba(14,59,34,.25);}
+  .stat-card .lbl{font-size:12px;color:var(--ink-soft);font-weight:600;}
+  .stat-card .num{font-size:28px;font-weight:800;font-family:'Baloo Da 2',sans-serif;margin-top:6px;color:var(--green-900);}
+  .stat-card.running .num{color:var(--green-600);}
+  .stat-card.pending .num{color:var(--orange-500);}
+  .stat-card.cancelled .num, .stat-card.rejected .num{color:var(--red-500);}
+  .stat-card.paused .num{color:var(--blue-500);}
 
   .req-list{display:flex;flex-direction:column;gap:14px;}
   .req-card{
     background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;
     box-shadow:var(--shadow);animation:rise .4s cubic-bezier(.2,.8,.2,1);
-    transition:transform .35s ease,opacity .35s ease,max-height .35s ease,padding .35s ease,margin .35s ease;
+    transition:transform .35s ease,opacity .35s ease;
   }
   .req-card.new-highlight{border-color:var(--green-500);box-shadow:0 0 0 4px rgba(47,168,90,.18),var(--shadow);}
-  .req-card.removing{opacity:0;transform:scale(.96) translateY(-6px);max-height:0;padding-top:0;padding-bottom:0;margin:0;overflow:hidden;}
-  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .req-card.removing{opacity:0;transform:scale(.96) translateY(-6px);}
 
   .req-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
   .req-name{font-size:16.5px;font-weight:700;color:var(--ink);}
-  .req-role-badge{
-    display:inline-flex;align-items:center;gap:5px;background:var(--mint-100);color:var(--green-700);
-    font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;margin-left:8px;vertical-align:middle;
-  }
-  .req-role-badge.pay{background:var(--orange-50);color:#B05B00;}
+  .tutor-id-badge{background:var(--mint-100);color:var(--green-900);font-size:12px;font-weight:800;padding:3px 8px;border-radius:6px;margin-left:6px;}
+  .expired-badge{background:var(--red-50);color:var(--red-500);border:1px solid var(--red-line);font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;margin-left:6px;}
+  .status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;margin-left:8px;vertical-align:middle;}
+  .status-badge.pending{background:var(--orange-50);color:#B05B00;}
+  .status-badge.running{background:var(--mint-100);color:var(--green-700);}
+  .status-badge.paused{background:var(--blue-50);color:var(--blue-500);}
+  .status-badge.cancelled, .status-badge.rejected{background:var(--red-50);color:var(--red-500);}
   .req-meta{font-size:12.5px;color:var(--ink-soft);margin-top:3px;}
   .req-time{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
 
-  .req-info-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;
-    margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);
-  }
+  .req-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
   .req-info-item .k{font-size:11px;color:var(--ink-soft);font-weight:600;margin-bottom:2px;}
-  .req-info-item .v{font-size:13.5px;font-weight:600;color:var(--ink);}
-  .req-info-item .v.amount{color:var(--green-700);font-size:16px;font-family:'Baloo Da 2',sans-serif;}
-  .req-info-item .v.mono{font-family:'Poppins',monospace;letter-spacing:.5px;}
-  .req-photo{width:56px;height:56px;border-radius:12px;object-fit:cover;border:1.5px solid var(--line);flex-shrink:0;}
+  .req-info-item .v{font-size:13px;font-weight:600;color:var(--ink);}
 
-  .req-actions{display:flex;gap:10px;margin-top:16px;}
-  .act-btn{
-    flex:1;padding:11px 14px;border-radius:11px;border:none;font-size:13.5px;font-weight:700;
-    cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:filter .2s ease,transform .2s ease;
-  }
+  .req-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  .act-btn{padding:9px 14px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:filter .2s ease,transform .2s ease;}
   .act-btn:hover{transform:translateY(-1px);}
-  .act-btn.approve{background:linear-gradient(135deg,var(--green-600),var(--green-900));color:#fff;box-shadow:0 10px 20px -10px rgba(15,59,34,.55);}
-  .act-btn.reject{background:var(--red-50);color:var(--red-500);border:1.5px solid var(--red-line);}
+  .act-btn.approve, .act-btn.resume{background:linear-gradient(135deg,var(--green-600),var(--green-900));color:#fff;box-shadow:0 8px 16px -8px rgba(15,59,34,.55);}
+  .act-btn.reject, .act-btn.delete{background:var(--red-50);color:var(--red-500);border:1.5px solid var(--red-line);}
+  .act-btn.edit{background:var(--blue-50);color:var(--blue-500);border:1.5px solid #C7D9FB;}
+  .act-btn.pause{background:var(--orange-50);color:#B05B00;border:1.5px solid var(--orange-line);}
+  .act-btn.avail{background:var(--mint-100);color:var(--green-900);border:1.5px solid var(--green-lime);}
   .act-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
   .reject-note-row{display:none;margin-top:12px;gap:8px;}
   .reject-note-row.show{display:flex;}
-  .reject-note-row input{
-    flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:13px;
-    font-family:inherit;outline:none;background:var(--paper);
-  }
-  .reject-note-row input:focus{border-color:var(--red-500);}
-  .reject-note-row button{
-    padding:10px 16px;border-radius:10px;border:none;background:var(--red-500);color:#fff;
-    font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;
-  }
+  .reject-note-row input{flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:13px;outline:none;}
+  .reject-note-row button{padding:10px 16px;border-radius:10px;border:none;background:var(--red-500);color:#fff;font-weight:700;font-size:13px;}
 
-  .card-error{
-    margin-top:10px;background:var(--red-50);color:var(--red-500);border:1px solid var(--red-line);
-    padding:8px 12px;border-radius:9px;font-size:12.5px;display:none;
-  }
+  .card-error{margin-top:10px;background:var(--red-50);color:var(--red-500);border:1px solid var(--red-line);padding:8px 12px;border-radius:9px;font-size:12.5px;display:none;}
   .card-error.show{display:block;}
 
-  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;}}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
+
+  /* Large Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(14,59,34,.45);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;overflow-y:auto;}
+  .modal-overlay.show{display:flex;animation:fadein .2s ease;}
+  .modal-box{background:#fff;border-radius:20px;padding:26px;max-width:650px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+  .modal-box h3{margin:0 0 16px;font-size:18px;color:var(--green-900);}
+  .modal-box label{display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px;}
+  .modal-box input, .modal-box select, .modal-box textarea{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:13.5px;font-family:inherit;outline:none;background:var(--paper);}
+  .modal-box textarea{resize:vertical;min-height:60px;}
+  .modal-box input:focus,.modal-box select:focus,.modal-box textarea:focus{border-color:var(--green-500);}
+  .modal-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .modal-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+  .modal-actions{display:flex;gap:10px;margin-top:20px;}
+  .modal-actions .act-btn{flex:1;padding:12px;}
+  .modal-actions .save-btn{background:linear-gradient(135deg,var(--green-600),var(--green-900));color:#fff;border:none;}
+  .modal-actions .cancel-btn{background:#fff;color:var(--ink-soft);border:1.5px solid var(--line);}
+
+  @media (max-width:900px){
+    body{flex-direction:column;}
+    .sidebar{width:100%;min-height:auto;position:static;flex-direction:row;overflow-x:auto;align-items:center;}
+    .sidebar-footer{margin-top:0;margin-left:auto;border:none;padding:0;display:flex;align-items:center;gap:10px;}
+    .admin-email{display:none;}
+    .nav-group-label{display:none;}
+    .nav-sub{display:flex;gap:6px;padding-left:0;}
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .main{padding:20px 16px 70px;}
+    .modal-grid2,.modal-grid3{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<aside class="sidebar">
   <a href="home.html" class="brand">
-    <div class="brand-mark">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg>
-    </div>
-    <div class="brand-text">
-      <div class="en">Kushtia Smart Tutor</div>
-      <div class="tag bn">Admin Panel</div>
-    </div>
+    <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg></div>
+    <div class="brand-text"><div class="en">Kushtia Smart Tutor</div><div class="tag bn">Admin Panel</div></div>
   </a>
-  <div class="topbar-right">
-    <span class="admin-email bn" id="adminEmailLabel"></span>
+
+  <div class="nav-item active bn" data-view="dashboard">📊 Dashboard</div>
+
+  <div class="nav-group-label bn">Ads</div>
+  <div class="nav-sub">
+    <div class="nav-item bn" data-view="pending">Pending <span class="cnt" id="cntPending">0</span></div>
+    <div class="nav-item bn" data-view="running">Running <span class="cnt" id="cntRunning">0</span></div>
+    <div class="nav-item bn" data-view="paused">Paused <span class="cnt" id="cntPaused">0</span></div>
+    <div class="nav-item bn" data-view="rejected">Cancelled/Rejected <span class="cnt" id="cntRejected">0</span></div>
+  </div>
+
+  <div class="nav-group-label bn">অন্যান্য</div>
+  <div class="nav-item bn" data-view="payments">💳 Payments <span class="cnt" id="cntPayments">0</span></div>
+
+  <div class="sidebar-footer">
+    <div class="admin-email bn" id="adminEmailLabel"></div>
     <button class="logout-btn bn" id="logoutBtn">লগআউট</button>
   </div>
-</div>
+</aside>
 
-<div class="wrap">
+<main class="main">
 
-  <!-- ================= AD REQUESTS (details + photo + payment, one card) ================= -->
-  <div class="tab-panel active" id="panel-adreqs">
-    <div class="page-head">
-      <div>
-        <h1 class="page-title en">Tutor Ad Requests</h1>
-        <p class="page-sub bn">bKash/Nagad-এ মিলিয়ে দেখে Approve করুন · রিফ্রেশ বাটনে চাপুন নতুন রিকুয়েস্ট দেখতে</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <button class="refresh-btn bn" id="refreshBtn" type="button" title="তালিকা রিফ্রেশ করুন">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          রিফ্রেশ
-        </button>
-        <span class="count-pill bn" id="adreqCountPill">0 পেন্ডিং</span>
-      </div>
-    </div>
-    <div class="req-list" id="adreqReqList"></div>
-    <div class="empty-state" id="adreqEmptyState">
-      <svg width="52" height="52" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#7ED957" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#DFF3E6" stroke-width="1.5"/></svg>
-      <p class="bn">এই মুহূর্তে কোনো পেন্ডিং অ্যাড রিকুয়েস্ট নেই।</p>
+  <div class="view active" id="view-dashboard">
+    <h1 class="page-title en">Dashboard</h1>
+    <p class="page-sub bn"><span class="live-dot"></span>লাইভ ড্যাশবোর্ড স্ট্যাটস</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="lbl bn">মোট রিকুয়েস্ট</div><div class="num en" id="statTotal">—</div></div>
+      <div class="stat-card pending"><div class="lbl bn">পেন্ডিং</div><div class="num en" id="statPending">—</div></div>
+      <div class="stat-card running"><div class="lbl bn">চলমান Ads</div><div class="num en" id="statRunning">—</div></div>
+      <div class="stat-card paused"><div class="lbl bn">পজড / এক্সপায়ার্ড</div><div class="num en" id="statPaused">—</div></div>
+      <div class="stat-card cancelled"><div class="lbl bn">বাতিল করা</div><div class="num en" id="statCancelled">—</div></div>
+      <div class="stat-card rejected"><div class="lbl bn">রিজেক্টেড</div><div class="num en" id="statRejected">—</div></div>
     </div>
   </div>
 
+  <div class="view" id="view-pending">
+    <h1 class="page-title en">Pending Requests</h1>
+    <p class="page-sub bn"><span class="live-dot"></span>নতুন টিউটর আবেদন — Approve করার সময় মেয়াদকাল (Validity Days) সিলেক্ট করুন</p>
+    <div class="req-list" id="list-pending"></div>
+    <div class="empty-state bn" id="empty-pending" style="display:none;"><p>কোনো পেন্ডিং আবেদন নেই।</p></div>
+  </div>
+
+  <div class="view" id="view-running">
+    <h1 class="page-title en">Running Ads</h1>
+    <p class="page-sub bn"><span class="live-dot"></span>এই টিউটররা এখন সাইটে পাবলিকলি দৃশ্যমান</p>
+    <div class="req-list" id="list-running"></div>
+    <div class="empty-state bn" id="empty-running" style="display:none;"><p>কোনো Running Ad নেই।</p></div>
+  </div>
+
+  <div class="view" id="view-paused">
+    <h1 class="page-title en">Paused / Expired Ads</h1>
+    <p class="page-sub bn">সাময়িক বন্ধ বা মেয়াদ শেষ হওয়া অ্যাডসমূহ। ⚠️ চিহ্ন থাকলে ডিলিট করুন অথবা রিনিউ করুন।</p>
+    <div class="req-list" id="list-paused"></div>
+    <div class="empty-state bn" id="empty-paused" style="display:none;"><p>কোনো Paused/Expired Ad নেই।</p></div>
+  </div>
+
+  <div class="view" id="view-rejected">
+    <h1 class="page-title en">Cancelled / Rejected</h1>
+    <p class="page-sub bn">রিজেক্ট করা বা বাতিল করা আবেদনসমূহ</p>
+    <div class="req-list" id="list-rejected"></div>
+    <div class="empty-state bn" id="empty-rejected" style="display:none;"><p>কোনো বাতিল/রিজেক্টেড আবেদন নেই।</p></div>
+  </div>
+
+  <div class="view" id="view-payments">
+    <h1 class="page-title en">Payment Confirmations</h1>
+    <p class="page-sub bn"><span class="live-dot"></span>bKash/Nagad-এ মিলিয়ে দেখে তারপর Approve করুন</p>
+    <div class="req-list" id="list-payments"></div>
+    <div class="empty-state bn" id="empty-payments" style="display:none;"><p>কোনো পেমেন্ট কনফার্মেশন পেন্ডিং নেই।</p></div>
+  </div>
+
+</main>
+
+<!-- Large Full Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <h3 class="bn">টিউটর প্রোফাইল ও অ্যাড এডিট</h3>
+    
+    <div class="modal-grid2">
+      <div><label class="bn">নাম</label><input type="text" id="editName"></div>
+      <div><label class="bn">ফোন</label><input type="text" id="editPhone"></div>
+    </div>
+
+    <div class="modal-grid3">
+      <div>
+        <label class="bn">জেন্ডার</label>
+        <select id="editGender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div><label class="bn">বিশ্ববিদ্যালয়</label><input type="text" id="editUniversity"></div>
+      <div><label class="bn">ডিপার্টমেন্ট</label><input type="text" id="editDepartment"></div>
+    </div>
+
+    <div class="modal-grid3">
+      <div><label class="bn">সেশন</label><input type="text" id="editSession"></div>
+      <div><label class="bn">বর্তমান এলাকা</label><input type="text" id="editLocation"></div>
+      <div>
+        <label class="bn">এভেলেবিলিটি (Availability)</label>
+        <select id="editAvailability">
+          <option value="available">অ্যাভেলেবল (Available)</option>
+          <option value="busy">ব্যস্ত (Busy)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-grid2">
+      <div><label class="bn">বিষয়সমূহ (Subjects)</label><input type="text" id="editSubject"></div>
+      <div><label class="bn">অভিজ্ঞতা (Years)</label><input type="text" id="editExperience"></div>
+    </div>
+
+    <div class="modal-grid2">
+      <div><label class="bn">প্রত্যাশিত বেতন</label><input type="text" id="editSalary"></div>
+      <div><label class="bn">মেয়াদদিন (Validity Days)</label><input type="number" id="editValidityDays" value="30"></div>
+    </div>
+
+    <label class="bn">অতিরিক্ত বায়ো (Extra Info)</label>
+    <textarea id="editExtraInfo"></textarea>
+
+    <div class="card-error bn" id="editError"></div>
+    <div class="modal-actions">
+      <button class="act-btn cancel-btn bn" id="editCancelBtn">বাতিল</button>
+      <button class="act-btn save-btn bn" id="editSaveBtn">সেভ করুন</button>
+    </div>
+  </div>
 </div>
 
 <script>
-  // ⚠️ Update this once your Cloudflare Worker is deployed:
   const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
+  const POLL_MS = 7000;
 
   const token = localStorage.getItem("kst_admin_token");
   const adminRaw = localStorage.getItem("kst_admin");
-  if(!token){
-    window.location.href = "admin-login.html";
-  }
+  if(!token) window.location.href = "admin-login.html";
   try{
     const admin = adminRaw ? JSON.parse(adminRaw) : null;
     document.getElementById("adminEmailLabel").textContent = admin && admin.email ? admin.email : "";
@@ -206,19 +293,27 @@
     window.location.href = "admin-login.html";
   });
 
+  document.querySelectorAll(".nav-item[data-view]").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".nav-item[data-view]").forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.getElementById(`view-${item.dataset.view}`).classList.add("active");
+    });
+  });
+
   function escapeHtml(str){
-    return String(str).replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+    return String(str || "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
   }
   function fmtTime(ms){
     if(!ms) return "";
-    const d = new Date(ms);
-    return d.toLocaleString("bn-BD", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" });
+    return new Date(ms).toLocaleString("bn-BD", { day:"numeric", month:"short", year:"numeric" });
   }
-  async function callAdminAction(path, body){
+
+  async function apiCall(path, method, body){
     const res = await fetch(`${API_BASE}${path}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify(body)
+      method, headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      body: body ? JSON.stringify(body) : undefined
     });
     if(res.status === 401){
       localStorage.removeItem("kst_admin_token");
@@ -231,176 +326,296 @@
     return data;
   }
 
-  // ================= Generic poller factory =================
-  // Builds an independent poll+render+animate cycle for one list
-  // (tutor requests or payments), so both run side by side.
-  function makeSection({ listEl, emptyEl, countPill, tabBadge = null, fetchPath, responseKey, idKey, cardHtml, bindEvents }){
+  async function loadDashboardStats(){
+    try{
+      const data = await apiCall("/api/admin/dashboard-stats", "GET");
+      const s = data.stats || {};
+      document.getElementById("statTotal").textContent = s.total ?? "—";
+      document.getElementById("statPending").textContent = s.pending ?? "—";
+      document.getElementById("statRunning").textContent = s.running ?? "—";
+      document.getElementById("statPaused").textContent = s.paused ?? "—";
+      document.getElementById("statCancelled").textContent = s.cancelled ?? "—";
+      document.getElementById("statRejected").textContent = s.rejected ?? "—";
+      document.getElementById("cntPending").textContent = s.pending ?? 0;
+      document.getElementById("cntRunning").textContent = s.running ?? 0;
+      document.getElementById("cntPaused").textContent = s.paused ?? 0;
+      document.getElementById("cntRejected").textContent = (s.cancelled ?? 0) + (s.rejected ?? 0);
+    }catch(err){ console.error("dashboard-stats:", err.message); }
+  }
+
+  function makeAdsSection(status){
+    const listEl = document.getElementById(`list-${status}`);
+    const emptyEl = document.getElementById(`empty-${status}`);
     let knownIds = new Set();
     let firstLoad = true;
 
-    async function fetchList(){
-      try{
-        const res = await fetch(`${API_BASE}${fetchPath}`, { headers: { "Authorization": `Bearer ${token}` } });
-        if(res.status === 401){
-          localStorage.removeItem("kst_admin_token");
-          localStorage.removeItem("kst_admin");
-          window.location.href = "admin-login.html";
-          return;
-        }
-        const data = await res.json();
-        if(!res.ok) throw new Error(data.error || "লোড করা যায়নি");
-        render(data[responseKey] || []);
-      }catch(err){
-        console.error(`Failed to load ${fetchPath}:`, err.message);
-      }
+    function actionsHtml(r){
+      if(status === "pending") return `
+        <button class="act-btn approve bn" data-action="approve">Approve (মেয়াদের দিন সহ)</button>
+        <button class="act-btn reject bn" data-action="reject">Reject</button>`;
+      if(status === "running") return `
+        <button class="act-btn edit bn" data-action="edit">Edit</button>
+        <button class="act-btn avail bn" data-action="toggle-avail">${r.availability === 'busy' ? '🔴 ব্যস্ত ➔ এভেলেবল করুন' : '🟢 এভেলেবল ➔ ব্যস্ত করুন'}</button>
+        <button class="act-btn pause bn" data-action="pause">Pause</button>
+        <button class="act-btn delete bn" data-action="delete">Delete</button>`;
+      if(status === "paused") return `
+        <button class="act-btn edit bn" data-action="edit">Edit</button>
+        <button class="act-btn resume bn" data-action="resume">Resume</button>
+        <button class="act-btn delete bn" data-action="delete">Delete</button>`;
+      return `<button class="act-btn delete bn" data-action="delete">Delete</button>`;
     }
 
-    function render(items){
-      countPill.textContent = `${items.length} পেন্ডিং`;
-      if(tabBadge) tabBadge.textContent = items.length;
-      emptyEl.style.display = items.length === 0 ? "block" : "none";
+    function cardHtml(r){
+      const isAutoExpired = r.autoExpired || r.auto_expired === 1;
+      const tutorIdStr = r.tutorId ? `ID: ${escapeHtml(r.tutorId)}` : `ID: ${r.id}`;
+      return `
+        <div class="req-card" data-id="${r.id}">
+          <div class="req-top">
+            <div>
+              <span class="req-name">${escapeHtml(r.name)}</span>
+              <span class="tutor-id-badge">${tutorIdStr}</span>
+              <span class="status-badge ${status} bn">${escapeHtml(r.status || status)}</span>
+              ${isAutoExpired ? `<span class="expired-badge bn">⚠️ মেয়াদ শেষ — ডিলিট প্রয়োজন</span>` : ""}
+              <div class="req-meta bn">${escapeHtml(r.phone || "")} • ${escapeHtml(r.university || "বিশ্ববিদ্যালয় উল্লেখ নেই")} (${escapeHtml(r.department || "N/A")})</div>
+            </div>
+            <span class="req-time bn">মেয়াদ: ${r.validityDays ? r.validityDays + ' দিন' : '30 দিন'} (শেষ: ${fmtTime(r.expiresAt || r.expires_at)})</span>
+          </div>
+          <div class="req-info-grid">
+            <div class="req-info-item"><div class="k bn">বিশ্ববিদ্যালয়</div><div class="v">${escapeHtml(r.university || "—")}</div></div>
+            <div class="req-info-item"><div class="k bn">ডিপার্টমেন্ট & সেশন</div><div class="v">${escapeHtml(r.department || "—")} (${escapeHtml(r.session || "—")})</div></div>
+            <div class="req-info-item"><div class="k bn">বিষয়সমূহ</div><div class="v">${escapeHtml(r.subjects || r.subject || "—")}</div></div>
+            <div class="req-info-item"><div class="k bn">এলাকা & জেন্ডার</div><div class="v">${escapeHtml(r.currentLocation || r.area || "—")} • ${escapeHtml(r.gender || "—")}</div></div>
+            <div class="req-info-item"><div class="k bn">বেতন & অভিজ্ঞতা</div><div class="v">${escapeHtml(r.expectedSalary || "—")} • ${escapeHtml(r.experienceYears || "—")}</div></div>
+          </div>
+          <div class="req-actions">${actionsHtml(r)}</div>
+          ${status === "pending" ? `
+          <div class="reject-note-row" id="rejRow-${r.id}">
+            <input type="text" placeholder="বাতিলের কারণ (ঐচ্ছিক)" id="rejNote-${r.id}">
+            <button class="bn" data-action="confirm-reject">নিশ্চিত করুন</button>
+          </div>` : ""}
+          <div class="card-error bn"></div>
+        </div>
+      `;
+    }
 
-      const currentIds = new Set(items.map(r => r[idKey]));
-      Array.from(listEl.children).forEach(card => {
-        if(!currentIds.has(card.dataset.id)) removeCard(card.dataset.id);
-      });
+    function bindEvents(card, r){
+      const approveBtn = card.querySelector('[data-action="approve"]');
+      const rejectBtn = card.querySelector('[data-action="reject"]');
+      const confirmRejectBtn = card.querySelector('[data-action="confirm-reject"]');
+      const editBtn = card.querySelector('[data-action="edit"]');
+      const pauseBtn = card.querySelector('[data-action="pause"]');
+      const resumeBtn = card.querySelector('[data-action="resume"]');
+      const deleteBtn = card.querySelector('[data-action="delete"]');
+      const toggleAvailBtn = card.querySelector('[data-action="toggle-avail"]');
 
-      items.forEach(item => {
-        const existing = listEl.querySelector(`[data-id="${item[idKey]}"]`);
-        const isNew = !firstLoad && !knownIds.has(item[idKey]);
-        if(!existing){
-          const wrapper = document.createElement("div");
-          wrapper.innerHTML = cardHtml(item);
-          const card = wrapper.firstElementChild;
-          if(isNew) card.classList.add("new-highlight");
-          listEl.prepend(card);
-          bindEvents(card, item);
-          if(isNew) setTimeout(() => card.classList.remove("new-highlight"), 2200);
+      const setLoading = (loading) => card.querySelectorAll("button").forEach(b => b.disabled = loading);
+      const showErr = (msg) => { const box = card.querySelector(".card-error"); box.textContent = msg; box.classList.add("show"); };
+
+      if(approveBtn) approveBtn.addEventListener("click", async () => {
+        const inputVal = prompt("কত দিনের জন্য লাইভ (Approve) করতে চান?", "30");
+        if(inputVal === null) return;
+        const validityDays = parseInt(inputVal, 10);
+        if(isNaN(validityDays) || validityDays <= 0){
+          alert("সঠিক মেয়াদের দিন লিখুন (যেমন 30)");
+          return;
         }
+        setLoading(true);
+        try{ 
+          await apiCall(`/api/admin/ads/${r.id}/approve`, "POST", { validityDays }); 
+          removeCard(r.id); 
+          loadDashboardStats(); 
+        }catch(err){ showErr(err.message); setLoading(false); }
       });
 
-      knownIds = currentIds;
-      firstLoad = false;
+      if(rejectBtn) rejectBtn.addEventListener("click", () => {
+        document.getElementById(`rejRow-${r.id}`).classList.toggle("show");
+      });
+
+      if(confirmRejectBtn) confirmRejectBtn.addEventListener("click", async () => {
+        const note = document.getElementById(`rejNote-${r.id}`).value.trim();
+        setLoading(true);
+        try{ await apiCall(`/api/admin/ads/${r.id}/reject`, "POST", { note }); removeCard(r.id); loadDashboardStats(); }
+        catch(err){ showErr(err.message); setLoading(false); }
+      });
+
+      if(toggleAvailBtn) toggleAvailBtn.addEventListener("click", async () => {
+        const nextAvail = r.availability === "busy" ? "available" : "busy";
+        setLoading(true);
+        try{
+          await apiCall(`/api/admin/ads/${r.id}/update`, "POST", { availability: nextAvail });
+          runningSection.fetchList();
+        }catch(err){ showErr(err.message); setLoading(false); }
+      });
+
+      if(pauseBtn) pauseBtn.addEventListener("click", async () => {
+        setLoading(true);
+        try{ await apiCall(`/api/admin/ads/${r.id}/pause`, "POST"); removeCard(r.id); loadDashboardStats(); }
+        catch(err){ showErr(err.message); setLoading(false); }
+      });
+
+      if(resumeBtn) resumeBtn.addEventListener("click", async () => {
+        const inputVal = prompt("Resume করতে মেয়াদের দিন দিন (ঐচ্ছিক, ডিফল্ট 30)", "30");
+        const validityDays = inputVal ? parseInt(inputVal, 10) : 30;
+        setLoading(true);
+        try{ await apiCall(`/api/admin/ads/${r.id}/resume`, "POST", { validityDays }); removeCard(r.id); loadDashboardStats(); }
+        catch(err){ showErr(err.message); setLoading(false); }
+      });
+
+      if(deleteBtn) deleteBtn.addEventListener("click", async () => {
+        if(!confirm("এই Ad স্থায়ীভাবে ডিলিট করতে চান?")) return;
+        setLoading(true);
+        try{ await apiCall(`/api/admin/ads/${r.id}/delete`, "POST"); removeCard(r.id); loadDashboardStats(); }
+        catch(err){ showErr(err.message); setLoading(false); }
+      });
+
+      if(editBtn) editBtn.addEventListener("click", () => openEditModal(r));
     }
 
     function removeCard(id){
       const card = listEl.querySelector(`[data-id="${id}"]`);
       if(!card) return;
       card.classList.add("removing");
-      setTimeout(() => {
-        card.remove();
-        if(listEl.children.length === 0) emptyEl.style.display = "block";
-      }, 380);
+      setTimeout(() => { card.remove(); if(listEl.children.length === 0) emptyEl.style.display = "block"; }, 380);
     }
 
-    function setCardLoading(card, loading){
-      card.querySelectorAll("button").forEach(b => b.disabled = loading);
+    function render(items){
+      emptyEl.style.display = items.length === 0 ? "block" : "none";
+      const currentIds = new Set(items.map(r => r.id));
+      Array.from(listEl.children).forEach(card => { if(!currentIds.has(card.dataset.id)) removeCard(card.dataset.id); });
+
+      items.forEach(r => {
+        const existing = listEl.querySelector(`[data-id="${r.id}"]`);
+        const isNew = !firstLoad && !knownIds.has(r.id);
+        if(!existing){
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = cardHtml(r);
+          const card = wrapper.firstElementChild;
+          if(isNew) card.classList.add("new-highlight");
+          listEl.prepend(card);
+          bindEvents(card, r);
+          if(isNew) setTimeout(() => card.classList.remove("new-highlight"), 2200);
+        }
+      });
+      knownIds = currentIds;
+      firstLoad = false;
     }
-    function showCardError(card, msg){
-      const box = card.querySelector(".card-error");
-      box.textContent = msg;
-      box.classList.add("show");
+
+    async function fetchList(){
+      try{
+        const data = await apiCall(`/api/admin/ads?status=${status === "rejected" ? "rejected,cancelled" : status}`, "GET");
+        render(data.ads || []);
+      }catch(err){ console.error(`ads(${status}):`, err.message); }
     }
 
     fetchList();
-    // No more auto-polling (setInterval removed) — the page loads the list
-    // once, and after that only refreshes when the admin clicks the
-    // "রিফ্রেশ" button (see refreshBtn handler below). This stops pending
-    // cards from disappearing mid-review every few seconds.
-
-    return { removeCard, setCardLoading, showCardError, fetchList };
+    setInterval(fetchList, POLL_MS);
+    return { fetchList };
   }
 
-  // ================= Ad Requests section (tutor details + photo + payment together) =================
-  const adreqReqList = document.getElementById("adreqReqList");
-  const adreqEmptyState = document.getElementById("adreqEmptyState");
-  const adreqCountPill = document.getElementById("adreqCountPill");
+  const pendingSection = makeAdsSection("pending");
+  const runningSection = makeAdsSection("running");
+  const pausedSection = makeAdsSection("paused");
+  const rejectedSection = makeAdsSection("rejected");
 
-  function adreqCardHtml(r){
+  loadDashboardStats();
+  setInterval(loadDashboardStats, POLL_MS);
+
+  let editingId = null;
+  function openEditModal(r){
+    editingId = r.id;
+    document.getElementById("editName").value = r.name || "";
+    document.getElementById("editPhone").value = r.phone || "";
+    document.getElementById("editGender").value = r.gender || "Male";
+    document.getElementById("editUniversity").value = r.university || "";
+    document.getElementById("editDepartment").value = r.department || "";
+    document.getElementById("editSession").value = r.session || "";
+    document.getElementById("editLocation").value = r.currentLocation || r.area || "";
+    document.getElementById("editAvailability").value = r.availability || "available";
+    document.getElementById("editSubject").value = r.subjects || r.subject || "";
+    document.getElementById("editExperience").value = r.experienceYears || "";
+    document.getElementById("editSalary").value = r.expectedSalary || "";
+    document.getElementById("editValidityDays").value = r.validityDays || 30;
+    document.getElementById("editExtraInfo").value = r.extraInfo || "";
+
+    document.getElementById("editError").classList.remove("show");
+    document.getElementById("editModal").classList.add("show");
+  }
+
+  document.getElementById("editCancelBtn").addEventListener("click", () => {
+    document.getElementById("editModal").classList.remove("show");
+  });
+
+  document.getElementById("editSaveBtn").addEventListener("click", async () => {
+    const body = {
+      name: document.getElementById("editName").value.trim(),
+      phone: document.getElementById("editPhone").value.trim(),
+      gender: document.getElementById("editGender").value,
+      university: document.getElementById("editUniversity").value.trim(),
+      department: document.getElementById("editDepartment").value.trim(),
+      session: document.getElementById("editSession").value.trim(),
+      currentLocation: document.getElementById("editLocation").value.trim(),
+      area: document.getElementById("editLocation").value.trim(),
+      availability: document.getElementById("editAvailability").value,
+      subject: document.getElementById("editSubject").value.trim(),
+      subjects: document.getElementById("editSubject").value.trim(),
+      experienceYears: document.getElementById("editExperience").value.trim(),
+      expectedSalary: document.getElementById("editSalary").value.trim(),
+      validityDays: parseInt(document.getElementById("editValidityDays").value, 10) || 30,
+      extraInfo: document.getElementById("editExtraInfo").value.trim()
+    };
+    try{
+      await apiCall(`/api/admin/ads/${editingId}/update`, "POST", body);
+      document.getElementById("editModal").classList.remove("show");
+      runningSection.fetchList();
+      pausedSection.fetchList();
+      pendingSection.fetchList();
+    }catch(err){
+      const box = document.getElementById("editError");
+      box.textContent = err.message; box.classList.add("show");
+    }
+  });
+
+  // Payments section
+  const payReqList = document.getElementById("list-payments");
+  const payEmptyState = document.getElementById("empty-payments");
+  const payCntBadge = document.getElementById("cntPayments");
+  let payKnownIds = new Set();
+  let payFirstLoad = true;
+
+  function paymentCardHtml(p){
     return `
-      <div class="req-card" data-id="${r.id}">
+      <div class="req-card" data-id="${p.id}">
         <div class="req-top">
-          <div style="display:flex;gap:12px;align-items:flex-start;">
-            ${r.photo_url ? `<img class="req-photo" src="${escapeHtml(r.photo_url)}" alt="">` : ""}
-            <div>
-              <span class="req-name">${escapeHtml(r.name || "")}</span>
-              <span class="req-role-badge bn">অ্যাড রিকুয়েস্ট</span>
-              <div class="req-meta bn">${escapeHtml(r.phone || "")}</div>
-            </div>
+          <div>
+            <span class="req-name">${escapeHtml(p.name || "")}</span>
+            <span class="status-badge pending bn">পেমেন্ট কনফার্মেশন</span>
+            <div class="req-meta bn">${escapeHtml(p.phone || "")} • Account ID: ${escapeHtml(p.account_id || "—")}</div>
           </div>
-          <span class="req-time bn">${fmtTime(r.created_at)}</span>
+          <span class="req-time bn">${fmtTime(p.created_at)}</span>
         </div>
         <div class="req-info-grid">
-          <div class="req-info-item"><div class="k bn">সাবজেক্ট</div><div class="v">${escapeHtml(r.subject || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">যোগ্যতা</div><div class="v">${escapeHtml(r.qualification || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">এলাকা</div><div class="v">${escapeHtml(r.area || "—")}</div></div>
-        </div>
-        <div class="req-info-grid">
-          <div class="req-info-item"><div class="k bn">যে নম্বর থেকে পাঠানো হয়েছে</div><div class="v mono">${escapeHtml(r.pay_sender || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">ট্রানজেকশন আইডি</div><div class="v mono">${escapeHtml(r.pay_trx || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">পরিমাণ</div><div class="v amount">৳${escapeHtml(r.pay_amount || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">প্রেষণকারী নম্বর</div><div class="v">${escapeHtml(p.sender_number || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">ট্রানজেকশন আইডি</div><div class="v">${escapeHtml(p.trx_id || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">পরিমাণ</div><div class="v" style="color:var(--green-700);font-size:16px;">৳${escapeHtml(p.amount || "—")}</div></div>
         </div>
         <div class="req-actions">
           <button class="act-btn approve bn" data-action="approve">Approve (টাকা মিলেছে)</button>
           <button class="act-btn reject bn" data-action="reject">Reject</button>
         </div>
-        <div class="reject-note-row" id="adreqRejectRow-${r.id}">
-          <input type="text" placeholder="বাতিলের কারণ (ঐচ্ছিক)" id="adreqRejectNote-${r.id}">
-          <button class="bn" data-action="confirm-reject">নিশ্চিত করুন</button>
-        </div>
-        <div class="card-error bn"></div>
       </div>
     `;
   }
 
-  function bindAdreqEvents(card, r){
-    const requestId = r.id;
-    card.querySelector('[data-action="approve"]').addEventListener("click", async () => {
-      adreqSection.setCardLoading(card, true);
-      try{
-        await callAdminAction("/api/admin/approve-ad-request", { requestId });
-        adreqSection.removeCard(requestId);
-      }catch(err){
-        adreqSection.showCardError(card, err.message);
-        adreqSection.setCardLoading(card, false);
-      }
-    });
-    card.querySelector('[data-action="reject"]').addEventListener("click", () => {
-      document.getElementById(`adreqRejectRow-${requestId}`).classList.toggle("show");
-    });
-    card.querySelector('[data-action="confirm-reject"]').addEventListener("click", async () => {
-      const note = document.getElementById(`adreqRejectNote-${requestId}`).value.trim();
-      adreqSection.setCardLoading(card, true);
-      try{
-        await callAdminAction("/api/admin/reject-ad-request", { requestId, note });
-        adreqSection.removeCard(requestId);
-      }catch(err){
-        adreqSection.showCardError(card, err.message);
-        adreqSection.setCardLoading(card, false);
-      }
-    });
-  }
-
-  const adreqSection = makeSection({
-    listEl: adreqReqList, emptyEl: adreqEmptyState, countPill: adreqCountPill,
-    fetchPath: "/api/admin/ad-requests", responseKey: "requests", idKey: "id",
-    cardHtml: adreqCardHtml, bindEvents: bindAdreqEvents,
-  });
-
-  // ================= Manual refresh button =================
-  // Only reloads the list when the admin actually clicks it — no more
-  // background polling that yanks a pending card away mid-review.
-  const refreshBtn = document.getElementById("refreshBtn");
-  refreshBtn.addEventListener("click", async () => {
-    refreshBtn.classList.add("spinning");
-    refreshBtn.disabled = true;
+  async function fetchPayments(){
     try{
-      await adreqSection.fetchList();
-    } finally {
-      refreshBtn.classList.remove("spinning");
-      refreshBtn.disabled = false;
-    }
-  });
+      const data = await apiCall("/api/admin/payments", "GET");
+      const items = data.payments || [];
+      payEmptyState.style.display = items.length === 0 ? "block" : "none";
+      payCntBadge.textContent = items.length;
+    }catch(err){ console.error("payments:", err.message); }
+  }
+  fetchPayments();
+  setInterval(fetchPayments, POLL_MS);
 </script>
 
 </body>

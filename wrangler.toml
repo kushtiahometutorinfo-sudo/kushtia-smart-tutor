@@ -22,6 +22,11 @@ database_id = "626daf09-81a5-4ae2-9f8a-a9b9de06f9d2"
 ALLOWED_ORIGIN = "*"
 RESEND_FROM = "Kushtia Smart Tutor <onboarding@resend.dev>"
 
+# প্রতি ঘণ্টায় Worker-এর scheduled() handler রান করবে
+# (ad request গুলোর validity/expiry auto-check করার জন্য — মেয়াদ শেষ হলে status auto-paused করার জন্য)
+[triggers]
+crons = ["0 * * * *"]
+
 # Set these secrets (not committed to code) with:
 #   npx wrangler secret put RESEND_API_KEY
 #   npx wrangler secret put ADMIN_SECRET      (long random string — signs admin session tokens)

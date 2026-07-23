@@ -32,10 +32,20 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_users_phone ON users(phone) WHERE phone IS
 -- Cloudinary, this table only stores the link), and their bKash/Nagad
 -- payment proof, all in one go. Admin approves/rejects it independently of
 -- login.
+-- status lifecycle (updated for the admin dashboard's approve/pause/resume flow):
+--   pending   -> just submitted, awaiting admin review
+--   running   -> approved and publicly listed (was called 'approved' before)
+--   paused    -> was running, admin temporarily hid it
+--   rejected  -> admin declined the request (see `note`)
+--   cancelled -> withdrawn / removed after being rejected or paused
+-- If your D1 already has this table from an older deploy with the
+-- ('pending','approved','rejected') CHECK constraint, run migrate-ads-status.sql
+-- once to rebuild the table with the new constraint (SQLite can't ALTER a
+-- CHECK constraint in place).
 CREATE TABLE IF NOT EXISTS ad_requests (
   id             TEXT PRIMARY KEY,
   user_id        TEXT NOT NULL REFERENCES users(id),
-  status         TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  status         TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'running', 'paused', 'rejected', 'cancelled')),
   name           TEXT NOT NULL,
   phone          TEXT NOT NULL,
   subject        TEXT,

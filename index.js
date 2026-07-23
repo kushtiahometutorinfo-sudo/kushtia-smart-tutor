@@ -514,6 +514,36 @@ export default {
         }, 200, env);
       }
 
+      // ---------- GET /api/user/ad-status?userId=... ----------
+      // profile.html পেজ লোড হওয়ার সাথে সাথে এই রুট কল করে যাতে
+      // localStorage-এর পুরনো ডেটার বদলে backend থেকে ফ্রেশ status
+      // (pending/running/paused/rejected, tutor_id, expiresAt ইত্যাদি) দেখানো যায়।
+      if (pathname === "/api/user/ad-status" && request.method === "GET") {
+        const userId = url.searchParams.get("userId");
+        if (!userId) {
+          return json({ error: "userId প্রয়োজন" }, 400, env);
+        }
+
+        const row = await env.DB.prepare(
+          `SELECT status, tutor_id, validity_days, expires_at, auto_expired, note
+             FROM ad_requests WHERE user_id = ? LIMIT 1`
+        ).bind(userId).first();
+
+        if (!row) {
+          return json({ exists: false }, 200, env);
+        }
+
+        return json({
+          exists: true,
+          status: row.status,
+          tutorId: row.tutor_id || null,
+          validityDays: row.validity_days || null,
+          expiresAt: row.expires_at || null,
+          autoExpired: !!row.auto_expired,
+          note: row.note || null,
+        }, 200, env);
+      }
+
       // ---------- POST /api/admin-login ----------
       if (pathname === "/api/admin-login" && request.method === "POST") {
         const { email, password } = await request.json();

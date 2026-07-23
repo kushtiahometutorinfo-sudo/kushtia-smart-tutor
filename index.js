@@ -694,9 +694,19 @@ export default {
         const placeholders = filtered.map(() => "?").join(",");
         const { results } = await env.DB.prepare(`
           SELECT ar.id, ar.name, ar.phone, u.email AS email, ar.subject, ar.qualification,
-                 ar.area, ar.status, ar.created_at,
+                 ar.area, ar.status, ar.created_at, ar.photo_url AS photoUrl,
                  ar.tutor_id AS tutorId, ar.validity_days AS validityDays,
-                 ar.expires_at AS expiresAt, ar.auto_expired AS autoExpired
+                 ar.expires_at AS expiresAt, ar.auto_expired AS autoExpired,
+                 ar.pay_sender AS paySender, ar.pay_trx AS payTrx, ar.pay_amount AS payAmount,
+                 ar.gender, ar.university, ar.department, ar.session,
+                 ar.current_location AS currentLocation, ar.availability,
+                 ar.expected_salary AS expectedSalary, ar.experience_years AS experienceYears,
+                 ar.subjects,
+                 ar.edu_bachelor_dept AS eduBachelorDept, ar.edu_bachelor_session AS eduBachelorSession,
+                 ar.edu_bachelor_current AS eduBachelorCurrent,
+                 ar.ssc_year AS sscYear, ar.ssc_school AS sscSchool, ar.ssc_group AS sscGroup, ar.ssc_result AS sscResult,
+                 ar.hsc_year AS hscYear, ar.hsc_college AS hscCollege, ar.hsc_group AS hscGroup, ar.hsc_result AS hscResult,
+                 ar.extra_info AS extraInfo, ar.note
           FROM ad_requests ar
           JOIN users u ON u.id = ar.user_id
           WHERE ar.status IN (${placeholders})

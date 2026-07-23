@@ -265,9 +265,89 @@
   </div>
 </div>
 
+<!-- Validity Days Modal (replaces prompt(), which some embedded browsers block) -->
+<div class="modal-overlay" id="approveModal">
+  <div class="modal-box" style="max-width:360px;">
+    <h3 class="bn" id="approveModalTitle">কত দিনের জন্য লাইভ (Approve) করতে চান?</h3>
+    <label class="bn">মেয়াদকাল (দিন)</label>
+    <input type="number" id="approveValidityInput" value="30" min="1">
+    <div class="card-error bn" id="approveModalError"></div>
+    <div class="modal-actions">
+      <button class="act-btn cancel-btn bn" id="approveCancelBtn">বাতিল</button>
+      <button class="act-btn save-btn bn" id="approveConfirmBtn">নিশ্চিত করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- Generic Confirm Modal (replaces confirm()) -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box" style="max-width:360px;">
+    <h3 class="bn" id="confirmModalText">নিশ্চিত করুন?</h3>
+    <div class="modal-actions">
+      <button class="act-btn cancel-btn bn" id="confirmCancelBtn">বাতিল</button>
+      <button class="act-btn reject bn" id="confirmOkBtn">হ্যাঁ, নিশ্চিত</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
   const POLL_MS = 7000;
+
+  // Reusable replacement for prompt() — some embedded/webview browsers
+  // (e.g. VS Code's built-in preview) don't support native dialogs at all.
+  function askValidityDays(titleText, defaultVal){
+    return new Promise((resolve) => {
+      const modal = document.getElementById("approveModal");
+      const input = document.getElementById("approveValidityInput");
+      const errBox = document.getElementById("approveModalError");
+      document.getElementById("approveModalTitle").textContent = titleText;
+      input.value = defaultVal;
+      errBox.classList.remove("show");
+      modal.classList.add("show");
+
+      const confirmBtn = document.getElementById("approveConfirmBtn");
+      const cancelBtn = document.getElementById("approveCancelBtn");
+      const cleanup = () => {
+        modal.classList.remove("show");
+        confirmBtn.removeEventListener("click", onConfirm);
+        cancelBtn.removeEventListener("click", onCancel);
+      };
+      const onCancel = () => { cleanup(); resolve(null); };
+      const onConfirm = () => {
+        const validityDays = parseInt(input.value, 10);
+        if(isNaN(validityDays) || validityDays <= 0){
+          errBox.textContent = "সঠিক মেয়াদের দিন লিখুন (যেমন 30)";
+          errBox.classList.add("show");
+          return;
+        }
+        cleanup();
+        resolve(validityDays);
+      };
+      confirmBtn.addEventListener("click", onConfirm);
+      cancelBtn.addEventListener("click", onCancel);
+    });
+  }
+
+  // Reusable replacement for confirm()
+  function askConfirm(text){
+    return new Promise((resolve) => {
+      const modal = document.getElementById("confirmModal");
+      document.getElementById("confirmModalText").textContent = text;
+      modal.classList.add("show");
+      const okBtn = document.getElementById("confirmOkBtn");
+      const cancelBtn = document.getElementById("confirmCancelBtn");
+      const cleanup = () => {
+        modal.classList.remove("show");
+        okBtn.removeEventListener("click", onOk);
+        cancelBtn.removeEventListener("click", onCancel);
+      };
+      const onCancel = () => { cleanup(); resolve(false); };
+      const onOk = () => { cleanup(); resolve(true); };
+      okBtn.addEventListener("click", onOk);
+      cancelBtn.addEventListener("click", onCancel);
+    });
+  }
 
   const token = localStorage.getItem("kst_admin_token");
   const adminRaw = localStorage.getItem("kst_admin");
@@ -377,6 +457,12 @@
             <div class="req-info-item"><div class="k bn">এলাকা & জেন্ডার</div><div class="v">${escapeHtml(r.currentLocation || r.area || "—")} • ${escapeHtml(r.gender || "—")}</div></div>
             <div class="req-info-item"><div class="k bn">বেতন & অভিজ্ঞতা</div><div class="v">${escapeHtml(r.expectedSalary || "—")} • ${escapeHtml(r.experienceYears || "—")}</div></div>
           </div>
+          <div class="req-info-grid" style="margin-top:8px;border-top:1px dashed var(--line);padding-top:8px;">
+            <div class="req-info-item"><div class="k bn">প্রেরকের নম্বর (bKash/Nagad)</div><div class="v">${escapeHtml(r.paySender || "—")}</div></div>
+            <div class="req-info-item"><div class="k bn">ট্রানজেকশন আইডি</div><div class="v">${escapeHtml(r.payTrx || "—")}</div></div>
+            <div class="req-info-item"><div class="k bn">পরিমাণ</div><div class="v" style="color:var(--green-700);font-size:16px;">${r.payAmount ? "৳" + escapeHtml(r.payAmount) : "—"}</div></div>
+            ${r.photoUrl ? `<div class="req-info-item"><div class="k bn">পেমেন্ট স্ক্রিনশট / ছবি</div><div class="v"><a href="${escapeHtml(r.photoUrl)}" target="_blank" rel="noopener" class="bn">ছবি দেখুন ↗</a></div></div>` : ""}
+          </div>
           <div class="req-actions">${actionsHtml(r)}</div>
           ${status === "pending" ? `
           <div class="reject-note-row" id="rejRow-${r.id}">
@@ -402,18 +488,13 @@
       const showErr = (msg) => { const box = card.querySelector(".card-error"); box.textContent = msg; box.classList.add("show"); };
 
       if(approveBtn) approveBtn.addEventListener("click", async () => {
-        const inputVal = prompt("কত দিনের জন্য লাইভ (Approve) করতে চান?", "30");
-        if(inputVal === null) return;
-        const validityDays = parseInt(inputVal, 10);
-        if(isNaN(validityDays) || validityDays <= 0){
-          alert("সঠিক মেয়াদের দিন লিখুন (যেমন 30)");
-          return;
-        }
+        const validityDays = await askValidityDays("কত দিনের জন্য লাইভ (Approve) করতে চান?", 30);
+        if(validityDays === null) return;
         setLoading(true);
-        try{ 
-          await apiCall(`/api/admin/ads/${r.id}/approve`, "POST", { validityDays }); 
-          removeCard(r.id); 
-          loadDashboardStats(); 
+        try{
+          await apiCall(`/api/admin/ads/${r.id}/approve`, "POST", { validityDays });
+          removeCard(r.id);
+          loadDashboardStats();
         }catch(err){ showErr(err.message); setLoading(false); }
       });
 
@@ -444,15 +525,16 @@
       });
 
       if(resumeBtn) resumeBtn.addEventListener("click", async () => {
-        const inputVal = prompt("Resume করতে মেয়াদের দিন দিন (ঐচ্ছিক, ডিফল্ট 30)", "30");
-        const validityDays = inputVal ? parseInt(inputVal, 10) : 30;
+        const validityDays = await askValidityDays("Resume করতে মেয়াদের দিন দিন", 30);
+        if(validityDays === null) return;
         setLoading(true);
         try{ await apiCall(`/api/admin/ads/${r.id}/resume`, "POST", { validityDays }); removeCard(r.id); loadDashboardStats(); }
         catch(err){ showErr(err.message); setLoading(false); }
       });
 
       if(deleteBtn) deleteBtn.addEventListener("click", async () => {
-        if(!confirm("এই Ad স্থায়ীভাবে ডিলিট করতে চান?")) return;
+        const ok = await askConfirm("এই Ad স্থায়ীভাবে ডিলিট করতে চান?");
+        if(!ok) return;
         setLoading(true);
         try{ await apiCall(`/api/admin/ads/${r.id}/delete`, "POST"); removeCard(r.id); loadDashboardStats(); }
         catch(err){ showErr(err.message); setLoading(false); }

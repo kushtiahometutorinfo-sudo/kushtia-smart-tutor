@@ -44,6 +44,18 @@
   }
   .logout-btn:hover{border-color:var(--red-500);color:var(--red-500);}
 
+  .refresh-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:9px 16px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+    font-size:13px;font-weight:700;color:var(--green-700,#1f8a4d);cursor:pointer;font-family:'Hind Siliguri',sans-serif;
+    transition:border-color .2s ease,background .2s ease,transform .15s ease;
+  }
+  .refresh-btn:hover{border-color:var(--green-600,#2ea44f);background:#f3fbf5;}
+  .refresh-btn:active{transform:scale(0.96);}
+  .refresh-btn svg{width:15px;height:15px;transition:transform .5s ease;}
+  .refresh-btn.spinning svg{animation:spin .7s linear infinite;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
   .tabs{display:flex;gap:8px;max-width:900px;margin:24px auto 0;padding:0 20px;}
   .tab-btn{
     padding:10px 18px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
@@ -155,9 +167,15 @@
     <div class="page-head">
       <div>
         <h1 class="page-title en">Tutor Ad Requests</h1>
-        <p class="page-sub bn"><span class="live-dot"></span>প্রতি ৭ সেকেন্ডে অটো-রিফ্রেশ হচ্ছে · bKash/Nagad-এ মিলিয়ে দেখে Approve করুন</p>
+        <p class="page-sub bn">bKash/Nagad-এ মিলিয়ে দেখে Approve করুন · রিফ্রেশ বাটনে চাপুন নতুন রিকুয়েস্ট দেখতে</p>
       </div>
-      <span class="count-pill bn" id="adreqCountPill">0 পেন্ডিং</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="refresh-btn bn" id="refreshBtn" type="button" title="তালিকা রিফ্রেশ করুন">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          রিফ্রেশ
+        </button>
+        <span class="count-pill bn" id="adreqCountPill">0 পেন্ডিং</span>
+      </div>
     </div>
     <div class="req-list" id="adreqReqList"></div>
     <div class="empty-state" id="adreqEmptyState">
@@ -171,7 +189,6 @@
 <script>
   // ⚠️ Update this once your Cloudflare Worker is deployed:
   const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
-  const POLL_MS = 7000;
 
   const token = localStorage.getItem("kst_admin_token");
   const adminRaw = localStorage.getItem("kst_admin");
@@ -286,9 +303,12 @@
     }
 
     fetchList();
-    setInterval(fetchList, POLL_MS);
+    // No more auto-polling (setInterval removed) — the page loads the list
+    // once, and after that only refreshes when the admin clicks the
+    // "রিফ্রেশ" button (see refreshBtn handler below). This stops pending
+    // cards from disappearing mid-review every few seconds.
 
-    return { removeCard, setCardLoading, showCardError };
+    return { removeCard, setCardLoading, showCardError, fetchList };
   }
 
   // ================= Ad Requests section (tutor details + photo + payment together) =================
@@ -365,6 +385,21 @@
     listEl: adreqReqList, emptyEl: adreqEmptyState, countPill: adreqCountPill,
     fetchPath: "/api/admin/ad-requests", responseKey: "requests", idKey: "id",
     cardHtml: adreqCardHtml, bindEvents: bindAdreqEvents,
+  });
+
+  // ================= Manual refresh button =================
+  // Only reloads the list when the admin actually clicks it — no more
+  // background polling that yanks a pending card away mid-review.
+  const refreshBtn = document.getElementById("refreshBtn");
+  refreshBtn.addEventListener("click", async () => {
+    refreshBtn.classList.add("spinning");
+    refreshBtn.disabled = true;
+    try{
+      await adreqSection.fetchList();
+    } finally {
+      refreshBtn.classList.remove("spinning");
+      refreshBtn.disabled = false;
+    }
   });
 </script>
 

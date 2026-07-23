@@ -15,6 +15,7 @@
     --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
   }
   *{box-sizing:border-box;}
+  html,body{overflow-x:hidden;max-width:100%;}
   body{margin:0;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);}
   .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
   a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;}
@@ -43,8 +44,8 @@
   }
   .avatar-box img{width:100%;height:100%;object-fit:cover;}
 
-  .header-info h1{margin:0 0 6px;font-size:24px;font-family:'Baloo Da 2',sans-serif;}
-  .univ-tag{font-size:14.5px;color:rgba(255,255,255,.9);font-weight:600;}
+  .header-info h1{margin:0 0 6px;font-size:24px;font-family:'Baloo Da 2',sans-serif;word-break:break-word;}
+  .univ-tag{font-size:14.5px;color:rgba(255,255,255,.9);font-weight:600;word-break:break-word;}
   .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
   .v-badge{background:var(--green-lime);color:var(--green-900);font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;}
   .id-badge{background:rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px;}
@@ -102,7 +103,7 @@
     padding:16px;margin-bottom:14px;
   }
   .edu-title{font-size:15px;font-weight:700;color:var(--green-900);margin-bottom:6px;}
-  .edu-sub{font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+  .edu-sub{font-size:13.5px;color:var(--ink-soft);line-height:1.6;word-break:break-word;}
 
   .subject-pill{
     display:inline-block;padding:8px 16px;border-radius:10px;background:var(--mint-100);
@@ -136,6 +137,18 @@
     .profile-header{grid-template-columns:1fr;text-align:center;}
     .avatar-box{margin:0 auto;}
     .badge-row{justify-content:center;}
+  }
+
+  @media (max-width:480px){
+    .nav-inner{padding:12px 14px;}
+    .container{padding:20px 14px 80px;}
+    .profile-header{padding:22px 16px;border-radius:18px;}
+    .header-info h1{font-size:20px;}
+    .tabs-card,.side-card{padding:18px 16px;border-radius:16px;}
+    .tab-nav{gap:4px;}
+    .tab-item{padding:7px 12px;font-size:13px;}
+    .back-btn{font-size:12px;}
+    .brand-text .en{font-size:14px;}
   }
 </style>
 </head>

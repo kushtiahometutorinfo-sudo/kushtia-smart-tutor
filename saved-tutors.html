@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>টিউটর খুঁজুন — Kushtia Smart Tutor</title>
+<title>সংরক্ষিত টিউটর — Kushtia Smart Tutor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,10 +12,10 @@
     --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
     --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
     --red-500:#E24C4C; --red-50:#FDECEC;
-    --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
+    --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
   }
   *{box-sizing:border-box;}
-  body{margin:0;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);}
+  body{margin:0;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);padding-bottom:96px;}
   .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
   a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;}
 
@@ -28,118 +28,92 @@
   .back-link{font-size:13.5px;font-weight:600;color:var(--ink-soft);}
   .back-link:hover{color:var(--green-700);}
 
-  .page-head{max-width:1180px;margin:0 auto;padding:32px 24px 0;}
+  .page-head{max-width:1180px;margin:0 auto;padding:32px 24px 0;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   h1{font-size:clamp(24px,3.4vw,32px);margin:0 0 6px;font-weight:700;}
   h1 .accent{background:linear-gradient(90deg,var(--green-600),var(--green-lime));-webkit-background-clip:text;background-clip:text;color:transparent;}
   .page-sub{margin:0;color:var(--ink-soft);font-size:14.5px;}
-
-  .filter-bar{
-    max-width:1180px;margin:20px auto 0;padding:0 24px;
-    display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+  .clear-all-btn{
+    padding:10px 16px;border-radius:12px;border:1.5px solid var(--red-500);background:var(--red-50);color:var(--red-500);
+    font-size:13px;font-weight:700;white-space:nowrap;
   }
-  select, .search-input{
-    padding:11px 16px;border-radius:12px;border:1.5px solid var(--line);
-    font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink);outline:none;
-    transition:border-color .2s ease;
-  }
-  select:focus, .search-input:focus{border-color:var(--green-500);}
-  .search-input{flex:1;min-width:200px;}
-  .reset-btn{
-    padding:11px 16px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
-    font-size:13px;font-weight:700;color:var(--ink-soft);
-  }
-  .reset-btn:hover{border-color:var(--green-500);color:var(--green-700);}
-  .result-count{font-size:13px;color:var(--ink-soft);margin-left:auto;}
+  .clear-all-btn:hover{background:var(--red-500);color:#fff;}
 
   .grid-wrap{max-width:1180px;margin:26px auto 0;padding:0 24px 80px;}
-  .tutor-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
-  }
+  .tutor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .tutor-card{
     background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;
     box-shadow:0 12px 30px -22px rgba(14,59,34,.25);
-    transition:transform .3s ease,box-shadow .3s ease;
+    transition:transform .3s ease,box-shadow .3s ease,opacity .3s ease;
     display:flex;flex-direction:column;
   }
+  .tutor-card.removing{transform:scale(.9);opacity:0;}
   .tutor-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
 
-  .tutor-photo-wrap{
-    position:relative;width:100%;aspect-ratio:16/10;background:var(--mint-100);
-    display:flex;align-items:center;justify-content:center;overflow:hidden;
-  }
+  .tutor-photo-wrap{position:relative;width:100%;aspect-ratio:16/10;background:var(--mint-100);display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .tutor-photo-wrap img{width:100%;height:100%;object-fit:cover;}
   .tutor-photo-wrap .initials{font-size:36px;font-weight:800;color:var(--green-700);font-family:'Baloo Da 2',sans-serif;}
-  
   .verified-badge{
-    position:absolute;top:12px;right:12px;background:rgba(14,59,34,.85);color:#fff;
-    backdrop-filter:blur(6px);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;
-    display:flex;align-items:center;gap:4px;
+    position:absolute;top:12px;right:12px;background:rgba(14,59,34,.85);color:#fff;backdrop-filter:blur(6px);
+    font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;display:flex;align-items:center;gap:4px;
   }
   .verified-badge .check{color:var(--green-lime);}
+
+  .unsave-btn{
+    position:absolute;top:12px;left:12px;width:34px;height:34px;border-radius:50%;
+    background:var(--green-700);border:none;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 16px -8px rgba(14,59,34,.5);transition:transform .18s ease,background .2s ease;overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .unsave-btn svg{width:17px;height:17px;stroke:var(--green-lime);fill:var(--green-lime);stroke-width:2;}
+  .unsave-btn:active{transform:scale(.85);}
+  .unsave-btn:hover{background:var(--red-500);}
+  .unsave-btn:hover svg{stroke:#fff;fill:#fff;}
 
   .tutor-body{padding:20px;display:flex;flex-direction:column;flex:1;}
   .tutor-name{font-size:17.5px;font-weight:700;margin:0 0 2px;color:var(--green-900);}
   .tutor-univ{font-size:13px;font-weight:600;color:var(--green-700);margin-bottom:10px;}
-
   .tag-group{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-  .tag{
-    font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:8px;
-    background:var(--mint-100);color:var(--green-800);
-  }
+  .tag{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:8px;background:var(--mint-100);color:var(--green-900);}
   .tag.gender{background:#EAF1FE;color:#2563EB;}
   .tag.session{background:#FFF3E0;color:#B05B00;}
 
-  /* Quick Info Box inside Card */
   .info-box{
-    background:var(--mint-50);border:1px solid var(--line);border-radius:14px;
-    padding:12px 14px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;
+    background:var(--mint-50);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:16px;
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;
   }
   .info-item .lbl{font-size:10.5px;font-weight:600;color:var(--ink-soft);}
   .info-item .val{font-size:12.5px;font-weight:700;color:var(--ink);margin-top:1px;}
-  
   .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;}
   .status-dot.available{background:var(--green-500);}
   .status-dot.busy{background:var(--red-500);}
 
   .view-btn{
     margin-top:auto;width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;color:#fff;
-    background:linear-gradient(135deg,var(--green-600),var(--green-900));
-    box-shadow:0 10px 20px -10px rgba(15,59,34,.5);transition:transform .2s ease,filter .2s ease;
-    text-align:center;display:block;
+    background:linear-gradient(135deg,var(--green-600),var(--green-900));box-shadow:0 10px 20px -10px rgba(15,59,34,.5);
+    transition:transform .2s ease,filter .2s ease;text-align:center;display:block;
   }
   .view-btn:hover{filter:brightness(1.06);transform:translateY(-2px);}
 
-  .empty-state{text-align:center;padding:70px 20px;color:var(--ink-soft);grid-column:1/-1;}
-  .skeleton{background:linear-gradient(90deg,var(--mint-50) 25%,var(--mint-100) 37%,var(--mint-50) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;}
-  @keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
-
-  @media (max-width:960px){ .tutor-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:600px){
-    .tutor-grid{grid-template-columns:1fr;}
-    .filter-bar{flex-direction:column;align-items:stretch;}
-    .result-count{margin-left:0;text-align:right;}
+  /* Empty state */
+  .empty-state{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--ink-soft);}
+  .empty-state .icon-wrap{
+    width:84px;height:84px;border-radius:50%;background:var(--mint-100);display:flex;align-items:center;justify-content:center;
+    margin:0 auto 18px;
+  }
+  .empty-state .icon-wrap svg{width:36px;height:36px;stroke:var(--green-600);fill:none;stroke-width:1.6;}
+  .empty-state h3{margin:0 0 6px;color:var(--green-900);font-size:18px;}
+  .empty-state p{margin:0 0 20px;font-size:13.5px;}
+  .empty-state .cta-btn{
+    display:inline-block;padding:12px 22px;border-radius:12px;font-weight:700;font-size:13.5px;color:#fff;
+    background:linear-gradient(135deg,var(--green-600),var(--green-900));box-shadow:0 10px 20px -10px rgba(15,59,34,.5);
   }
 
-  /* ===== Save / Bookmark button on card ===== */
-  .save-btn{
-    position:absolute;top:12px;left:12px;width:34px;height:34px;border-radius:50%;
-    background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border:none;
-    display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -8px rgba(14,59,34,.5);
-    transition:transform .18s ease,background .2s ease;overflow:hidden;-webkit-tap-highlight-color:transparent;
-  }
-  .save-btn svg{width:17px;height:17px;stroke:var(--green-800,#0F2318);fill:none;stroke-width:2;transition:fill .2s ease,stroke .2s ease;}
-  .save-btn:active{transform:scale(.88);}
-  .save-btn.saved{background:var(--green-700);}
-  .save-btn.saved svg{fill:var(--green-lime);stroke:var(--green-lime);}
-
-  /* ===== Ripple touch effect (generic) ===== */
+  /* Ripple */
   .ripple-el{position:relative;overflow:hidden;}
-  .ripple-span{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;
-    background:rgba(255,255,255,.55);animation:rippleAnim .55s ease-out forwards;}
+  .ripple-span{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;background:rgba(255,255,255,.55);animation:rippleAnim .55s ease-out forwards;}
   @keyframes rippleAnim{to{transform:scale(3.2);opacity:0;}}
 
-  /* ===== Bottom Navigation ===== */
-  body{padding-bottom:96px;}
+  /* Bottom Navigation */
   .bottom-nav{
     position:fixed;left:0;right:0;bottom:0;z-index:200;display:flex;align-items:center;justify-content:space-around;
     background:#fff;border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));
@@ -167,9 +141,11 @@
   .nav-fab svg{width:23px;height:23px;stroke:#fff;stroke-width:2.3;}
   .nav-fab:active{transform:scale(.9);}
   @media (min-width:640px){
-    .bottom-nav{left:50%;right:auto;transform:translateX(-50%);bottom:20px;max-width:420px;
-      border-radius:24px;border:1px solid var(--line);padding:8px 10px;}
+    .bottom-nav{left:50%;right:auto;transform:translateX(-50%);bottom:20px;max-width:420px;border-radius:24px;border:1px solid var(--line);padding:8px 10px;}
   }
+
+  @media (max-width:960px){ .tutor-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:600px){ .tutor-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -185,16 +161,11 @@
 </header>
 
 <div class="page-head">
-  <h1 class="bn">সব <span class="accent">ভেরিফাইড টিউটর</span></h1>
-  <p class="page-sub bn">কুষ্টিয়ার সেরা সকল বিশ্ববিদ্যালয় শিক্ষার্থী ও পেশাদার টিউটরদের সম্পূর্ণ প্রোফাইল বেছে নিন</p>
-</div>
-
-<div class="filter-bar">
-  <select id="subjectFilter"><option value="">সব বিষয় (Subjects)</option></select>
-  <select id="areaFilter"><option value="">সব এলাকা (Location)</option></select>
-  <input type="text" class="search-input bn" id="searchInput" placeholder="নাম, বিশ্ববিদ্যালয় বা আইডি দিয়ে খুঁজুন...">
-  <button class="reset-btn bn" id="resetBtn">রিসেট</button>
-  <span class="result-count bn" id="resultCount"></span>
+  <div>
+    <h1 class="bn">আপনার <span class="accent">সংরক্ষিত টিউটর</span></h1>
+    <p class="page-sub bn" id="pageSub">যেসব টিউটরকে সংরক্ষণ করে রেখেছেন তারা এখানে দেখা যাবে</p>
+  </div>
+  <button class="clear-all-btn ripple-el bn" id="clearAllBtn" style="display:none;">সব মুছে ফেলুন</button>
 </div>
 
 <div class="grid-wrap">
@@ -225,24 +196,19 @@
 </nav>
 
 <script>
-  const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
-  let allTutors = [];
+  const SAVE_KEY = "kst_saved_tutors";
 
   function escapeHtml(str){
     return String(str || "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
   }
 
-  function skeletonCards(n){
-    return Array.from({length:n}).map(() => `
-      <div class="tutor-card">
-        <div class="tutor-photo-wrap skeleton"></div>
-        <div class="tutor-body">
-          <div class="skeleton" style="height:18px;border-radius:6px;margin-bottom:8px;"></div>
-          <div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:14px;"></div>
-          <div class="skeleton" style="height:50px;border-radius:12px;"></div>
-        </div>
-      </div>
-    `).join("");
+  function getSavedTutors(){
+    try{ return JSON.parse(localStorage.getItem(SAVE_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function setSavedTutors(list){
+    localStorage.setItem(SAVE_KEY, JSON.stringify(list));
+    updateNavBadge();
   }
 
   function tutorCardHtml(t){
@@ -252,18 +218,18 @@
     const tutorIdDisplay = t.tutorId ? `#${t.tutorId}` : `#${t.id}`;
 
     return `
-      <div class="tutor-card">
+      <div class="tutor-card" data-card-id="${escapeHtml(String(t.id))}">
         <div class="tutor-photo-wrap">
           ${photoUrl ? `<img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(t.name)}">` : `<span class="initials">${initials}</span>`}
           <div class="verified-badge bn"><span class="check">✓</span> ভেরিফাইড</div>
-          <button class="save-btn ripple-el" data-save-id="${escapeHtml(String(t.id))}" title="সংরক্ষণ করুন" onclick="event.preventDefault();toggleSaveTutor(${JSON.stringify(t).replace(/"/g,'&quot;')})">
+          <button class="unsave-btn ripple-el" data-unsave-id="${escapeHtml(String(t.id))}" title="সংরক্ষণ থেকে সরান">
             <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1Z"/></svg>
           </button>
         </div>
         <div class="tutor-body">
           <h3 class="tutor-name bn">${escapeHtml(t.name)}</h3>
           <div class="tutor-univ bn">🎓 ${escapeHtml(t.university || "ইসলামী বিশ্ববিদ্যালয়")}${t.department ? ' (' + escapeHtml(t.department) + ')' : ''}</div>
-          
+
           <div class="tag-group">
             ${t.subjects || t.subject ? `<span class="tag bn">📚 ${escapeHtml(t.subjects || t.subject)}</span>` : ''}
             ${t.session ? `<span class="tag session bn">Session: ${escapeHtml(t.session)}</span>` : ''}
@@ -288,134 +254,63 @@
             </div>
           </div>
 
-          <a href="tutor-profile.html?id=${t.id}" class="view-btn bn">সম্পূর্ণ প্রোফাইল দেখুন →</a>
+          <a href="tutor-profile.html?id=${escapeHtml(String(t.id))}" class="view-btn bn">সম্পূর্ণ প্রোফাইল দেখুন →</a>
         </div>
       </div>
     `;
   }
 
-  function renderTutors(list){
+  function renderSaved(){
     const grid = document.getElementById("tutorGrid");
-    document.getElementById("resultCount").textContent = `${list.length} জন টিউটর পাওয়া গেছে`;
+    const list = getSavedTutors();
+    const clearBtn = document.getElementById("clearAllBtn");
+    const sub = document.getElementById("pageSub");
 
     if(list.length === 0){
+      clearBtn.style.display = "none";
+      sub.textContent = "যেসব টিউটরকে সংরক্ষণ করে রেখেছেন তারা এখানে দেখা যাবে";
       grid.innerHTML = `
         <div class="empty-state bn">
-          <p>এই সার্চ বা ফিল্টারে কোনো টিউটর পাওয়া যায়নি।</p>
+          <div class="icon-wrap">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1Z"/></svg>
+          </div>
+          <h3>এখনো কোনো টিউটর সংরক্ষণ করা হয়নি</h3>
+          <p>পছন্দের টিউটরের কার্ডে বুকমার্ক আইকনে ট্যাপ করে সংরক্ষণ করুন — পরে সহজেই এখান থেকে খুঁজে পাবেন</p>
+          <a href="hire-tutor.html" class="cta-btn">টিউটর খুঁজুন</a>
         </div>`;
       return;
     }
 
+    clearBtn.style.display = "inline-block";
+    sub.textContent = `${list.length} জন টিউটর সংরক্ষণ করা আছে`;
     grid.innerHTML = list.map(tutorCardHtml).join("");
+    attachUnsaveHandlers();
     initRipples();
-    markSavedButtons();
   }
 
-  function populateFilterOptions(){
-    const subjectSet = new Set();
-    const areaSet = new Set();
-
-    allTutors.forEach(t => {
-      if(t.subjects) t.subjects.split(',').forEach(s => subjectSet.add(s.trim()));
-      else if(t.subject) subjectSet.add(t.subject.trim());
-
-      if(t.currentLocation) areaSet.add(t.currentLocation.trim());
-      else if(t.area) areaSet.add(t.area.trim());
-    });
-
-    const subjectSel = document.getElementById("subjectFilter");
-    const areaSel = document.getElementById("areaFilter");
-
-    [...subjectSet].filter(Boolean).sort().forEach(s => {
-      subjectSel.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`);
-    });
-    [...areaSet].filter(Boolean).sort().forEach(a => {
-      areaSel.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`);
+  function attachUnsaveHandlers(){
+    document.querySelectorAll(".unsave-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const id = btn.getAttribute("data-unsave-id");
+        const card = btn.closest(".tutor-card");
+        card.classList.add("removing");
+        setTimeout(() => {
+          const list = getSavedTutors().filter(t => String(t.id) !== String(id));
+          setSavedTutors(list);
+          renderSaved();
+        }, 260);
+      });
     });
   }
 
-  function applyFilters(){
-    const subject = document.getElementById("subjectFilter").value;
-    const area = document.getElementById("areaFilter").value;
-    const search = document.getElementById("searchInput").value.trim().toLowerCase();
-
-    const filtered = allTutors.filter(t => {
-      const subs = (t.subjects || t.subject || "").toLowerCase();
-      const loc = (t.currentLocation || t.area || "").toLowerCase();
-      const univ = (t.university || "").toLowerCase();
-      const name = (t.name || "").toLowerCase();
-      const tid = String(t.tutorId || t.id || "").toLowerCase();
-
-      if(subject && !subs.includes(subject.toLowerCase())) return false;
-      if(area && !loc.includes(area.toLowerCase())) return false;
-      if(search){
-        const match = name.includes(search) || univ.includes(search) || subs.includes(search) || loc.includes(search) || tid.includes(search);
-        if(!match) return false;
-      }
-      return true;
-    });
-
-    renderTutors(filtered);
-  }
-
-  document.getElementById("subjectFilter").addEventListener("change", applyFilters);
-  document.getElementById("areaFilter").addEventListener("change", applyFilters);
-  document.getElementById("searchInput").addEventListener("input", applyFilters);
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    document.getElementById("subjectFilter").value = "";
-    document.getElementById("areaFilter").value = "";
-    document.getElementById("searchInput").value = "";
-    applyFilters();
+  document.getElementById("clearAllBtn").addEventListener("click", () => {
+    if(confirm("সবগুলো সংরক্ষিত টিউটর মুছে ফেলতে চান?")){
+      setSavedTutors([]);
+      renderSaved();
+    }
   });
 
-  async function loadTutors(){
-    document.getElementById("tutorGrid").innerHTML = skeletonCards(6);
-    try{
-      const res = await fetch(`${API_BASE}/api/public/tutors`);
-      const data = await res.json();
-      if(!res.ok) throw new Error(data.error || "লোড করতে সমস্যা হয়েছে");
-      allTutors = data.tutors || [];
-      populateFilterOptions();
-      renderTutors(allTutors);
-      markSavedButtons();
-    }catch(err){
-      document.getElementById("tutorGrid").innerHTML = `
-        <div class="empty-state bn"><p>টিউটর লোড করা সম্ভব হয়নি। Worker সংযোগ পরীক্ষা করুন।</p></div>`;
-      console.error(err);
-    }
-  }
-
-  /* ================= SAVE / BOOKMARK SYSTEM (localStorage) ================= */
-  const SAVE_KEY = "kst_saved_tutors";
-
-  function getSavedTutors(){
-    try{ return JSON.parse(localStorage.getItem(SAVE_KEY)) || []; }
-    catch(e){ return []; }
-  }
-  function setSavedTutors(list){
-    localStorage.setItem(SAVE_KEY, JSON.stringify(list));
-    updateNavBadge();
-  }
-  function isTutorSaved(id){
-    return getSavedTutors().some(t => String(t.id) === String(id));
-  }
-  function toggleSaveTutor(tutor){
-    let list = getSavedTutors();
-    const exists = list.some(t => String(t.id) === String(tutor.id));
-    if(exists){
-      list = list.filter(t => String(t.id) !== String(tutor.id));
-    }else{
-      list.unshift(tutor);
-    }
-    setSavedTutors(list);
-    markSavedButtons();
-  }
-  function markSavedButtons(){
-    document.querySelectorAll(".save-btn").forEach(btn => {
-      const id = btn.getAttribute("data-save-id");
-      btn.classList.toggle("saved", isTutorSaved(id));
-    });
-  }
   function updateNavBadge(){
     const badge = document.getElementById("navSavedBadge");
     if(!badge) return;
@@ -428,7 +323,6 @@
     }
   }
 
-  /* ================= RIPPLE TOUCH EFFECT ================= */
   function attachRipple(el){
     el.addEventListener("pointerdown", (e) => {
       const rect = el.getBoundingClientRect();
@@ -443,22 +337,25 @@
     });
   }
   function initRipples(){
-    document.querySelectorAll(".ripple-el").forEach(attachRipple);
+    document.querySelectorAll(".ripple-el").forEach(el => {
+      if(!el.dataset.rippleAttached){
+        attachRipple(el);
+        el.dataset.rippleAttached = "1";
+      }
+    });
   }
 
-  /* ================= ACTIVE BOTTOM NAV ================= */
   function markActiveNav(){
-    const page = (location.pathname.split("/").pop() || "home.html");
+    const page = (location.pathname.split("/").pop() || "saved-tutors.html");
     document.querySelectorAll(".nav-item[data-page]").forEach(item => {
-      const href = item.getAttribute("href");
-      item.classList.toggle("active", href === page);
+      item.classList.toggle("active", item.getAttribute("href") === page);
     });
   }
 
   markActiveNav();
   updateNavBadge();
   initRipples();
-  loadTutors();
+  renderSaved();
 </script>
 
 </body>

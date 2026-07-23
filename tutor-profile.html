@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>টিউটর প্রোফাইল — Kushtia Smart Tutor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,8 +15,26 @@
     --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
   }
   *{box-sizing:border-box;}
-  html,body{overflow-x:hidden;max-width:100%;}
-  body{margin:0;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);}
+
+  /* FIX: Remove overflow-x from html/body - use wrapper instead */
+  html,body{
+    margin:0;
+    padding:0;
+    font-family:'Hind Siliguri','Poppins',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    /* overflow-x:hidden; */ /* REMOVED - causes mobile cut-off */
+    /* max-width:100%; */ /* REMOVED */
+  }
+
+  /* FIX: Add page wrapper with overflow control */
+  .page-wrapper{
+    width:100%;
+    max-width:100vw;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
   .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
   a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;}
 
@@ -36,16 +54,19 @@
     background:linear-gradient(135deg,var(--green-900),var(--green-700));
     border-radius:24px;padding:32px;color:#fff;box-shadow:var(--shadow-lg);
     display:grid;grid-template-columns:100px 1fr;gap:24px;align-items:center;
+    min-width:0; /* FIX: prevent grid overflow */
   }
   .avatar-box{
     width:100px;height:100px;border-radius:50%;background:var(--mint-100);
     border:3px solid rgba(255,255,255,.6);overflow:hidden;display:flex;align-items:center;justify-content:center;
     font-size:36px;font-weight:800;color:var(--green-900);font-family:'Baloo Da 2',sans-serif;
+    flex-shrink:0; /* FIX: prevent avatar from shrinking */
   }
   .avatar-box img{width:100%;height:100%;object-fit:cover;}
 
-  .header-info h1{margin:0 0 6px;font-size:24px;font-family:'Baloo Da 2',sans-serif;word-break:break-word;}
-  .univ-tag{font-size:14.5px;color:rgba(255,255,255,.9);font-weight:600;word-break:break-word;}
+  .header-info{min-width:0; /* FIX: allow text to wrap */}
+  .header-info h1{margin:0 0 6px;font-size:24px;font-family:'Baloo Da 2',sans-serif;word-break:break-word;overflow-wrap:break-word;}
+  .univ-tag{font-size:14.5px;color:rgba(255,255,255,.9);font-weight:600;word-break:break-word;overflow-wrap:break-word;}
   .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
   .v-badge{background:var(--green-lime);color:var(--green-900);font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;}
   .id-badge{background:rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px;}
@@ -57,27 +78,33 @@
   .side-card{
     background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;
     box-shadow:0 12px 30px -22px rgba(14,59,34,.25);height:fit-content;
+    min-width:0; /* FIX: prevent grid overflow */
+    width:100%; /* FIX: ensure full width */
+    max-width:100%; /* FIX: prevent overflow */
+    box-sizing:border-box; /* FIX: include padding in width */
   }
   .side-card h3{margin:0 0 16px;font-size:16px;color:var(--green-900);padding-bottom:8px;border-bottom:1.5px solid var(--line);}
   .info-list{display:flex;flex-direction:column;gap:14px;}
   .info-row .k{font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;}
-  .info-row .v{font-size:14.5px;font-weight:700;color:var(--ink);margin-top:2px;}
+  .info-row .v{font-size:14.5px;font-weight:700;color:var(--ink);margin-top:2px;word-break:break-word;overflow-wrap:break-word;}
 
   .status-tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:6px;}
   .status-tag.available{background:var(--mint-100);color:var(--green-800);}
   .status-tag.busy{background:#FDECEC;color:var(--red-500);}
 
   /* Action Buttons */
-  .action-group{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+  .action-group{display:flex;flex-direction:column;gap:10px;margin-top:20px;width:100%;}
   .btn-primary{
     width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-600),var(--green-900));
     color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;box-shadow:0 10px 20px -10px rgba(15,59,34,.5);
     text-align:center;transition:transform .2s ease;
+    max-width:100%;box-sizing:border-box; /* FIX: prevent overflow */
   }
   .btn-primary:hover{transform:translateY(-2px);}
   .btn-outline{
     width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:#fff;
     color:var(--ink);font-size:13.5px;font-weight:700;cursor:pointer;text-align:center;
+    max-width:100%;box-sizing:border-box; /* FIX: prevent overflow */
   }
   .btn-outline:hover{border-color:var(--green-500);color:var(--green-700);}
 
@@ -85,11 +112,16 @@
   .tabs-card{
     background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;
     box-shadow:0 12px 30px -22px rgba(14,59,34,.25);
+    min-width:0; /* FIX: prevent grid overflow */
+    width:100%; /* FIX: ensure full width */
+    max-width:100%; /* FIX: prevent overflow */
+    box-sizing:border-box; /* FIX: include padding in width */
   }
   .tab-nav{display:flex;gap:8px;border-bottom:1.5px solid var(--line);padding-bottom:12px;margin-bottom:20px;overflow-x:auto;}
   .tab-item{
     padding:8px 16px;border-radius:10px;font-size:14px;font-weight:700;color:var(--ink-soft);
     cursor:pointer;white-space:nowrap;transition:background .2s ease,color .2s ease;
+    flex-shrink:0; /* FIX: prevent tabs from shrinking */
   }
   .tab-item:hover{background:var(--mint-50);color:var(--green-700);}
   .tab-item.active{background:var(--green-900);color:#fff;}
@@ -101,16 +133,20 @@
   .edu-block{
     background:var(--mint-50);border:1px solid var(--line);border-radius:14px;
     padding:16px;margin-bottom:14px;
+    min-width:0; /* FIX: prevent overflow */
+    word-break:break-word;
+    overflow-wrap:break-word;
   }
   .edu-title{font-size:15px;font-weight:700;color:var(--green-900);margin-bottom:6px;}
-  .edu-sub{font-size:13.5px;color:var(--ink-soft);line-height:1.6;word-break:break-word;}
+  .edu-sub{font-size:13.5px;color:var(--ink-soft);line-height:1.6;word-break:break-word;overflow-wrap:break-word;}
 
   .subject-pill{
     display:inline-block;padding:8px 16px;border-radius:10px;background:var(--mint-100);
     color:var(--green-900);font-size:14px;font-weight:700;margin:0 8px 8px 0;
+    word-break:break-word;
   }
 
-  .text-box{font-size:14.5px;line-height:1.8;color:var(--ink);white-space:pre-line;}
+  .text-box{font-size:14.5px;line-height:1.8;color:var(--ink);white-space:pre-line;word-break:break-word;overflow-wrap:break-word;}
 
   /* Contact Modal */
   .modal-overlay{
@@ -121,17 +157,23 @@
   .modal-box{
     background:#fff;border-radius:20px;padding:28px;max-width:380px;width:100%;text-align:center;
     box-shadow:var(--shadow-lg);
+    max-width:calc(100vw - 40px); /* FIX: prevent modal overflow on small screens */
+    box-sizing:border-box;
   }
-  .modal-box h3{margin:0 0 10px;font-size:18px;color:var(--green-900);}
-  .modal-box p{margin:0 0 18px;color:var(--ink-soft);font-size:13.5px;}
+  .modal-box h3{margin:0 0 10px;font-size:18px;color:var(--green-900);word-break:break-word;}
+  .modal-box p{margin:0 0 18px;color:var(--ink-soft);font-size:13.5px;word-break:break-word;}
 
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
     background:var(--green-900);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;
     opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;box-shadow:var(--shadow-lg);z-index:100;
+    max-width:90vw; /* FIX: prevent toast overflow */
+    word-break:break-word;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  /* Desktop (default): 2-column layout */
+  /* Tablet & Mobile: 1-column layout */
   @media (max-width:800px){
     .layout-grid{grid-template-columns:1fr;}
     .profile-header{grid-template-columns:1fr;text-align:center;}
@@ -149,10 +191,16 @@
     .tab-item{padding:7px 12px;font-size:13px;}
     .back-btn{font-size:12px;}
     .brand-text .en{font-size:14px;}
+    .modal-box{padding:22px 18px;}
+    .btn-primary{font-size:14px;padding:13px 12px;}
+    .btn-outline{font-size:13px;padding:11px 12px;}
   }
 </style>
 </head>
 <body>
+
+<!-- FIX: Added page-wrapper to control overflow without cutting content -->
+<div class="page-wrapper">
 
 <header class="topnav">
   <div class="nav-inner">
@@ -180,7 +228,7 @@
   </div>
 
   <div class="layout-grid">
-    
+
     <!-- Main Tabs -->
     <div class="tabs-card">
       <div class="tab-nav">
@@ -284,6 +332,8 @@
 
 <div class="toast bn" id="toast"></div>
 
+</div><!-- /page-wrapper -->
+
 <script>
   const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
   const CONTACT_WHATSAPP = "8801700000000";
@@ -300,7 +350,7 @@
     item.addEventListener("click", () => {
       document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
       document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
-      
+
       item.classList.add("active");
       document.getElementById(`tab-${item.dataset.tab}`).classList.add("active");
     });
@@ -345,7 +395,7 @@
       document.getElementById("quickLoc").textContent = t.currentLocation || t.area || "কুষ্টিয়া সদর";
       document.getElementById("quickSalary").textContent = t.expectedSalary || "আলোচনা সাপেক্ষে";
       document.getElementById("quickExp").textContent = t.experienceYears || "১+ বছর";
-      
+
       const isAvail = (t.availability || "available") === "available";
       document.getElementById("quickStatus").innerHTML = `
         <span class="status-tag ${isAvail ? 'available' : 'busy'}">${isAvail ? 'অ্যাভেলেবল (টিউশন করাচ্ছেন)' : 'বর্তমানে ব্যস্ত'}</span>

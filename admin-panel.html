@@ -159,9 +159,6 @@
     <div class="nav-item bn" data-view="rejected">Cancelled/Rejected <span class="cnt" id="cntRejected">0</span></div>
   </div>
 
-  <div class="nav-group-label bn">অন্যান্য</div>
-  <div class="nav-item bn" data-view="payments">💳 Payments <span class="cnt" id="cntPayments">0</span></div>
-
   <div class="sidebar-footer">
     <div class="admin-email bn" id="adminEmailLabel"></div>
     <button class="logout-btn bn" id="logoutBtn">লগআউট</button>
@@ -209,13 +206,6 @@
     <p class="page-sub bn">রিজেক্ট করা বা বাতিল করা আবেদনসমূহ</p>
     <div class="req-list" id="list-rejected"></div>
     <div class="empty-state bn" id="empty-rejected" style="display:none;"><p>কোনো বাতিল/রিজেক্টেড আবেদন নেই।</p></div>
-  </div>
-
-  <div class="view" id="view-payments">
-    <h1 class="page-title en">Payment Confirmations</h1>
-    <p class="page-sub bn"><span class="live-dot"></span>bKash/Nagad-এ মিলিয়ে দেখে তারপর Approve করুন</p>
-    <div class="req-list" id="list-payments"></div>
-    <div class="empty-state bn" id="empty-payments" style="display:none;"><p>কোনো পেমেন্ট কনফার্মেশন পেন্ডিং নেই।</p></div>
   </div>
 
 </main>
@@ -575,47 +565,6 @@
     }
   });
 
-  // Payments section
-  const payReqList = document.getElementById("list-payments");
-  const payEmptyState = document.getElementById("empty-payments");
-  const payCntBadge = document.getElementById("cntPayments");
-  let payKnownIds = new Set();
-  let payFirstLoad = true;
-
-  function paymentCardHtml(p){
-    return `
-      <div class="req-card" data-id="${p.id}">
-        <div class="req-top">
-          <div>
-            <span class="req-name">${escapeHtml(p.name || "")}</span>
-            <span class="status-badge pending bn">পেমেন্ট কনফার্মেশন</span>
-            <div class="req-meta bn">${escapeHtml(p.phone || "")} • Account ID: ${escapeHtml(p.account_id || "—")}</div>
-          </div>
-          <span class="req-time bn">${fmtTime(p.created_at)}</span>
-        </div>
-        <div class="req-info-grid">
-          <div class="req-info-item"><div class="k bn">প্রেষণকারী নম্বর</div><div class="v">${escapeHtml(p.sender_number || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">ট্রানজেকশন আইডি</div><div class="v">${escapeHtml(p.trx_id || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">পরিমাণ</div><div class="v" style="color:var(--green-700);font-size:16px;">৳${escapeHtml(p.amount || "—")}</div></div>
-        </div>
-        <div class="req-actions">
-          <button class="act-btn approve bn" data-action="approve">Approve (টাকা মিলেছে)</button>
-          <button class="act-btn reject bn" data-action="reject">Reject</button>
-        </div>
-      </div>
-    `;
-  }
-
-  async function fetchPayments(){
-    try{
-      const data = await apiCall("/api/admin/payments", "GET");
-      const items = data.payments || [];
-      payEmptyState.style.display = items.length === 0 ? "block" : "none";
-      payCntBadge.textContent = items.length;
-    }catch(err){ console.error("payments:", err.message); }
-  }
-  fetchPayments();
-  setInterval(fetchPayments, POLL_MS);
 </script>
 
 </body>

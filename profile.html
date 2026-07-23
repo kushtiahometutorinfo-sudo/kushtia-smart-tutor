@@ -136,6 +136,19 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  .toggle-form-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    padding:13px 18px;border-radius:14px;border:1.5px dashed var(--green-500);
+    background:var(--mint-50);color:var(--green-900);font-size:14px;font-weight:700;margin-top:6px;
+    transition:background .2s ease,transform .2s ease;
+  }
+  .toggle-form-btn:hover{background:var(--mint-100);}
+  .toggle-form-btn .chev{transition:transform .2s ease;display:inline-block;}
+  .toggle-form-btn.open .chev{transform:rotate(180deg);}
+  #adFormBody{display:none;}
+  #adFormBody.open{display:block;animation:fadeSlide .25s ease;}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+
   @media (max-width:768px){
     .grid2,.grid3,.grid4,.pay-grid{grid-template-columns:1fr;}
     .profile-head{padding:20px;}
@@ -182,6 +195,13 @@
         <span class="bn" id="adReqStatusSub">আপনার অ্যাডের স্ট্যাটাস চেক করা হচ্ছে</span>
       </div>
     </div>
+
+    <button type="button" class="toggle-form-btn bn" id="toggleFormBtn">
+      <span id="toggleFormBtnLabel">✏️ প্রোফাইল / অ্যাড তথ্য পরিবর্তন করুন</span>
+      <span class="chev">▾</span>
+    </button>
+
+    <div id="adFormBody">
 
     <!-- SECTION 1: BASIC INFO -->
     <div class="form-sub-title bn">👤 ১. মৌলিক তথ্য (Basic Info)</div>
@@ -348,6 +368,8 @@
     <button class="btn bn" id="submitAdRequestBtn">
       <span>প্রোফাইল / অ্যাড রিকুয়েস্ট জমা দিন</span>
     </button>
+
+    </div><!-- /#adFormBody -->
   </div>
 
 </div>
@@ -400,8 +422,8 @@
       const res = await fetch(`${API_BASE}/api/user/ad-status?userId=${currentProfile.id}`);
       if(!res.ok) return;
       const data = await res.json();
-      if(data.ok && data.ad){
-        const ad = data.ad;
+      if(data.exists){
+        const ad = data;
         updateStatusBanner(ad);
         // Pre-fill form if backend has newer data
         if(ad.subject) document.getElementById("reqSubjectInput").value = ad.subject;
@@ -484,9 +506,34 @@
       title.textContent = "এখনো কোনো অ্যাড পোস্ট করেননি";
       sub.textContent = "নিচের ফর্ম পূরণ করে আপনার টিউটর কার্ড পাবলিক করুন।";
     }
+
+    // Form auto-open logic: only auto-open when the person genuinely needs to act
+    // (no ad yet, rejected, or expired). Otherwise keep it collapsed by default.
+    const needsAction = (st === "none") || (st === "rejected") || (st === "paused" && autoExpired);
+    if(needsAction) openForm(); else closeForm();
   }
 
   fetchFreshStatus();
+
+  // Collapsible form toggle
+  const toggleBtn = document.getElementById("toggleFormBtn");
+  const toggleBtnLabel = document.getElementById("toggleFormBtnLabel");
+  const formBody = document.getElementById("adFormBody");
+
+  function openForm(){
+    formBody.classList.add("open");
+    toggleBtn.classList.add("open");
+    toggleBtnLabel.textContent = "🔽 ফর্ম বন্ধ করুন";
+  }
+  function closeForm(){
+    formBody.classList.remove("open");
+    toggleBtn.classList.remove("open");
+    toggleBtnLabel.textContent = "✏️ প্রোফাইল / অ্যাড তথ্য পরিবর্তন করুন";
+  }
+  toggleBtn.addEventListener("click", () => {
+    if(formBody.classList.contains("open")) closeForm();
+    else openForm();
+  });
 
   // Toast
   function toast(msg){

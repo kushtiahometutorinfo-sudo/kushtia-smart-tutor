@@ -1,14 +1,19 @@
 /**
- * Kushtia Smart Tutor — Auth + Tutor-Approval Worker
+ * Kushtia Smart Tutor — Auth + Ad-Request (Tutor Advertisement) Worker
  *
  * Handles: OTP send/verify (email works today, mobile is a TODO stub, same
- * as before), password-based register + login backed by D1, and the tutor
- * approval workflow (admin login, list/approve/reject tutor requests,
- * public approved-tutors listing).
+ * as before), password-based register + login backed by D1 (both "user" and
+ * "tutor" roles are active the moment they register — there is no approval
+ * gate on signup or login anymore), and a separate, optional "ad request"
+ * workflow: a logged-in tutor fills one combined form (profile info + photo
+ * URL from client-side Cloudinary upload + payment proof) to ask for a public
+ * listing; an admin reviews and approves/rejects it. Being rejected or having
+ * no ad request at all does NOT stop a tutor from logging in or using their
+ * account — it only controls whether they show up on GET /api/tutors.
  *
  * Bindings needed (set in wrangler.toml / Cloudflare dashboard):
  *   - KV Namespace: OTP_KV          (OTP codes + "verified:<contact>" flags — unchanged)
- *   - D1 Database:  DB              (users / tutor_requests / admins — see schema.sql)
+ *   - D1 Database:  DB              (users / ad_requests / admins — see schema.sql)
  *   - Secret:       RESEND_API_KEY  (from resend.com, free plan)
  *   - Secret:       ADMIN_SECRET    (random long string — signs admin session tokens)
  *   - Secret:       ADMIN_SETUP_KEY (random string — protects the one-time admin bootstrap route)
@@ -16,16 +21,21 @@
  *   - Var:          RESEND_FROM     (verified sender, e.g. "Kushtia Smart Tutor <noreply@yourdomain.com>")
  *
  * Endpoints:
- *   POST /api/send-otp          { contact, method, fallbackEmail? }   method: "mobile" | "email"
- *   POST /api/verify-otp        { contact, otp }
- *   POST /api/register          { identifier, email, phone, name, role, password, agreedTerms, subject?, qualification?, area? }
- *   POST /api/login             { identifier, password }
- *   POST /api/admin-login       { email, password }
- *   POST /api/admin/bootstrap   { email, password, setupKey }   -- one-time, creates the first admin
- *   GET  /api/admin/requests    (Authorization: Bearer <admin token>)
- *   POST /api/admin/approve     { requestId }                  (Authorization: Bearer <admin token>)
- *   POST /api/admin/reject      { requestId, note }             (Authorization: Bearer <admin token>)
- *   GET  /api/tutors            (public — approved tutors only)
+ *   POST /api/send-otp           { contact, method, fallbackEmail? }   method: "mobile" | "email"
+ *   POST /api/verify-otp         { contact, otp }
+ *   POST /api/register           { identifier, email, phone, name, role, password, agreedTerms }
+ *                                 -- both roles are active immediately, no pending state, no ad-request fields here anymore.
+ *   POST /api/login               { identifier, password }
+ *                                 -- for role="tutor", the response includes `adRequest` (latest ad_requests row, or null)
+ *                                    so the frontend can prefill / show current advertisement status.
+ *   POST /api/ad-request-submit  { userId, name, phone, subject, qualification, area, photoUrl, paySender, payTrx, payAmount }
+ *                                 -- tutor submits/re-submits the combined profile+photo+payment request; errors if one is already pending.
+ *   POST /api/admin-login        { email, password }
+ *   POST /api/admin/bootstrap    { email, password, setupKey }   -- one-time, creates the first admin
+ *   GET  /api/admin/ad-requests  (Authorization: Bearer <admin token>)   -- pending ad_requests, with photo + payment info
+ *   POST /api/admin/approve-ad-request { requestId }             (Authorization: Bearer <admin token>)
+ *   POST /api/admin/reject-ad-request  { requestId, note }        (Authorization: Bearer <admin token>)
+ *   GET  /api/tutors             (public — approved ad_requests only)
  *
  * NOTE — SMS OTP: there is no SMS gateway wired up yet. When method is
  * "mobile", sendOtp() falls back to emailing the code to `fallbackEmail` if
@@ -35,7 +45,7 @@
 
 function corsHeaders(env) {
   return {
-    "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN || "*",
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
@@ -208,7 +218,7 @@ export default {
         }
 
         await env.OTP_KV.put(`otp:${contact}`, otp, { expirationTtl: 300 }); // 5 min
-        await env.OTP_KV.put(`cooldown:${contact}`, "1", { expirationTtl: 45 });
+        await env.OTP_KV.put(`cooldown:${contact}`, "1", { expirationTtl: 60 });
 
         return json({ ok: true, sentTo }, 200, env);
       }
@@ -230,13 +240,15 @@ export default {
       }
 
       // ---------- POST /api/register ----------
-      // body: { identifier, email, phone, name, role, password, agreedTerms, subject?, qualification?, area? }
+      // body: { identifier, email, phone, name, role, password, agreedTerms }
       // `identifier` is the contact (email or phone) that just went through OTP verification.
-      // role="user"  -> inserted into users and considered active immediately.
-      // role="tutor" -> inserted into users + a pending row in tutor_requests; not
-      //                 allowed to log in until an admin approves the request.
+      // Both role="user" and role="tutor" are inserted into users and are active
+      // immediately — there is no approval gate on registration anymore, and no
+      // ad-request fields are collected here. A tutor fills out the full ad
+      // request (profile info + photo + payment proof) later from profile.html
+      // via POST /api/ad-request-submit — fully decoupled from signing up.
       if (pathname === "/api/register" && request.method === "POST") {
-        const { identifier, email, phone, name, role, password, agreedTerms, subject, qualification, area } = await request.json();
+        const { identifier, email, phone, name, role, password, agreedTerms } = await request.json();
 
         if (!identifier || !name || !role || !password || !agreedTerms) {
           return json({ error: "সব তথ্য পূরণ করুন এবং শর্তে সম্মত হন" }, 400, env);
@@ -246,9 +258,6 @@ export default {
         }
         if (password.length < 6) {
           return json({ error: "পাসওয়ার্ড কমপক্ষে ৬ ক্যারেক্টার হতে হবে" }, 400, env);
-        }
-        if (role === "tutor" && (!subject || !area)) {
-          return json({ error: "সাবজেক্ট এবং এলাকা দিন" }, 400, env);
         }
 
         const isVerified = await env.OTP_KV.get(`verified:${identifier}`);
@@ -272,26 +281,10 @@ export default {
            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
         ).bind(userId, name, phone || "", email || "", hash, salt, role, now).run();
 
-        if (role === "tutor") {
-          await env.DB.prepare(
-            `INSERT INTO tutor_requests (id, user_id, status, subject, qualification, area, admin_note, created_at, updated_at)
-             VALUES (?, ?, 'pending', ?, ?, ?, NULL, ?, ?)`
-          ).bind(crypto.randomUUID(), userId, subject || "", qualification || "", area || "", now, now).run();
-
-          await env.OTP_KV.delete(`verified:${identifier}`);
-
-          return json({
-            ok: true,
-            pending: true,
-            message: "আপনার আবেদন Admin রিভিউ করছেন, অনুমোদন হলে জানানো হবে",
-          }, 200, env);
-        }
-
         await env.OTP_KV.delete(`verified:${identifier}`);
 
         return json({
           ok: true,
-          pending: false,
           user: { id: userId, name, role, email: email || "", phone: phone || "" },
         }, 200, env);
       }
@@ -318,26 +311,74 @@ export default {
           return json({ error: "পাসওয়ার্ড সঠিক নয়" }, 401, env);
         }
 
+        // Tutor login is never blocked by ad-request status. We just attach the
+        // latest ad_requests row (if any) so the frontend can show/prefill it
+        // ("pending review", "approved — you're listed", "rejected: <note>", ...).
+        let adRequest = null;
         if (user.role === "tutor") {
           const reqRow = await env.DB.prepare(
-            `SELECT * FROM tutor_requests WHERE user_id = ? ORDER BY created_at DESC LIMIT 1`
+            `SELECT id, status, name, phone, subject, qualification, area, photo_url,
+                    pay_sender, pay_trx, pay_amount, note, created_at
+             FROM ad_requests WHERE user_id = ? ORDER BY created_at DESC LIMIT 1`
           ).bind(user.id).first();
-
-          if (reqRow && reqRow.status === "pending") {
-            return json({ error: "আপনার আবেদনটি এখনো রিভিউ হয়নি, অনুমোদনের অপেক্ষায় আছে" }, 403, env);
-          }
-          if (reqRow && reqRow.status === "rejected") {
-            return json({
-              error: reqRow.admin_note
-                ? `আপনার আবেদনটি গ্রহণ করা হয়নি: ${reqRow.admin_note}`
-                : "আপনার আবেদনটি গ্রহণ করা হয়নি",
-            }, 403, env);
-          }
+          adRequest = reqRow || null;
         }
 
         return json({
           ok: true,
           user: { id: user.id, name: user.name, role: user.role, email: user.email, phone: user.phone },
+          adRequest,
+        }, 200, env);
+      }
+
+      // ---------- POST /api/ad-request-submit ----------
+      // body: { userId, name, phone, subject, qualification, area, photoUrl, paySender, payTrx, payAmount }
+      // A logged-in tutor (re-)applies to be listed on the public tutors page.
+      // photoUrl is a Cloudinary URL the browser already uploaded to directly —
+      // the Worker never touches image bytes, just stores the link.
+      // Blocked only if they already have a request sitting in 'pending'.
+      // If their last request was 'approved' or 'rejected', this creates a
+      // fresh 'pending' row so they can update their info / re-apply.
+      if (pathname === "/api/ad-request-submit" && request.method === "POST") {
+        const { userId, name, phone, subject, qualification, area, photoUrl, paySender, payTrx, payAmount } = await request.json();
+        if (!userId || !name || !phone || !subject || !area || !paySender || !payTrx || !payAmount) {
+          return json({ error: "সব তথ্য পূরণ করুন" }, 400, env);
+        }
+
+        const user = await env.DB.prepare(`SELECT * FROM users WHERE id = ?`).bind(userId).first();
+        if (!user) {
+          return json({ error: "ইউজার পাওয়া যায়নি" }, 404, env);
+        }
+        if (user.role !== "tutor") {
+          return json({ error: "শুধুমাত্র টিউটর অ্যাকাউন্ট থেকে আবেদন করা যাবে" }, 403, env);
+        }
+
+        const lastReq = await env.DB.prepare(
+          `SELECT * FROM ad_requests WHERE user_id = ? ORDER BY created_at DESC LIMIT 1`
+        ).bind(userId).first();
+        if (lastReq && lastReq.status === "pending") {
+          return json({ error: "আপনার একটি আবেদন ইতিমধ্যে পর্যালোচনাধীন আছে" }, 409, env);
+        }
+
+        const now = Date.now();
+        const reqId = crypto.randomUUID();
+        await env.DB.prepare(
+          `INSERT INTO ad_requests
+             (id, user_id, status, name, phone, subject, qualification, area, photo_url,
+              pay_sender, pay_trx, pay_amount, note, created_at, updated_at)
+           VALUES (?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)`
+        ).bind(
+          reqId, userId, name, phone, subject, qualification || "", area, photoUrl || "",
+          paySender, payTrx, payAmount, now, now
+        ).run();
+
+        return json({
+          ok: true,
+          adRequest: {
+            id: reqId, status: "pending", name, phone, subject, qualification: qualification || "",
+            area, photo_url: photoUrl || "", pay_sender: paySender, pay_trx: payTrx, pay_amount: payAmount,
+            note: null, created_at: now,
+          },
         }, 200, env);
       }
 
@@ -391,26 +432,27 @@ export default {
         return json({ ok: true }, 200, env);
       }
 
-      // ---------- GET /api/admin/requests ----------
-      if (pathname === "/api/admin/requests" && request.method === "GET") {
+      // ---------- GET /api/admin/ad-requests ----------
+      if (pathname === "/api/admin/ad-requests" && request.method === "GET") {
         const payload = await verifyAdminToken(env, getBearerToken(request));
         if (!payload) return json({ error: "Admin session মেয়াদোত্তীর্ণ, আবার লগইন করুন" }, 401, env);
 
         const { results } = await env.DB.prepare(`
-          SELECT tr.id AS request_id, tr.status, tr.subject, tr.qualification, tr.area,
-                 tr.admin_note, tr.created_at, tr.updated_at,
-                 u.id AS user_id, u.name, u.phone, u.email
-          FROM tutor_requests tr
-          JOIN users u ON u.id = tr.user_id
-          WHERE tr.status = 'pending'
-          ORDER BY tr.created_at DESC
+          SELECT ar.id AS request_id, ar.status, ar.name, ar.phone, ar.subject, ar.qualification,
+                 ar.area, ar.photo_url, ar.pay_sender, ar.pay_trx, ar.pay_amount,
+                 ar.note, ar.created_at, ar.updated_at,
+                 u.id AS user_id, u.email
+          FROM ad_requests ar
+          JOIN users u ON u.id = ar.user_id
+          WHERE ar.status = 'pending'
+          ORDER BY ar.created_at DESC
         `).all();
 
         return json({ ok: true, requests: results }, 200, env);
       }
 
-      // ---------- POST /api/admin/approve ----------
-      if (pathname === "/api/admin/approve" && request.method === "POST") {
+      // ---------- POST /api/admin/approve-ad-request ----------
+      if (pathname === "/api/admin/approve-ad-request" && request.method === "POST") {
         const payload = await verifyAdminToken(env, getBearerToken(request));
         if (!payload) return json({ error: "Admin session মেয়াদোত্তীর্ণ, আবার লগইন করুন" }, 401, env);
 
@@ -418,14 +460,14 @@ export default {
         if (!requestId) return json({ error: "requestId প্রয়োজন" }, 400, env);
 
         await env.DB.prepare(
-          `UPDATE tutor_requests SET status = 'approved', updated_at = ? WHERE id = ?`
+          `UPDATE ad_requests SET status = 'approved', updated_at = ? WHERE id = ?`
         ).bind(Date.now(), requestId).run();
 
         return json({ ok: true }, 200, env);
       }
 
-      // ---------- POST /api/admin/reject ----------
-      if (pathname === "/api/admin/reject" && request.method === "POST") {
+      // ---------- POST /api/admin/reject-ad-request ----------
+      if (pathname === "/api/admin/reject-ad-request" && request.method === "POST") {
         const payload = await verifyAdminToken(env, getBearerToken(request));
         if (!payload) return json({ error: "Admin session মেয়াদোত্তীর্ণ, আবার লগইন করুন" }, 401, env);
 
@@ -433,7 +475,7 @@ export default {
         if (!requestId) return json({ error: "requestId প্রয়োজন" }, 400, env);
 
         await env.DB.prepare(
-          `UPDATE tutor_requests SET status = 'rejected', admin_note = ?, updated_at = ? WHERE id = ?`
+          `UPDATE ad_requests SET status = 'rejected', note = ?, updated_at = ? WHERE id = ?`
         ).bind(note || "", Date.now(), requestId).run();
 
         return json({ ok: true }, 200, env);
@@ -442,12 +484,12 @@ export default {
       // ---------- GET /api/tutors (public) ----------
       if (pathname === "/api/tutors" && request.method === "GET") {
         const { results } = await env.DB.prepare(`
-          SELECT u.id, u.name, u.phone, u.email,
-                 tr.subject, tr.qualification, tr.area
-          FROM tutor_requests tr
-          JOIN users u ON u.id = tr.user_id
-          WHERE tr.status = 'approved'
-          ORDER BY tr.updated_at DESC
+          SELECT ar.name, ar.phone, ar.subject, ar.qualification, ar.area, ar.photo_url,
+                 u.id, u.email
+          FROM ad_requests ar
+          JOIN users u ON u.id = ar.user_id
+          WHERE ar.status = 'approved'
+          ORDER BY ar.updated_at DESC
         `).all();
 
         return json({ ok: true, tutors: results }, 200, env);

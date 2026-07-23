@@ -264,13 +264,9 @@
       <label class="bn">পুরো নাম</label>
       <input type="text" id="nameInput" placeholder="আপনার নাম">
 
-      <div id="tutorFieldsWrap" class="hidden">
-        <label class="bn" for="subjectInput">সাবজেক্ট</label>
-        <input type="text" id="subjectInput" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান, ইংরেজি">
-        <label class="bn" for="qualificationInput">শিক্ষাগত যোগ্যতা</label>
-        <input type="text" id="qualificationInput" placeholder="যেমন: অনার্স ৩য় বর্ষ, গণিত বিভাগ">
-        <label class="bn" for="areaInput">এলাকা</label>
-        <input type="text" id="areaInput" placeholder="যেমন: কুষ্টিয়া সদর, মজমপুর">
+      <div class="info-box bn" id="tutorNextStepNote" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8h.01M11 11.5h1v5h1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>টিউটর হিসেবে অ্যাকাউন্ট তৈরি হয়ে যাবে সাথে সাথে। সাবজেক্ট, এলাকা, ছবি ও পেমেন্ট দিয়ে <b>অ্যাড রিকুয়েস্ট</b> পরে আপনার প্রোফাইল পেজ থেকে জমা দিতে পারবেন।</span>
       </div>
 
       <div id="phoneFieldWrap" class="hidden">
@@ -479,7 +475,7 @@
       card.classList.add("selected");
       state.role = card.dataset.role;
       document.getElementById("termsBox").textContent = TERMS[state.role];
-      document.getElementById("tutorFieldsWrap").classList.toggle("hidden", state.role !== "tutor");
+      document.getElementById("tutorNextStepNote").style.display = state.role === "tutor" ? "flex" : "none";
     });
   });
 
@@ -506,17 +502,11 @@
     if(state.method === "email" && !email){ showError("err3", "ইমেইল প্রয়োজন"); return; }
     if(!agreed){ showError("err3", "শর্তাবলীতে সম্মত হতে হবে"); return; }
 
-    let subject = "", qualification = "", area = "";
-    if(state.role === "tutor"){
-      subject = document.getElementById("subjectInput").value.trim();
-      qualification = document.getElementById("qualificationInput").value.trim();
-      area = document.getElementById("areaInput").value.trim();
-      if(!subject){ showError("err3", "সাবজেক্ট দিন"); return; }
-      if(!area){ showError("err3", "এলাকা দিন"); return; }
-    }
-
     setLoading(createProfileBtn, true);
     try{
+      // NOTE: registration is instant for every role now — no admin approval gate here.
+      // A tutor only needs admin review later, when they submit an Ad Request from
+      // their profile page (name/subject/area/photo + payment proof together).
       const res = await fetch(`${API_BASE}/api/register`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -524,23 +514,18 @@
           email, phone, name,
           role: state.role,
           password: state.password,
-          agreedTerms: true,
-          subject, qualification, area
+          agreedTerms: true
         })
       });
       const data = await res.json();
       if(!res.ok) throw new Error(data.error || "প্রোফাইল তৈরি করা যায়নি");
 
-      if(data.pending){
-        // Tutor accounts wait for admin approval — don't log them in yet.
-        document.getElementById("step4Title").textContent = "আবেদন জমা হয়েছে";
-        document.getElementById("step4Sub").textContent = data.message || "আপনার আবেদন Admin রিভিউ করছেন, অনুমোদন হলে জানানো হবে";
-      }else{
-        // Local UI flag so home.html can swap Login -> Profile
-        localStorage.setItem("kst_profile", JSON.stringify({ name, role: state.role, email, phone }));
-        document.getElementById("step4Title").textContent = "স্বাগতম!";
-        document.getElementById("step4Sub").textContent = "আপনার প্রোফাইল তৈরি হয়ে গেছে।";
-      }
+      // Local UI flag so home.html can swap Login -> Profile
+      localStorage.setItem("kst_profile", JSON.stringify({ id: data.id, name, role: state.role, email, phone, adStatus: "none" }));
+      document.getElementById("step4Title").textContent = "স্বাগতম!";
+      document.getElementById("step4Sub").textContent = state.role === "tutor"
+        ? "আপনার প্রোফাইল তৈরি হয়ে গেছে। এবার প্রোফাইল পেজ থেকে অ্যাড রিকুয়েস্ট জমা দিন।"
+        : "আপনার প্রোফাইল তৈরি হয়ে গেছে।";
 
       showStep("step4");
     }catch(err){

@@ -215,7 +215,12 @@
       if(!res.ok) throw new Error(data.error || "লগইন করা যায়নি");
 
       // Local UI flag so home.html can swap Login -> Profile
-      localStorage.setItem("kst_profile", JSON.stringify(data.user));
+      // NOTE: data.user থেকে যা আসে (id, name, role, accountId, avatarUrl, adStatus, phone/email
+      // ইত্যাদি Worker যা যা পাঠায়) সব সেভ হবে। Worker যদি phone/email ফেরত না দেয়, তাহলেও
+      // ব্যবহারকারীর টাইপ করা identifier টা fallback হিসেবে থেকে যাবে, যাতে profile.html-এ
+      // অন্তত একটা contact তথ্য দেখানো যায়।
+      const profileToSave = { identifier, ...data.user };
+      localStorage.setItem("kst_profile", JSON.stringify(profileToSave));
       window.location.href = "home.html";
     }catch(err){
       showError("loginErr", err.message);

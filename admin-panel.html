@@ -12,6 +12,7 @@
     --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
     --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
     --red-500:#E24C4C; --red-50:#FDECEC; --red-line:#F6C6C6;
+    --orange-500:#F2994A; --orange-50:#FFF3E0; --orange-line:#FBD9A0;
     --shadow:0 20px 45px -22px rgba(14,59,34,.35); --shadow-lg:0 30px 60px -28px rgba(14,59,34,.45);
   }
   *{box-sizing:border-box;}
@@ -43,21 +44,28 @@
   }
   .logout-btn:hover{border-color:var(--red-500);color:var(--red-500);}
 
-  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px;}
+  .tabs{display:flex;gap:8px;max-width:900px;margin:24px auto 0;padding:0 20px;}
+  .tab-btn{
+    padding:10px 18px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
+    font-size:13.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:'Hind Siliguri',sans-serif;
+    display:flex;align-items:center;gap:8px;transition:all .2s ease;
+  }
+  .tab-btn.active{background:var(--green-900);color:#fff;border-color:var(--green-900);}
+  .tab-badge{background:rgba(0,0,0,.15);padding:2px 8px;border-radius:999px;font-size:11.5px;}
+  .tab-btn:not(.active) .tab-badge{background:var(--mint-100);color:var(--green-700);}
+
+  .wrap{max-width:900px;margin:0 auto;padding:20px 20px 60px;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
 
   .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
   h1.page-title{font-size:22px;margin:0 0 4px;font-weight:700;font-family:'Baloo Da 2','Hind Siliguri',sans-serif;color:var(--green-900);}
   p.page-sub{margin:0;color:var(--ink-soft);font-size:13.5px;}
-  .count-pill{
-    background:var(--mint-100);color:var(--green-700);font-weight:700;font-size:13px;
-    padding:6px 14px;border-radius:999px;
-  }
+  .count-pill{background:var(--mint-100);color:var(--green-700);font-weight:700;font-size:13px;padding:6px 14px;border-radius:999px;}
   .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green-500);margin-right:6px;animation:pulse 1.6s ease infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 
-  .empty-state{
-    text-align:center;padding:60px 20px;color:var(--ink-soft);
-  }
+  .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
   .empty-state svg{margin-bottom:14px;opacity:.55;}
   .empty-state p{font-size:14px;margin:0;}
 
@@ -77,6 +85,7 @@
     display:inline-flex;align-items:center;gap:5px;background:var(--mint-100);color:var(--green-700);
     font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;margin-left:8px;vertical-align:middle;
   }
+  .req-role-badge.pay{background:var(--orange-50);color:#B05B00;}
   .req-meta{font-size:12.5px;color:var(--ink-soft);margin-top:3px;}
   .req-time{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
 
@@ -86,6 +95,9 @@
   }
   .req-info-item .k{font-size:11px;color:var(--ink-soft);font-weight:600;margin-bottom:2px;}
   .req-info-item .v{font-size:13.5px;font-weight:600;color:var(--ink);}
+  .req-info-item .v.amount{color:var(--green-700);font-size:16px;font-family:'Baloo Da 2',sans-serif;}
+  .req-info-item .v.mono{font-family:'Poppins',monospace;letter-spacing:.5px;}
+  .req-photo{width:56px;height:56px;border-radius:12px;object-fit:cover;border:1.5px solid var(--line);flex-shrink:0;}
 
   .req-actions{display:flex;gap:10px;margin-top:16px;}
   .act-btn{
@@ -137,26 +149,28 @@
 </div>
 
 <div class="wrap">
-  <div class="page-head">
-    <div>
-      <h1 class="page-title en">Tutor Approval Requests</h1>
-      <p class="page-sub bn"><span class="live-dot"></span>প্রতি ৭ সেকেন্ডে অটো-রিফ্রেশ হচ্ছে</p>
+
+  <!-- ================= AD REQUESTS (details + photo + payment, one card) ================= -->
+  <div class="tab-panel active" id="panel-adreqs">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title en">Tutor Ad Requests</h1>
+        <p class="page-sub bn"><span class="live-dot"></span>প্রতি ৭ সেকেন্ডে অটো-রিফ্রেশ হচ্ছে · bKash/Nagad-এ মিলিয়ে দেখে Approve করুন</p>
+      </div>
+      <span class="count-pill bn" id="adreqCountPill">0 পেন্ডিং</span>
     </div>
-    <span class="count-pill bn" id="countPill">0 পেন্ডিং</span>
+    <div class="req-list" id="adreqReqList"></div>
+    <div class="empty-state" id="adreqEmptyState">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#7ED957" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#DFF3E6" stroke-width="1.5"/></svg>
+      <p class="bn">এই মুহূর্তে কোনো পেন্ডিং অ্যাড রিকুয়েস্ট নেই।</p>
+    </div>
   </div>
 
-  <div id="listWrap">
-    <div class="req-list" id="reqList"></div>
-    <div class="empty-state" id="emptyState">
-      <svg width="52" height="52" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#7ED957" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#DFF3E6" stroke-width="1.5"/></svg>
-      <p class="bn">এই মুহূর্তে কোনো পেন্ডিং আবেদন নেই।</p>
-    </div>
-  </div>
 </div>
 
 <script>
-  // ⚠️ Update this once your Cloudflare Worker is deployed (same as login.html / register-tutor.html):
-  const API_BASE = "https://kushtia-smart-tutor-auth.kushtia-smart-tutor.workers.dev";
+  // ⚠️ Update this once your Cloudflare Worker is deployed:
+  const API_BASE = "https://your-worker.your-subdomain.workers.dev";
   const POLL_MS = 7000;
 
   const token = localStorage.getItem("kst_admin_token");
@@ -164,7 +178,6 @@
   if(!token){
     window.location.href = "admin-login.html";
   }
-
   try{
     const admin = adminRaw ? JSON.parse(adminRaw) : null;
     document.getElementById("adminEmailLabel").textContent = admin && admin.email ? admin.email : "";
@@ -176,146 +189,14 @@
     window.location.href = "admin-login.html";
   });
 
-  const reqList = document.getElementById("reqList");
-  const emptyState = document.getElementById("emptyState");
-  const countPill = document.getElementById("countPill");
-
-  let knownIds = new Set();
-  let firstLoad = true;
-
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  }
   function fmtTime(ms){
     if(!ms) return "";
     const d = new Date(ms);
     return d.toLocaleString("bn-BD", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" });
   }
-
-  function cardHtml(r){
-    return `
-      <div class="req-card" data-id="${r.request_id}">
-        <div class="req-top">
-          <div>
-            <span class="req-name">${escapeHtml(r.name || "")}</span>
-            <span class="req-role-badge bn">টিউটর আবেদন</span>
-            <div class="req-meta bn">${escapeHtml(r.phone || "")}${r.phone && r.email ? " • " : ""}${escapeHtml(r.email || "")}</div>
-          </div>
-          <span class="req-time bn">${fmtTime(r.created_at)}</span>
-        </div>
-
-        <div class="req-info-grid">
-          <div class="req-info-item"><div class="k bn">সাবজেক্ট</div><div class="v">${escapeHtml(r.subject || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">যোগ্যতা</div><div class="v">${escapeHtml(r.qualification || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">এলাকা</div><div class="v">${escapeHtml(r.area || "—")}</div></div>
-        </div>
-
-        <div class="req-actions">
-          <button class="act-btn approve bn" data-action="approve">Approve</button>
-          <button class="act-btn reject bn" data-action="reject">Reject</button>
-        </div>
-
-        <div class="reject-note-row" id="rejectRow-${r.request_id}">
-          <input type="text" placeholder="বাতিলের কারণ (ঐচ্ছিক)" id="rejectNote-${r.request_id}">
-          <button class="bn" data-action="confirm-reject">নিশ্চিত করুন</button>
-        </div>
-
-        <div class="card-error bn"></div>
-      </div>
-    `;
-  }
-
-  function escapeHtml(str){
-    return String(str).replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-  }
-
-  async function fetchRequests(){
-    try{
-      const res = await fetch(`${API_BASE}/api/admin/requests`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if(res.status === 401){
-        localStorage.removeItem("kst_admin_token");
-        localStorage.removeItem("kst_admin");
-        window.location.href = "admin-login.html";
-        return;
-      }
-      const data = await res.json();
-      if(!res.ok) throw new Error(data.error || "লোড করা যায়নি");
-      renderRequests(data.requests || []);
-    }catch(err){
-      console.error("Failed to load requests:", err.message);
-    }
-  }
-
-  function renderRequests(requests){
-    countPill.textContent = `${requests.length} পেন্ডিং`;
-    emptyState.style.display = requests.length === 0 ? "block" : "none";
-
-    const currentIds = new Set(requests.map(r => r.request_id));
-
-    // remove cards that are gone (approved/rejected elsewhere) with animation
-    Array.from(reqList.children).forEach(card => {
-      if(!currentIds.has(card.dataset.id)){
-        removeCard(card.dataset.id);
-      }
-    });
-
-    requests.forEach(r => {
-      const existing = reqList.querySelector(`[data-id="${r.request_id}"]`);
-      const isNew = !firstLoad && !knownIds.has(r.request_id);
-      if(!existing){
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = cardHtml(r);
-        const card = wrapper.firstElementChild;
-        if(isNew) card.classList.add("new-highlight");
-        reqList.prepend(card);
-        bindCardEvents(card, r.request_id);
-        if(isNew) setTimeout(() => card.classList.remove("new-highlight"), 2200);
-      }
-    });
-
-    knownIds = currentIds;
-    firstLoad = false;
-  }
-
-  function bindCardEvents(card, requestId){
-    const errBox = card.querySelector(".card-error");
-
-    card.querySelector('[data-action="approve"]').addEventListener("click", async (e) => {
-      setCardLoading(card, true);
-      try{
-        await callAdminAction("/api/admin/approve", { requestId });
-        removeCard(requestId);
-      }catch(err){
-        showCardError(errBox, err.message);
-        setCardLoading(card, false);
-      }
-    });
-
-    card.querySelector('[data-action="reject"]').addEventListener("click", () => {
-      document.getElementById(`rejectRow-${requestId}`).classList.toggle("show");
-    });
-
-    card.querySelector('[data-action="confirm-reject"]').addEventListener("click", async () => {
-      const note = document.getElementById(`rejectNote-${requestId}`).value.trim();
-      setCardLoading(card, true);
-      try{
-        await callAdminAction("/api/admin/reject", { requestId, note });
-        removeCard(requestId);
-      }catch(err){
-        showCardError(errBox, err.message);
-        setCardLoading(card, false);
-      }
-    });
-  }
-
-  function setCardLoading(card, loading){
-    card.querySelectorAll("button").forEach(b => b.disabled = loading);
-  }
-
-  function showCardError(box, msg){
-    box.textContent = msg;
-    box.classList.add("show");
-  }
-
   async function callAdminAction(path, body){
     const res = await fetch(`${API_BASE}${path}`, {
       method: "POST",
@@ -333,18 +214,158 @@
     return data;
   }
 
-  function removeCard(requestId){
-    const card = reqList.querySelector(`[data-id="${requestId}"]`);
-    if(!card) return;
-    card.classList.add("removing");
-    setTimeout(() => {
-      card.remove();
-      if(reqList.children.length === 0) emptyState.style.display = "block";
-    }, 380);
+  // ================= Generic poller factory =================
+  // Builds an independent poll+render+animate cycle for one list
+  // (tutor requests or payments), so both run side by side.
+  function makeSection({ listEl, emptyEl, countPill, tabBadge = null, fetchPath, responseKey, idKey, cardHtml, bindEvents }){
+    let knownIds = new Set();
+    let firstLoad = true;
+
+    async function fetchList(){
+      try{
+        const res = await fetch(`${API_BASE}${fetchPath}`, { headers: { "Authorization": `Bearer ${token}` } });
+        if(res.status === 401){
+          localStorage.removeItem("kst_admin_token");
+          localStorage.removeItem("kst_admin");
+          window.location.href = "admin-login.html";
+          return;
+        }
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || "লোড করা যায়নি");
+        render(data[responseKey] || []);
+      }catch(err){
+        console.error(`Failed to load ${fetchPath}:`, err.message);
+      }
+    }
+
+    function render(items){
+      countPill.textContent = `${items.length} পেন্ডিং`;
+      if(tabBadge) tabBadge.textContent = items.length;
+      emptyEl.style.display = items.length === 0 ? "block" : "none";
+
+      const currentIds = new Set(items.map(r => r[idKey]));
+      Array.from(listEl.children).forEach(card => {
+        if(!currentIds.has(card.dataset.id)) removeCard(card.dataset.id);
+      });
+
+      items.forEach(item => {
+        const existing = listEl.querySelector(`[data-id="${item[idKey]}"]`);
+        const isNew = !firstLoad && !knownIds.has(item[idKey]);
+        if(!existing){
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = cardHtml(item);
+          const card = wrapper.firstElementChild;
+          if(isNew) card.classList.add("new-highlight");
+          listEl.prepend(card);
+          bindEvents(card, item);
+          if(isNew) setTimeout(() => card.classList.remove("new-highlight"), 2200);
+        }
+      });
+
+      knownIds = currentIds;
+      firstLoad = false;
+    }
+
+    function removeCard(id){
+      const card = listEl.querySelector(`[data-id="${id}"]`);
+      if(!card) return;
+      card.classList.add("removing");
+      setTimeout(() => {
+        card.remove();
+        if(listEl.children.length === 0) emptyEl.style.display = "block";
+      }, 380);
+    }
+
+    function setCardLoading(card, loading){
+      card.querySelectorAll("button").forEach(b => b.disabled = loading);
+    }
+    function showCardError(card, msg){
+      const box = card.querySelector(".card-error");
+      box.textContent = msg;
+      box.classList.add("show");
+    }
+
+    fetchList();
+    setInterval(fetchList, POLL_MS);
+
+    return { removeCard, setCardLoading, showCardError };
   }
 
-  fetchRequests();
-  setInterval(fetchRequests, POLL_MS);
+  // ================= Ad Requests section (tutor details + photo + payment together) =================
+  const adreqReqList = document.getElementById("adreqReqList");
+  const adreqEmptyState = document.getElementById("adreqEmptyState");
+  const adreqCountPill = document.getElementById("adreqCountPill");
+
+  function adreqCardHtml(r){
+    return `
+      <div class="req-card" data-id="${r.id}">
+        <div class="req-top">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            ${r.photo_url ? `<img class="req-photo" src="${escapeHtml(r.photo_url)}" alt="">` : ""}
+            <div>
+              <span class="req-name">${escapeHtml(r.name || "")}</span>
+              <span class="req-role-badge bn">অ্যাড রিকুয়েস্ট</span>
+              <div class="req-meta bn">${escapeHtml(r.phone || "")}</div>
+            </div>
+          </div>
+          <span class="req-time bn">${fmtTime(r.created_at)}</span>
+        </div>
+        <div class="req-info-grid">
+          <div class="req-info-item"><div class="k bn">সাবজেক্ট</div><div class="v">${escapeHtml(r.subject || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">যোগ্যতা</div><div class="v">${escapeHtml(r.qualification || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">এলাকা</div><div class="v">${escapeHtml(r.area || "—")}</div></div>
+        </div>
+        <div class="req-info-grid">
+          <div class="req-info-item"><div class="k bn">যে নম্বর থেকে পাঠানো হয়েছে</div><div class="v mono">${escapeHtml(r.pay_sender || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">ট্রানজেকশন আইডি</div><div class="v mono">${escapeHtml(r.pay_trx || "—")}</div></div>
+          <div class="req-info-item"><div class="k bn">পরিমাণ</div><div class="v amount">৳${escapeHtml(r.pay_amount || "—")}</div></div>
+        </div>
+        <div class="req-actions">
+          <button class="act-btn approve bn" data-action="approve">Approve (টাকা মিলেছে)</button>
+          <button class="act-btn reject bn" data-action="reject">Reject</button>
+        </div>
+        <div class="reject-note-row" id="adreqRejectRow-${r.id}">
+          <input type="text" placeholder="বাতিলের কারণ (ঐচ্ছিক)" id="adreqRejectNote-${r.id}">
+          <button class="bn" data-action="confirm-reject">নিশ্চিত করুন</button>
+        </div>
+        <div class="card-error bn"></div>
+      </div>
+    `;
+  }
+
+  function bindAdreqEvents(card, r){
+    const requestId = r.id;
+    card.querySelector('[data-action="approve"]').addEventListener("click", async () => {
+      adreqSection.setCardLoading(card, true);
+      try{
+        await callAdminAction("/api/admin/approve-ad-request", { requestId });
+        adreqSection.removeCard(requestId);
+      }catch(err){
+        adreqSection.showCardError(card, err.message);
+        adreqSection.setCardLoading(card, false);
+      }
+    });
+    card.querySelector('[data-action="reject"]').addEventListener("click", () => {
+      document.getElementById(`adreqRejectRow-${requestId}`).classList.toggle("show");
+    });
+    card.querySelector('[data-action="confirm-reject"]').addEventListener("click", async () => {
+      const note = document.getElementById(`adreqRejectNote-${requestId}`).value.trim();
+      adreqSection.setCardLoading(card, true);
+      try{
+        await callAdminAction("/api/admin/reject-ad-request", { requestId, note });
+        adreqSection.removeCard(requestId);
+      }catch(err){
+        adreqSection.showCardError(card, err.message);
+        adreqSection.setCardLoading(card, false);
+      }
+    });
+  }
+
+  const adreqSection = makeSection({
+    listEl: adreqReqList, emptyEl: adreqEmptyState, countPill: adreqCountPill,
+    fetchPath: "/api/admin/ad-requests", responseKey: "requests", idKey: "id",
+    cardHtml: adreqCardHtml, bindEvents: bindAdreqEvents,
+  });
 </script>
 
 </body>

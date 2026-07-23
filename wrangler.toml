@@ -19,7 +19,7 @@ database_name = "kushtia-smart-tutor-db"
 database_id = "626daf09-81a5-4ae2-9f8a-a9b9de06f9d2"
 
 [vars]
-ALLOWED_ORIGIN = "https://your-site.com"
+ALLOWED_ORIGIN = "*"
 RESEND_FROM = "Kushtia Smart Tutor <onboarding@resend.dev>"
 
 # Set these secrets (not committed to code) with:

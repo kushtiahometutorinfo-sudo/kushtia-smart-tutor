@@ -192,7 +192,7 @@
     <h1 class="page-title en">All Ads — Search</h1>
     <p class="page-sub bn">ফোন নম্বর দিয়ে সব স্ট্যাটাসের (Pending, Running, Paused, Rejected/Cancelled) মধ্যে থেকে Ad খুঁজুন এবং প্রয়োজনীয় সব কাজ (Edit/Approve/Pause/Resume/Delete) করুন।</p>
     <div class="search-bar-row">
-      <input type="text" id="searchAllPhone" class="bn" placeholder="ফোন নম্বর লিখুন (যেমন 017...)" inputmode="tel">
+      <input type="text" id="searchAllPhone" class="bn" placeholder="ফোন, ট্রানজেকশন আইডি বা অর্ডার আইডি লিখুন">
       <button class="act-btn approve bn" id="searchAllBtn">খুঁজুন</button>
     </div>
     <p class="page-sub bn" id="searchAllMsg" style="display:none;"></p>
@@ -753,7 +753,7 @@
     if(!phone){
       listAllEl.innerHTML = "";
       emptyAllEl.style.display = "none";
-      searchAllMsg.textContent = "ফোন নম্বর লিখে খুঁজুন।";
+      searchAllMsg.textContent = "ফোন নম্বর, ট্রানজেকশন আইডি বা অর্ডার আইডি লিখে খুঁজুন।";
       searchAllMsg.style.display = "block";
       return;
     }
@@ -777,9 +777,15 @@
       ));
       const combined = results.flat();
       const digits = phone.replace(/\D/g, "");
+      const query = phone.toLowerCase();
       const filtered = combined.filter(r => {
         const rp = String(r.phone || "");
-        return rp.includes(phone) || (digits && rp.replace(/\D/g, "").includes(digits));
+        const trx = String(r.payTrx || "").toLowerCase();
+        const rid = String(r.id || "").toLowerCase();
+        return rp.includes(phone)
+          || (digits && rp.replace(/\D/g, "").includes(digits))
+          || (query && trx.includes(query))
+          || (query && rid.includes(query));
       });
 
       searchAllMsg.style.display = "none";

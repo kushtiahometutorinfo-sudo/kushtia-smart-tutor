@@ -89,9 +89,8 @@
   .req-time{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
 
   .req-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
-  .req-info-item{min-width:0;}
   .req-info-item .k{font-size:11px;color:var(--ink-soft);font-weight:600;margin-bottom:2px;}
-  .req-info-item .v{font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere;word-break:break-word;}
+  .req-info-item .v{font-size:13px;font-weight:600;color:var(--ink);}
 
   .req-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
   .act-btn{padding:9px 14px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:filter .2s ease,transform .2s ease;}
@@ -112,12 +111,6 @@
   .card-error.show{display:block;}
 
   .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
-
-  .search-bar-row{display:flex;gap:10px;margin-bottom:10px;max-width:480px;flex-wrap:wrap;}
-  .search-bar-row input{flex:1;min-width:200px;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;outline:none;font-family:inherit;background:#fff;}
-  .search-bar-row input:focus{border-color:var(--green-500);}
-  .search-bar-row button{white-space:nowrap;}
-  #searchAllMsg{margin:4px 0 18px;}
 
   /* Large Modal */
   .modal-overlay{position:fixed;inset:0;background:rgba(14,59,34,.45);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;overflow-y:auto;}
@@ -157,7 +150,6 @@
   </a>
 
   <div class="nav-item active bn" data-view="dashboard">📊 Dashboard</div>
-  <div class="nav-item bn" data-view="all">🔍 সব Ads (Search)</div>
 
   <div class="nav-group-label bn">Ads</div>
   <div class="nav-sub">
@@ -186,18 +178,6 @@
       <div class="stat-card cancelled"><div class="lbl bn">বাতিল করা</div><div class="num en" id="statCancelled">—</div></div>
       <div class="stat-card rejected"><div class="lbl bn">রিজেক্টেড</div><div class="num en" id="statRejected">—</div></div>
     </div>
-  </div>
-
-  <div class="view" id="view-all">
-    <h1 class="page-title en">All Ads — Search</h1>
-    <p class="page-sub bn">ফোন নম্বর দিয়ে সব স্ট্যাটাসের (Pending, Running, Paused, Rejected/Cancelled) মধ্যে থেকে Ad খুঁজুন এবং প্রয়োজনীয় সব কাজ (Edit/Approve/Pause/Resume/Delete) করুন।</p>
-    <div class="search-bar-row">
-      <input type="text" id="searchAllPhone" class="bn" placeholder="ফোন নম্বর লিখুন (যেমন 017...)" inputmode="tel">
-      <button class="act-btn approve bn" id="searchAllBtn">খুঁজুন</button>
-    </div>
-    <p class="page-sub bn" id="searchAllMsg" style="display:none;"></p>
-    <div class="req-list" id="list-all"></div>
-    <div class="empty-state bn" id="empty-all" style="display:none;"><p>এই নম্বরে কোনো Ad পাওয়া যায়নি।</p></div>
   </div>
 
   <div class="view" id="view-pending">
@@ -612,197 +592,6 @@
   loadDashboardStats();
   setInterval(loadDashboardStats, POLL_MS);
 
-  // ---------- All Ads — Search by phone (across every status) ----------
-  const listAllEl = document.getElementById("list-all");
-  const emptyAllEl = document.getElementById("empty-all");
-  const searchAllInput = document.getElementById("searchAllPhone");
-  const searchAllBtn = document.getElementById("searchAllBtn");
-  const searchAllMsg = document.getElementById("searchAllMsg");
-  let lastSearchedPhone = "";
-
-  function actionsHtmlAll(actualStatus, r){
-    let btns = `<button class="act-btn edit bn" data-action="edit">Edit</button>`;
-    if(actualStatus === "pending"){
-      btns += `<button class="act-btn approve bn" data-action="approve">Approve (মেয়াদের দিন সহ)</button>
-               <button class="act-btn reject bn" data-action="reject">Reject</button>`;
-    } else if(actualStatus === "running"){
-      btns += `<button class="act-btn avail bn" data-action="toggle-avail">${r.availability === 'busy' ? '🔴 ব্যস্ত ➔ এভেলেবল করুন' : '🟢 এভেলেবল ➔ ব্যস্ত করুন'}</button>
-               <button class="act-btn pause bn" data-action="pause">Pause</button>
-               <button class="act-btn delete bn" data-action="delete">Delete</button>`;
-    } else if(actualStatus === "paused"){
-      btns += `<button class="act-btn resume bn" data-action="resume">Resume</button>
-               <button class="act-btn delete bn" data-action="delete">Delete</button>`;
-    } else {
-      btns += `<button class="act-btn delete bn" data-action="delete">Delete</button>`;
-    }
-    return btns;
-  }
-
-  function cardHtmlAll(r){
-    const actualStatus = r.__uiStatus || r.status || "pending";
-    const isAutoExpired = r.autoExpired || r.auto_expired === 1;
-    const tutorIdStr = r.tutorId ? `ID: ${escapeHtml(r.tutorId)}` : `ID: ${r.id}`;
-    return `
-      <div class="req-card" data-id="${r.id}">
-        <div class="req-top">
-          <div>
-            <span class="req-name">${escapeHtml(r.name)}</span>
-            <span class="tutor-id-badge">${tutorIdStr}</span>
-            <span class="status-badge ${actualStatus} bn">${escapeHtml(r.status || actualStatus)}</span>
-            ${isAutoExpired ? `<span class="expired-badge bn">⚠️ মেয়াদ শেষ — ডিলিট প্রয়োজন</span>` : ""}
-            <div class="req-meta bn">${escapeHtml(r.phone || "")} • ${escapeHtml(r.university || "বিশ্ববিদ্যালয় উল্লেখ নেই")} (${escapeHtml(r.department || "N/A")})</div>
-          </div>
-          <span class="req-time bn">মেয়াদ: ${r.validityDays ? r.validityDays + ' দিন' : '30 দিন'} (শেষ: ${fmtTime(r.expiresAt || r.expires_at)})</span>
-        </div>
-        <div class="req-info-grid">
-          <div class="req-info-item"><div class="k bn">বিশ্ববিদ্যালয়</div><div class="v">${escapeHtml(r.university || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">ডিপার্টমেন্ট & সেশন</div><div class="v">${escapeHtml(r.department || "—")} (${escapeHtml(r.session || "—")})</div></div>
-          <div class="req-info-item"><div class="k bn">বিষয়সমূহ</div><div class="v">${escapeHtml(r.subjects || r.subject || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">এলাকা & জেন্ডার</div><div class="v">${escapeHtml(r.currentLocation || r.area || "—")} • ${escapeHtml(r.gender || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">বেতন & অভিজ্ঞতা</div><div class="v">${escapeHtml(r.expectedSalary || "—")} • ${escapeHtml(r.experienceYears || "—")}</div></div>
-        </div>
-        <div class="req-info-grid" style="margin-top:8px;border-top:1px dashed var(--line);padding-top:8px;">
-          <div class="req-info-item"><div class="k bn">প্রেরকের নম্বর (bKash/Nagad)</div><div class="v">${escapeHtml(r.paySender || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">ট্রানজেকশন আইডি</div><div class="v">${escapeHtml(r.payTrx || "—")}</div></div>
-          <div class="req-info-item"><div class="k bn">পরিমাণ</div><div class="v" style="color:var(--green-700);font-size:16px;">${r.payAmount ? "৳" + escapeHtml(r.payAmount) : "—"}</div></div>
-          ${r.photoUrl ? `<div class="req-info-item"><div class="k bn">পেমেন্ট স্ক্রিনশট / ছবি</div><div class="v"><a href="${escapeHtml(r.photoUrl)}" target="_blank" rel="noopener" class="bn">ছবি দেখুন ↗</a></div></div>` : ""}
-        </div>
-        <div class="req-actions">${actionsHtmlAll(actualStatus, r)}</div>
-        ${actualStatus === "pending" ? `
-        <div class="reject-note-row" id="rejRow-all-${r.id}">
-          <input type="text" placeholder="বাতিলের কারণ (ঐচ্ছিক)" id="rejNote-all-${r.id}">
-          <button class="bn" data-action="confirm-reject">নিশ্চিত করুন</button>
-        </div>` : ""}
-        <div class="card-error bn"></div>
-      </div>
-    `;
-  }
-
-  function bindEventsAll(card, r){
-    const actualStatus = r.__uiStatus || r.status || "pending";
-    const approveBtn = card.querySelector('[data-action="approve"]');
-    const rejectBtn = card.querySelector('[data-action="reject"]');
-    const confirmRejectBtn = card.querySelector('[data-action="confirm-reject"]');
-    const editBtn = card.querySelector('[data-action="edit"]');
-    const pauseBtn = card.querySelector('[data-action="pause"]');
-    const resumeBtn = card.querySelector('[data-action="resume"]');
-    const deleteBtn = card.querySelector('[data-action="delete"]');
-    const toggleAvailBtn = card.querySelector('[data-action="toggle-avail"]');
-
-    const setLoading = (loading) => card.querySelectorAll("button").forEach(b => b.disabled = loading);
-    const showErr = (msg) => { const box = card.querySelector(".card-error"); box.textContent = msg; box.classList.add("show"); };
-    const removeThisCard = () => {
-      card.classList.add("removing");
-      setTimeout(() => { card.remove(); if(listAllEl.children.length === 0) emptyAllEl.style.display = "block"; }, 380);
-    };
-
-    if(approveBtn) approveBtn.addEventListener("click", async () => {
-      const validityDays = await askValidityDays("কত দিনের জন্য লাইভ (Approve) করতে চান?", 30);
-      if(validityDays === null) return;
-      setLoading(true);
-      try{ await apiCall(`/api/admin/ads/${r.id}/approve`, "POST", { validityDays }); removeThisCard(); loadDashboardStats(); }
-      catch(err){ showErr(err.message); setLoading(false); }
-    });
-
-    if(rejectBtn) rejectBtn.addEventListener("click", () => {
-      document.getElementById(`rejRow-all-${r.id}`).classList.toggle("show");
-    });
-
-    if(confirmRejectBtn) confirmRejectBtn.addEventListener("click", async () => {
-      const note = document.getElementById(`rejNote-all-${r.id}`).value.trim();
-      setLoading(true);
-      try{ await apiCall(`/api/admin/ads/${r.id}/reject`, "POST", { note }); removeThisCard(); loadDashboardStats(); }
-      catch(err){ showErr(err.message); setLoading(false); }
-    });
-
-    if(toggleAvailBtn) toggleAvailBtn.addEventListener("click", async () => {
-      const nextAvail = r.availability === "busy" ? "available" : "busy";
-      setLoading(true);
-      try{ await apiCall(`/api/admin/ads/${r.id}/update`, "POST", { availability: nextAvail }); searchAllAds(lastSearchedPhone); }
-      catch(err){ showErr(err.message); setLoading(false); }
-    });
-
-    if(pauseBtn) pauseBtn.addEventListener("click", async () => {
-      setLoading(true);
-      try{ await apiCall(`/api/admin/ads/${r.id}/pause`, "POST"); removeThisCard(); loadDashboardStats(); }
-      catch(err){ showErr(err.message); setLoading(false); }
-    });
-
-    if(resumeBtn) resumeBtn.addEventListener("click", async () => {
-      const validityDays = await askValidityDays("Resume করতে মেয়াদের দিন দিন", 30);
-      if(validityDays === null) return;
-      setLoading(true);
-      try{ await apiCall(`/api/admin/ads/${r.id}/resume`, "POST", { validityDays }); removeThisCard(); loadDashboardStats(); }
-      catch(err){ showErr(err.message); setLoading(false); }
-    });
-
-    if(deleteBtn) deleteBtn.addEventListener("click", async () => {
-      const ok = await askConfirm("এই Ad স্থায়ীভাবে ডিলিট করতে চান?");
-      if(!ok) return;
-      setLoading(true);
-      try{ await apiCall(`/api/admin/ads/${r.id}/delete`, "POST"); removeThisCard(); loadDashboardStats(); }
-      catch(err){ showErr(err.message); setLoading(false); }
-    });
-
-    if(editBtn) editBtn.addEventListener("click", () => openEditModal(r));
-  }
-
-  async function searchAllAds(phoneRaw){
-    const phone = (phoneRaw || "").trim();
-    lastSearchedPhone = phone;
-    if(!phone){
-      listAllEl.innerHTML = "";
-      emptyAllEl.style.display = "none";
-      searchAllMsg.textContent = "ফোন নম্বর লিখে খুঁজুন।";
-      searchAllMsg.style.display = "block";
-      return;
-    }
-    searchAllMsg.textContent = "খোঁজা হচ্ছে...";
-    searchAllMsg.style.display = "block";
-    listAllEl.innerHTML = "";
-    emptyAllEl.style.display = "none";
-
-    const groups = [
-      { key: "pending", param: "pending" },
-      { key: "running", param: "running" },
-      { key: "paused", param: "paused" },
-      { key: "rejected", param: "rejected,cancelled" }
-    ];
-
-    try{
-      const results = await Promise.all(groups.map(g =>
-        apiCall(`/api/admin/ads?status=${g.param}`, "GET")
-          .then(d => (d.ads || []).map(r => ({ ...r, __uiStatus: r.status || g.key })))
-          .catch(() => [])
-      ));
-      const combined = results.flat();
-      const digits = phone.replace(/\D/g, "");
-      const filtered = combined.filter(r => {
-        const rp = String(r.phone || "");
-        return rp.includes(phone) || (digits && rp.replace(/\D/g, "").includes(digits));
-      });
-
-      searchAllMsg.style.display = "none";
-      if(filtered.length === 0){
-        emptyAllEl.style.display = "block";
-        return;
-      }
-      filtered.forEach(r => {
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = cardHtmlAll(r);
-        const card = wrapper.firstElementChild;
-        listAllEl.appendChild(card);
-        bindEventsAll(card, r);
-      });
-    }catch(err){
-      searchAllMsg.textContent = "সমস্যা হয়েছে: " + err.message;
-      searchAllMsg.style.display = "block";
-    }
-  }
-
-  searchAllBtn.addEventListener("click", () => searchAllAds(searchAllInput.value));
-  searchAllInput.addEventListener("keydown", (e) => { if(e.key === "Enter") searchAllAds(searchAllInput.value); });
-
   let editingId = null;
   function openEditModal(r){
     editingId = r.id;
@@ -852,7 +641,6 @@
       runningSection.fetchList();
       pausedSection.fetchList();
       pendingSection.fetchList();
-      if(lastSearchedPhone) searchAllAds(lastSearchedPhone);
     }catch(err){
       const box = document.getElementById("editError");
       box.textContent = err.message; box.classList.add("show");

@@ -94,6 +94,14 @@
     width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);
     font-size:14px;font-family:inherit;outline:none;background:var(--paper);color:var(--ink);
   }
+  select{
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    padding-right:40px;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B7A3D' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center;background-size:16px;
+  }
+  select:hover{border-color:var(--green-500);}
+  select::-ms-expand{display:none;}
   textarea{resize:vertical;min-height:80px;}
   input:focus,select:focus,textarea:focus{border-color:var(--green-500);box-shadow:0 0 0 4px rgba(47,168,90,.15);}
   
@@ -152,8 +160,35 @@
   @media (max-width:768px){
     .grid2,.grid3,.grid4,.pay-grid{grid-template-columns:1fr;}
     .profile-head{padding:20px;}
-    .page{padding:20px 16px 80px;}
+    .page{padding:20px 16px 100px;}
   }
+
+  /* Bottom Navigation */
+  .bottom-nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:#fff;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-around;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    box-shadow:0 -10px 26px -18px rgba(14,59,34,.35);
+  }
+  .bn-item{
+    display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;
+    padding:4px 2px;color:var(--ink-soft);font-size:11px;font-weight:600;
+    transition:color .2s ease;
+  }
+  .bn-item svg{width:22px;height:22px;stroke:var(--ink-soft);transition:stroke .2s ease;}
+  .bn-item.active{color:var(--green-700);}
+  .bn-item.active svg{stroke:var(--green-700);}
+  .bn-item:active{transform:translateY(1px);}
+  .bn-fab{
+    width:52px;height:52px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,var(--green-600),var(--green-900));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 14px 26px -10px rgba(14,59,34,.6);
+    transform:translateY(-14px);transition:transform .2s ease,filter .2s ease;
+  }
+  .bn-fab:hover{filter:brightness(1.08);transform:translateY(-16px);}
+  .bn-fab svg{width:24px;height:24px;stroke:#fff;}
 </style>
 </head>
 <body>
@@ -372,7 +407,62 @@
     </div><!-- /#adFormBody -->
   </div>
 
+  <!-- Payment / Customer Support (WhatsApp) -->
+  <div class="section-card" id="supportSection">
+    <h2 class="bn">📞 পেমেন্ট / কাস্টমার সাপোর্ট</h2>
+    <p class="desc bn">পেমেন্ট, অ্যাড বা যেকোনো সমস্যায় নিচের ফর্ম পূরণ করে পাঠালে সরাসরি হোয়াটসঅ্যাপে মেসেজ চলে যাবে। একবার পূরণ করা তথ্য এখানে সেভ থাকবে — পরেরবার সবকিছু আবার লিখতে হবে না, শুধু দরকারমতো এডিট করে পাঠিয়ে দিলেই হবে।</p>
+
+    <label class="bn">বিষয় (Subject)</label>
+    <select id="supportCategoryInput">
+      <option value="পেমেন্ট সংক্রান্ত">পেমেন্ট সংক্রান্ত (Payment)</option>
+      <option value="অ্যাড/প্রোফাইল সংক্রান্ত">অ্যাড / প্রোফাইল সংক্রান্ত</option>
+      <option value="সাধারণ জিজ্ঞাসা">সাধারণ জিজ্ঞাসা</option>
+      <option value="অভিযোগ/সমস্যা">অভিযোগ / সমস্যা</option>
+    </select>
+
+    <div class="grid2">
+      <div>
+        <label class="bn">নাম</label>
+        <input type="text" id="supportNameInput" placeholder="আপনার নাম">
+      </div>
+      <div>
+        <label class="bn">ফোন নম্বর</label>
+        <input type="tel" id="supportPhoneInput" placeholder="01XXXXXXXXX">
+      </div>
+    </div>
+
+    <label class="bn">বার্তা লিখুন (Message)</label>
+    <textarea id="supportMessageInput" placeholder="আপনার সমস্যা বা প্রশ্নটি বিস্তারিত লিখুন..."></textarea>
+
+    <div class="error-msg bn" id="supportErr"></div>
+    <button class="btn bn" id="sendSupportBtn" style="background:linear-gradient(135deg,#25D366,#128C4A);">
+      <span>🟢 হোয়াটসঅ্যাপে পাঠান</span>
+    </button>
+  </div>
+
 </div>
+
+<nav class="bottom-nav">
+  <a href="home.html" class="bn-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h5v-6h2v6h5a1 1 0 0 0 1-1v-9"/></svg>
+    <span class="bn">হোম</span>
+  </a>
+  <a href="hire-tutor.html" class="bn-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <span class="bn">খুঁজুন</span>
+  </a>
+  <a href="#" class="bn-fab" id="bnFabBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </a>
+  <a href="#" class="bn-item" id="bnNotifyBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+    <span class="bn">নোটিফিকেশন</span>
+  </a>
+  <a href="profile.html" class="bn-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5"/></svg>
+    <span class="bn">প্রোফাইল</span>
+  </a>
+</nav>
 
 <div class="toast bn" id="toast"></div>
 
@@ -499,7 +589,9 @@
       banner.className = "status-banner rejected";
       icon.textContent = "❌";
       title.textContent = "আবেদন বাতিল করা হয়েছে (Rejected)";
-      sub.textContent = ad.rejectNote || "সঠিক তথ্য ও পেমেন্ট দিয়ে পুনরায় আবেদন করুন।";
+      const rejectNoteText = ad.rejectNote || ad.reject_note || ad.rejectReason || ad.reject_reason ||
+                              ad.adminNote || ad.admin_note || ad.note || ad.reason;
+      sub.textContent = rejectNoteText || "সঠিক তথ্য ও পেমেন্ট দিয়ে পুনরায় আবেদন করুন।";
     } else {
       banner.className = "status-banner pending";
       icon.textContent = "ℹ️";
@@ -657,6 +749,69 @@
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("kst_profile");
     window.location.href = "home.html";
+  });
+
+  // ---- Payment / Customer Support (WhatsApp) ----
+  const SUPPORT_WHATSAPP_NUMBER = "8801700000000"; // TODO: এখানে নিজের হোয়াটসঅ্যাপ নাম্বার বসান (দেশের কোড সহ, শুরুতে + ছাড়া)
+
+  const supportCategoryInput = document.getElementById("supportCategoryInput");
+  const supportNameInput = document.getElementById("supportNameInput");
+  const supportPhoneInput = document.getElementById("supportPhoneInput");
+  const supportMessageInput = document.getElementById("supportMessageInput");
+
+  // Prefill from previously saved submission so nothing needs re-typing; fall back to profile info
+  (function prefillSupportForm(){
+    let saved = null;
+    try{ saved = JSON.parse(localStorage.getItem("kst_support_form")); }catch(e){ saved = null; }
+
+    supportCategoryInput.value = (saved && saved.category) || supportCategoryInput.value;
+    supportNameInput.value = (saved && saved.name) || currentProfile.name || "";
+    supportPhoneInput.value = (saved && saved.phone) || currentProfile.phone || "";
+    supportMessageInput.value = (saved && saved.message) || "";
+  })();
+
+  document.getElementById("sendSupportBtn").addEventListener("click", () => {
+    const errEl = document.getElementById("supportErr");
+    errEl.classList.remove("show");
+
+    const data = {
+      category: supportCategoryInput.value,
+      name: supportNameInput.value.trim(),
+      phone: supportPhoneInput.value.trim(),
+      message: supportMessageInput.value.trim()
+    };
+
+    if(!data.phone || !data.message){
+      errEl.textContent = "ফোন নম্বর ও বার্তা লেখা আবশ্যক";
+      errEl.classList.add("show");
+      return;
+    }
+
+    // Save so a future edit only needs a small change, not the whole form again
+    localStorage.setItem("kst_support_form", JSON.stringify(data));
+
+    const accId = document.getElementById("accountIdVal").textContent;
+    const waText =
+      `বিষয়: ${data.category}\n` +
+      `নাম: ${data.name}\n` +
+      `ফোন: ${data.phone}\n` +
+      `অ্যাকাউন্ট আইডি: ${accId}\n\n` +
+      `বার্তা:\n${data.message}`;
+
+    window.open(`https://wa.me/${SUPPORT_WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`, "_blank");
+    toast("হোয়াটসঅ্যাপ খোলা হচ্ছে... ✅");
+  });
+
+  // ---- Bottom nav: FAB opens/scrolls to the ad form, notification is a placeholder ----
+  document.getElementById("bnFabBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    openForm();
+    document.getElementById("adRequestSection").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  document.getElementById("bnNotifyBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    toast("নোটিফিকেশন ফিচার শীঘ্রই আসছে");
   });
 </script>
 

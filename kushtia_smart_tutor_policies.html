@@ -1,141 +1,385 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Conditions and Privacy Policy - Kushtia Smart Tutor</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eaf5ee; /* Light green background similar to screenshot */
-            color: #333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .header img {
-            max-width: 180px;
-            height: auto;
-            margin-bottom: 15px;
-        }
-        .header h1 {
-            color: #1b5b3a; /* Dark green from the website */
-            margin-bottom: 5px;
-            font-size: 28px;
-        }
-        .header p {
-            color: #555;
-            font-size: 16px;
-            margin-top: 0;
-        }
-        h2 {
-            color: #1b5b3a;
-            border-bottom: 2px solid #1b5b3a;
-            padding-bottom: 8px;
-            margin-top: 40px;
-        }
-        h3 {
-            color: #247c4c;
-            margin-top: 25px;
-        }
-        p, ul {
-            margin-bottom: 15px;
-            font-size: 15px;
-            color: #444;
-        }
-        ul {
-            padding-left: 20px;
-        }
-        li {
-            margin-bottom: 8px;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px dashed #ccc;
-            font-size: 14px;
-            color: #666;
-        }
-        .footer strong {
-            color: #1b5b3a;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Privacy Policy — Kushtia Smart Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#0E3B22; --green-700:#1B7A3D; --green-600:#219653; --green-500:#2FA85A; --green-lime:#7ED957;
+    --mint-50:#EFFAF3; --mint-100:#DFF3E6; --ink:#0F2318; --ink-soft:#43594C; --paper:#FCFDFB; --line:#D8ECDF;
+    --shadow:0 20px 45px -22px rgba(14,59,34,.35);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Hind Siliguri','Poppins',sans-serif;background:var(--paper);color:var(--ink);}
+  .bn{font-family:'Hind Siliguri',sans-serif;} .en{font-family:'Poppins',sans-serif;}
+  a{color:var(--green-700);}
+
+  header.topnav{position:sticky;top:0;z-index:50;background:rgba(252,253,251,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
+  .brand-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(155deg,var(--green-600),var(--green-900));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .brand-mark svg{width:19px;height:19px;}
+  .brand-text{font-weight:700;font-size:15px;color:var(--green-900);}
+
+  .lang-toggle{display:flex;gap:4px;background:var(--mint-100);border-radius:999px;padding:4px;}
+  .lang-btn{
+    padding:7px 16px;border-radius:999px;border:none;background:none;cursor:pointer;
+    font-size:13px;font-weight:700;color:var(--green-700);transition:all .2s ease;
+  }
+  .lang-btn.active{background:var(--green-900);color:#fff;}
+
+  .container{max-width:820px;margin:0 auto;padding:40px 24px 80px;}
+  .doc-head{text-align:center;margin-bottom:44px;}
+  .doc-head .logo-mark{
+    width:60px;height:60px;border-radius:16px;margin:0 auto 14px;
+    background:linear-gradient(155deg,var(--green-600),var(--green-900));
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);
+  }
+  .doc-head .logo-mark svg{width:32px;height:32px;}
+  .doc-head h1{margin:0 0 4px;font-size:24px;color:var(--green-900);font-family:'Baloo Da 2',sans-serif;}
+  .doc-head p{margin:0;color:var(--ink-soft);font-size:14px;}
+  .effective-date{margin-top:10px;font-size:12.5px;color:var(--ink-soft);}
+
+  .toc{
+    background:var(--mint-50);border:1px solid var(--line);border-radius:16px;
+    padding:18px 22px;margin-bottom:36px;
+  }
+  .toc-title{font-size:13px;font-weight:700;color:var(--green-800,var(--green-700));text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;}
+  .toc ol{margin:0;padding-left:20px;font-size:13.5px;line-height:2;}
+  .toc a{text-decoration:none;color:var(--ink);}
+  .toc a:hover{color:var(--green-700);}
+
+  h2.section-title{
+    font-size:19px;color:var(--green-900);border-bottom:2px solid var(--mint-100);
+    padding-bottom:10px;margin-top:42px;scroll-margin-top:80px;
+  }
+  h3.sub-title{font-size:15.5px;color:var(--green-700);margin-top:22px;}
+  p, li{font-size:14.5px;line-height:1.85;color:var(--ink-soft);}
+  ul{padding-left:20px;}
+  li{margin-bottom:6px;}
+  strong{color:var(--ink);}
+
+  .callout{
+    background:var(--mint-50);border-left:4px solid var(--green-600);
+    padding:14px 18px;border-radius:0 10px 10px 0;margin:16px 0;font-size:13.5px;color:var(--ink);
+  }
+
+  .divider-block{margin:56px 0 0;padding-top:36px;border-top:2px dashed var(--line);}
+
+  .footer{
+    text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--ink-soft);
+  }
+  .footer strong{color:var(--green-900);}
+  .footer a{font-weight:700;}
+
+  /* language sections */
+  [data-lang]{display:none;}
+  [data-lang].active{display:block;}
+
+  @media (max-width:640px){
+    .container{padding:28px 18px 60px;}
+    h2.section-title{font-size:17px;}
+  }
+</style>
 </head>
 <body>
 
+<header class="topnav">
+  <div class="nav-inner">
+    <a href="home.html" class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg></div>
+      <div class="brand-text">Kushtia Smart Tutor</div>
+    </a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btnEn">EN</button>
+      <button class="lang-btn" id="btnBn">বাংলা</button>
+    </div>
+  </div>
+</header>
+
 <div class="container">
-    <div class="header">
-        <!-- Logo Image Reference -->
-        <img src="Image.png" alt="Kushtia Smart Tutor Logo">
-        <h1>Kushtia Smart Tutor</h1>
-        <p>আপনার হোম লার্নিং পার্টনার</p>
+
+  <div class="doc-head">
+    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L20 9.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1V9.5L12 3Z" fill="#EFFAF3"/></svg></div>
+    <h1>Kushtia Smart Tutor</h1>
+    <p data-lang="en" class="active en">Terms and Conditions &amp; Privacy Policy</p>
+    <p data-lang="bn" class="bn">টার্মস অ্যান্ড কন্ডিশনস ও প্রাইভেসি পলিসি</p>
+    <div class="effective-date">
+      <span data-lang="en" class="active en">Effective date: July 24, 2026 &nbsp;|&nbsp; Last updated: July 24, 2026</span>
+      <span data-lang="bn" class="bn">কার্যকর তারিখ: জুলাই ২৪, ২০২৬ &nbsp;|&nbsp; সর্বশেষ আপডেট: জুলাই ২৪, ২০২৬</span>
+    </div>
+  </div>
+
+  <!-- ======================= ENGLISH ======================= -->
+  <div data-lang="en" class="active">
+
+    <div class="toc">
+      <div class="toc-title">Contents</div>
+      <ol>
+        <li><a href="#t-acceptance">Acceptance of Terms</a></li>
+        <li><a href="#t-eligibility">Eligibility</a></li>
+        <li><a href="#t-service">Nature of the Service</a></li>
+        <li><a href="#t-accounts">Accounts &amp; Security</a></li>
+        <li><a href="#t-listing">Tutor Verification, Listings &amp; Fees</a></li>
+        <li><a href="#t-conduct">Code of Conduct</a></li>
+        <li><a href="#t-liability">Limitation of Liability</a></li>
+        <li><a href="#t-indemnity">Indemnification</a></li>
+        <li><a href="#t-termination">Suspension &amp; Termination</a></li>
+        <li><a href="#t-law">Governing Law &amp; Disputes</a></li>
+        <li><a href="#t-changes">Changes to These Terms</a></li>
+        <li><a href="#p-intro">Privacy Policy — Introduction</a></li>
+        <li><a href="#p-collect">Information We Collect</a></li>
+        <li><a href="#p-use">How We Use Information</a></li>
+        <li><a href="#p-share">Disclosure of Information</a></li>
+        <li><a href="#p-security">Data Security &amp; Retention</a></li>
+        <li><a href="#p-rights">Your Rights</a></li>
+        <li><a href="#p-children">Children's Privacy</a></li>
+        <li><a href="#p-contact">Contact Us</a></li>
+      </ol>
     </div>
 
-    <div id="terms">
-        <h2>টার্মস অ্যান্ড কন্ডিশনস (Terms and Conditions)</h2>
-        <p>কুষ্টিয়া স্মার্ট টিউটর (Kushtia Smart Tutor) এ আপনাকে স্বাগতম। আমাদের ওয়েবসাইট ব্যবহার করার আগে অনুগ্রহ করে নিচের শর্তাবলী মনোযোগ সহকারে পড়ুন। আমাদের সার্ভিস গ্রহণ করার মাধ্যমে আপনি এই শর্তাবলীর সাথে সম্মতি প্রকাশ করছেন।</p>
-        
-        <h3>১. সাধারণ ব্যবহার</h3>
-        <p>আমাদের প্ল্যাটফর্মটি শুধুমাত্র শিক্ষক এবং শিক্ষার্থীদের সংযোগ স্থাপনের জন্য তৈরি করা হয়েছে। ওয়েবসাইটের কোনো তথ্য বা সেবার অপব্যবহার করা কঠোরভাবে নিষিদ্ধ।</p>
-        
-        <h3>২. একাউন্ট এবং নিরাপত্তা</h3>
-        <ul>
-            <li>ওয়েবসাইটে নিবন্ধন করার সময় আপনাকে সঠিক তথ্য প্রদান করতে হবে।</li>
-            <li>আপনার একাউন্টের পাসওয়ার্ড এবং অন্যান্য গোপনীয়তা রক্ষার দায়িত্ব সম্পূর্ণ আপনার।</li>
-            <li>কোনো অননুমোদিত অ্যাক্টিভিটি লক্ষ্য করলে তাৎক্ষণিকভাবে আমাদের জানাতে হবে।</li>
-        </ul>
+    <h2 class="section-title" id="t-acceptance">1. Acceptance of Terms</h2>
+    <p>These Terms and Conditions ("Terms") constitute a legally binding agreement between you ("User", "you") and Kushtia Smart Tutor ("Platform", "we", "us", "our"). By accessing, registering on, or otherwise using the Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy in full. If you do not agree to any part of these Terms, you must immediately discontinue use of the Platform.</p>
 
-        <h3>৩. টিউটর ও শিক্ষার্থী নীতিমালা</h3>
-        <ul>
-            <li><strong>শিক্ষার্থীদের জন্য:</strong> টিউটর নির্বাচন, পেমেন্ট এবং ক্লাসের সময়সূচী নিজ দায়িত্বে টিউটরের সাথে আলোচনা করে নিতে হবে।</li>
-            <li><strong>টিউটরদের জন্য:</strong> নিজের শিক্ষাগত যোগ্যতা সম্পর্কে সঠিক তথ্য দিতে হবে। শিক্ষার্থীদের সাথে পেশাদারিত্ব ও সম্মানজনক আচরণ বজায় রাখা বাধ্যতামূলক।</li>
-        </ul>
+    <h2 class="section-title" id="t-eligibility">2. Eligibility</h2>
+    <p>You must be at least 18 years of age, or the age of majority in your jurisdiction, to independently create an account. Users under 18 may use the Platform to search for or engage a tutor only under the direct supervision and account of a parent or legal guardian, who assumes full responsibility for such use.</p>
 
-        <h3>৪. দায়বদ্ধতা</h3>
-        <p>কুষ্টিয়া স্মার্ট টিউটর শুধুমাত্র একটি মাধ্যম। শিক্ষক বা শিক্ষার্থীর ব্যক্তিগত কোনো লেনদেন, আচরণ বা অনাকাঙ্ক্ষিত পরিস্থিতির জন্য আমরা দায়ী থাকব না। তবে প্রয়োজনে আমরা যেকোনো একাউন্ট সাসপেন্ড বা বাতিল করার অধিকার সংরক্ষণ করি।</p>
+    <h2 class="section-title" id="t-service">3. Nature of the Service</h2>
+    <p>Kushtia Smart Tutor operates solely as an <strong>intermediary matching platform</strong> connecting independent home tutors ("Tutors") with students and guardians ("Students/Guardians") seeking tutoring services. We do not employ Tutors, and Tutors are not agents, employees, or representatives of the Platform. Any tutoring arrangement, agreement on fees, schedule, or manner of instruction is made directly and independently between the Tutor and the Student/Guardian, and the Platform is not a party to that arrangement.</p>
+
+    <h2 class="section-title" id="t-accounts">4. Accounts &amp; Security</h2>
+    <ul>
+      <li>You must provide accurate, current, and complete information during registration and keep it updated.</li>
+      <li>You are solely responsible for maintaining the confidentiality of your login credentials and for all activity that occurs under your account.</li>
+      <li>You must notify us immediately at the contact address below of any unauthorized use of your account or any other breach of security.</li>
+      <li>We reserve the right to verify any information provided and to refuse or revoke registration where information is found to be false, misleading, or incomplete.</li>
+    </ul>
+
+    <h2 class="section-title" id="t-listing">5. Tutor Verification, Listings &amp; Fees</h2>
+    <p>Tutor applications submitted through the Platform are reviewed by our administrative team before a Tutor's profile ("Ad") is published live. We reserve full discretion to approve, reject, suspend, or remove any Tutor listing at any time, with or without stated cause, in order to maintain the quality and safety of the Platform.</p>
+    <h3 class="sub-title">5.1 Activation Fee</h3>
+    <p>To activate and publish a listing, a Tutor may be required to pay a listing activation fee via the manual bKash/Nagad "Send Money" process described on the Platform, using the unique reference ID assigned to their account. Payments are verified manually by our administrative team before an account status is updated.</p>
+    <h3 class="sub-title">5.2 Refund Policy</h3>
+    <div class="callout"><strong>If a Tutor's application is reviewed and rejected after payment of the activation fee has been submitted and confirmed, the Tutor is entitled to a full refund of the amount paid.</strong> Refund requests should be sent to the contact email listed in Section 18 along with the transaction reference used at the time of payment, and will be processed within a reasonable timeframe. Fees paid for listings that were approved and went live are non-refundable, as the service (publication of the listing) has already been rendered.</p></div>
+
+    <h2 class="section-title" id="t-conduct">6. Code of Conduct</h2>
+    <p>By using the Platform, you agree that you will not:</p>
+    <ul>
+      <li>Provide false, misleading, or fraudulent information, including regarding academic qualifications or identity;</li>
+      <li>Use the Platform for any unlawful, harassing, abusive, discriminatory, or exploitative purpose, including toward minors;</li>
+      <li>Attempt to circumvent, disable, or interfere with the security or proper functioning of the Platform;</li>
+      <li>Scrape, copy, or redistribute Platform content or user data without authorization;</li>
+      <li>Impersonate any person or entity, or misrepresent your affiliation with any person or entity.</li>
+    </ul>
+    <p>Violation of this Code of Conduct may result in immediate suspension or termination of your account without refund, and, where applicable, referral to law enforcement authorities.</p>
+
+    <h2 class="section-title" id="t-liability">7. Limitation of Liability</h2>
+    <p>The Platform is provided on an <strong>"as is"</strong> and <strong>"as available"</strong> basis. To the fullest extent permitted by applicable law, Kushtia Smart Tutor disclaims all warranties, express or implied, regarding the Platform and the conduct, qualifications, or performance of any Tutor or Student/Guardian. We are not responsible for, and shall not be liable for, any dispute, financial loss, personal injury, property damage, or other harm arising from or related to interactions, arrangements, or transactions between Users conducted outside or in connection with the Platform. Our aggregate liability for any claim arising out of or relating to your use of the Platform shall not exceed the total amount, if any, paid by you to the Platform in the twelve (12) months preceding the claim.</p>
+
+    <h2 class="section-title" id="t-indemnity">8. Indemnification</h2>
+    <p>You agree to indemnify, defend, and hold harmless Kushtia Smart Tutor, its administrators, and affiliates from and against any claims, damages, losses, liabilities, and expenses (including reasonable legal fees) arising out of or related to your use of the Platform, your violation of these Terms, or your interaction with any other User.</p>
+
+    <h2 class="section-title" id="t-termination">9. Suspension &amp; Termination</h2>
+    <p>We reserve the right, at our sole discretion and without prior notice, to suspend or terminate your access to the Platform, remove any listing, or delete any account that we reasonably believe violates these Terms, poses a risk to other Users, or is otherwise harmful to the integrity of the Platform.</p>
+
+    <h2 class="section-title" id="t-law">10. Governing Law &amp; Disputes</h2>
+    <p>These Terms shall be governed by and construed in accordance with the laws of the People's Republic of Bangladesh, without regard to conflict-of-law principles. Any dispute arising out of or relating to these Terms or the Platform shall first be attempted to be resolved amicably through good-faith negotiation between the parties before pursuing any other remedy available under applicable law.</p>
+
+    <h2 class="section-title" id="t-changes">11. Changes to These Terms</h2>
+    <p>We may revise these Terms at any time. Material changes will be indicated by an updated "Last updated" date at the top of this page and, where appropriate, communicated via notice on the Platform. Continued use of the Platform following any such change constitutes your acceptance of the revised Terms.</p>
+
+    <div class="divider-block"></div>
+
+    <h2 class="section-title" id="p-intro">12. Privacy Policy — Introduction</h2>
+    <p>This Privacy Policy explains how Kushtia Smart Tutor collects, uses, discloses, and safeguards information when you use the Platform. By using the Platform, you consent to the data practices described in this policy.</p>
+
+    <h2 class="section-title" id="p-collect">13. Information We Collect</h2>
+    <ul>
+      <li><strong>Account information:</strong> full name, phone number, email address, and a securely hashed password.</li>
+      <li><strong>Tutor-specific information:</strong> academic qualifications, subjects taught, preferred teaching area, and a profile photograph.</li>
+      <li><strong>Payment confirmation details:</strong> sender mobile number, transaction reference ID, and amount submitted for manual verification of the listing activation fee. We do not collect or store full financial account credentials.</li>
+      <li><strong>Usage information:</strong> basic technical information such as timestamps of account activity, stored to help secure and operate the Platform.</li>
+    </ul>
+
+    <h2 class="section-title" id="p-use">14. How We Use Information</h2>
+    <ul>
+      <li>To create and manage your account and verify Tutor applications;</li>
+      <li>To connect Students/Guardians with suitable Tutors;</li>
+      <li>To process and manually verify listing activation payments and refunds;</li>
+      <li>To communicate important updates, security alerts, and administrative messages;</li>
+      <li>To maintain the safety, security, and integrity of the Platform, and to investigate suspected violations of these Terms.</li>
+    </ul>
+
+    <h2 class="section-title" id="p-share">15. Disclosure of Information</h2>
+    <p>We do <strong>not sell</strong> your personal information to any third party. Information may be disclosed only: (a) to trusted service providers strictly necessary to operate the Platform (such as our email delivery and cloud hosting providers), bound by confidentiality obligations; (b) where required to comply with a valid legal process, court order, or government request; or (c) to protect the rights, safety, or property of the Platform, our Users, or the public.</p>
+
+    <h2 class="section-title" id="p-security">16. Data Security &amp; Retention</h2>
+    <p>We apply reasonable technical and organizational safeguards, including password hashing and access-controlled infrastructure, to protect your information against unauthorized access, alteration, or disclosure. However, no method of electronic storage or transmission is completely secure, and we cannot guarantee absolute security. We retain personal information for as long as your account remains active, or as necessary to comply with legal obligations, resolve disputes, and enforce our agreements, after which it will be securely deleted or anonymized.</p>
+
+    <h2 class="section-title" id="p-rights">17. Your Rights</h2>
+    <p>You may request access to, correction of, or deletion of your personal information held by us at any time by contacting us at the email address below. We will respond to verified requests within a reasonable timeframe, subject to any legal obligations that require us to retain certain information.</p>
+
+    <h2 class="section-title" id="p-children">18. Children's Privacy</h2>
+    <p>The Platform is not directed at children under 18 acting independently. We do not knowingly collect personal information directly from children under 18 without the involvement of a parent or legal guardian. If we become aware that we have inadvertently collected such information without appropriate consent, we will take steps to delete it promptly.</p>
+
+    <h2 class="section-title" id="p-contact">19. Contact Us</h2>
+    <p>For any questions regarding these Terms, this Privacy Policy, refund requests, or to report a concern about the Platform, please contact:</p>
+    <p><strong>Kushtia Smart Tutor Support</strong><br>Email: <a href="mailto:kushtiahometutorinfo@gmail.com">kushtiahometutorinfo@gmail.com</a></p>
+
+  </div>
+
+  <!-- ======================= বাংলা ======================= -->
+  <div data-lang="bn">
+
+    <div class="toc bn">
+      <div class="toc-title">সূচিপত্র</div>
+      <ol>
+        <li><a href="#t-acceptance-bn">শর্তাবলীতে সম্মতি</a></li>
+        <li><a href="#t-eligibility-bn">যোগ্যতা</a></li>
+        <li><a href="#t-service-bn">সেবার প্রকৃতি</a></li>
+        <li><a href="#t-accounts-bn">অ্যাকাউন্ট ও নিরাপত্তা</a></li>
+        <li><a href="#t-listing-bn">টিউটর ভেরিফিকেশন, লিস্টিং ও ফি</a></li>
+        <li><a href="#t-conduct-bn">আচরণবিধি</a></li>
+        <li><a href="#t-liability-bn">দায়বদ্ধতার সীমা</a></li>
+        <li><a href="#t-indemnity-bn">ক্ষতিপূরণ</a></li>
+        <li><a href="#t-termination-bn">স্থগিতকরণ ও বাতিলকরণ</a></li>
+        <li><a href="#t-law-bn">প্রযোজ্য আইন ও বিরোধ নিষ্পত্তি</a></li>
+        <li><a href="#t-changes-bn">শর্তাবলীর পরিবর্তন</a></li>
+        <li><a href="#p-intro-bn">প্রাইভেসি পলিসি — ভূমিকা</a></li>
+        <li><a href="#p-collect-bn">আমরা যে তথ্য সংগ্রহ করি</a></li>
+        <li><a href="#p-use-bn">তথ্যের ব্যবহার</a></li>
+        <li><a href="#p-share-bn">তথ্য প্রকাশ</a></li>
+        <li><a href="#p-security-bn">তথ্যের নিরাপত্তা ও সংরক্ষণ</a></li>
+        <li><a href="#p-rights-bn">আপনার অধিকার</a></li>
+        <li><a href="#p-children-bn">শিশুদের গোপনীয়তা</a></li>
+        <li><a href="#p-contact-bn">যোগাযোগ</a></li>
+      </ol>
     </div>
 
-    <div id="privacy" style="margin-top: 50px;">
-        <h2>প্রাইভেসি পলিসি (Privacy Policy)</h2>
-        <p>কুষ্টিয়া স্মার্ট টিউটর আপনার ব্যক্তিগত তথ্যের গোপনীয়তা রক্ষায় প্রতিশ্রুতিবদ্ধ। আপনি আমাদের সেবা ব্যবহারের সময় আমরা কীভাবে আপনার তথ্য সংগ্রহ ও ব্যবহার করি তা নিচে বর্ণনা করা হলো।</p>
+    <h2 class="section-title bn" id="t-acceptance-bn">১. শর্তাবলীতে সম্মতি</h2>
+    <p class="bn">এই টার্মস অ্যান্ড কন্ডিশনস ("শর্তাবলী") আপনার ("ব্যবহারকারী", "আপনি") এবং কুষ্টিয়া স্মার্ট টিউটর ("প্ল্যাটফর্ম", "আমরা") এর মধ্যে একটি আইনগতভাবে বাধ্যতামূলক চুক্তি গঠন করে। প্ল্যাটফর্মে প্রবেশ, নিবন্ধন বা ব্যবহার করার মাধ্যমে আপনি নিশ্চিত করছেন যে আপনি এই শর্তাবলী এবং আমাদের প্রাইভেসি পলিসি সম্পূর্ণভাবে পড়েছেন, বুঝেছেন এবং মেনে নিতে সম্মত। কোনো অংশে দ্বিমত থাকলে অবিলম্বে প্ল্যাটফর্ম ব্যবহার বন্ধ করতে হবে।</p>
 
-        <h3>১. আমরা কী কী তথ্য সংগ্রহ করি</h3>
-        <p>রেজিস্ট্রেশনের সময় আমরা আপনার নাম, ইমেইল ঠিকানা, ফোন নম্বর, ঠিকানা এবং শিক্ষাগত যোগ্যতার তথ্য (টিউটরদের ক্ষেত্রে) সংগ্রহ করে থাকি।</p>
+    <h2 class="section-title bn" id="t-eligibility-bn">২. যোগ্যতা</h2>
+    <p class="bn">স্বাধীনভাবে অ্যাকাউন্ট খুলতে হলে আপনার বয়স কমপক্ষে ১৮ বছর হতে হবে। ১৮ বছরের কম বয়সী ব্যবহারকারীরা শুধুমাত্র বাবা-মা বা আইনগত অভিভাবকের সরাসরি তত্ত্বাবধানে ও তাদের অ্যাকাউন্টের মাধ্যমে টিউটর খোঁজা বা যোগাযোগ করতে পারবে, এক্ষেত্রে সম্পূর্ণ দায়ভার অভিভাবকের উপর বর্তাবে।</p>
 
-        <h3>২. তথ্যের ব্যবহার</h3>
-        <p>আপনার প্রদান করা তথ্যগুলো মূলত নিচের কাজগুলোতে ব্যবহৃত হয়:</p>
-        <ul>
-            <li>উপযুক্ত টিউটর বা শিক্ষার্থী খুঁজে পেতে সাহায্য করার জন্য।</li>
-            <li>আপনার সাথে যোগাযোগ স্থাপন এবং গুরুত্বপূর্ণ আপডেট জানানোর জন্য।</li>
-            <li>আমাদের সেবার মান উন্নয়ন এবং ব্যবহারকারীর অভিজ্ঞতা উন্নত করার জন্য।</li>
-        </ul>
+    <h2 class="section-title bn" id="t-service-bn">৩. সেবার প্রকৃতি</h2>
+    <p class="bn">কুষ্টিয়া স্মার্ট টিউটর শুধুমাত্র একটি <strong>মধ্যস্থতাকারী ম্যাচিং প্ল্যাটফর্ম</strong> হিসেবে কাজ করে, যা স্বাধীন হোম টিউটর ("টিউটর") ও শিক্ষার্থী/অভিভাবকদের ("শিক্ষার্থী/অভিভাবক") মধ্যে সংযোগ স্থাপন করে। আমরা কোনো টিউটরকে নিয়োগ দিই না, এবং কোনো টিউটর আমাদের প্রতিনিধি, কর্মচারী বা এজেন্ট নন। ফি, সময়সূচী বা পাঠদানের ধরন সংক্রান্ত যেকোনো সিদ্ধান্ত সরাসরি টিউটর ও শিক্ষার্থী/অভিভাবকের মধ্যে হবে, এবং প্ল্যাটফর্ম এই চুক্তির কোনো পক্ষ নয়।</p>
 
-        <h3>৩. তথ্যের নিরাপত্তা ও শেয়ারিং</h3>
-        <p>আমরা আপনার ব্যক্তিগত তথ্য কোনো তৃতীয় পক্ষের কাছে বিক্রি করি না। আপনার তথ্য সুরক্ষিত রাখতে আমরা প্রযুক্তিগত নিরাপত্তা ব্যবস্থা গ্রহণ করে থাকি। শুধুমাত্র আইনি বাধ্যবাধকতা থাকলে কর্তৃপক্ষের কাছে তথ্য প্রদান করা হতে পারে।</p>
+    <h2 class="section-title bn" id="t-accounts-bn">৪. অ্যাকাউন্ট ও নিরাপত্তা</h2>
+    <ul class="bn">
+      <li>নিবন্ধনের সময় সঠিক, হালনাগাদ ও সম্পূর্ণ তথ্য দিতে হবে এবং তা আপডেট রাখতে হবে।</li>
+      <li>আপনার লগইন তথ্যের গোপনীয়তা রক্ষা এবং অ্যাকাউন্টে ঘটা সব কার্যক্রমের দায়িত্ব সম্পূর্ণভাবে আপনার।</li>
+      <li>অ্যাকাউন্টের কোনো অননুমোদিত ব্যবহার বা নিরাপত্তা লঙ্ঘন লক্ষ্য করলে অবিলম্বে নিচের যোগাযোগ ঠিকানায় জানাতে হবে।</li>
+      <li>প্রদত্ত তথ্য মিথ্যা, বিভ্রান্তিকর বা অসম্পূর্ণ পাওয়া গেলে নিবন্ধন প্রত্যাখ্যান বা বাতিল করার অধিকার আমরা সংরক্ষণ করি।</li>
+    </ul>
 
-        <h3>৪. পলিসি আপডেট</h3>
-        <p>আমরা যেকোনো সময় আমাদের প্রাইভেসি পলিসিতে পরিবর্তন বা আপডেট আনার অধিকার সংরক্ষণ করি। পলিসিতে কোনো বড় ধরনের পরিবর্তন আনা হলে ওয়েবসাইটে নোটিশের মাধ্যমে তা জানিয়ে দেওয়া হবে।</p>
-    </div>
+    <h2 class="section-title bn" id="t-listing-bn">৫. টিউটর ভেরিফিকেশন, লিস্টিং ও ফি</h2>
+    <p class="bn">প্ল্যাটফর্মে জমা দেওয়া টিউটর আবেদন আমাদের প্রশাসনিক টিম যাচাই করার পরই প্রোফাইল ("Ad") পাবলিকলি প্রকাশিত হয়। প্ল্যাটফর্মের মান ও নিরাপত্তা বজায় রাখতে যেকোনো সময় যেকোনো কারণ দর্শানো ছাড়াই আমরা যেকোনো টিউটর লিস্টিং অনুমোদন, প্রত্যাখ্যান, স্থগিত বা অপসারণ করার সম্পূর্ণ অধিকার সংরক্ষণ করি।</p>
+    <h3 class="sub-title bn">৫.১ অ্যাক্টিভেশন ফি</h3>
+    <p class="bn">লিস্টিং অ্যাক্টিভ ও পাবলিশ করার জন্য টিউটরকে প্ল্যাটফর্মে বর্ণিত bKash/Nagad "Send Money" পদ্ধতিতে, তাদের অ্যাকাউন্টের জন্য নির্ধারিত ইউনিক রেফারেন্স আইডি ব্যবহার করে একটি লিস্টিং অ্যাক্টিভেশন ফি প্রদান করতে হতে পারে। অ্যাকাউন্টের অবস্থা আপডেট হওয়ার আগে আমাদের প্রশাসনিক টিম ম্যানুয়ালি পেমেন্ট যাচাই করে।</p>
+    <h3 class="sub-title bn">৫.২ রিফান্ড নীতি</h3>
+    <div class="callout bn"><strong>অ্যাক্টিভেশন ফি জমা ও নিশ্চিত হওয়ার পর যদি টিউটরের আবেদন যাচাই করে প্রত্যাখ্যান করা হয়, তাহলে টিউটর প্রদত্ত সম্পূর্ণ অর্থ ফেরত পাওয়ার অধিকারী।</strong> রিফান্ডের অনুরোধ পেমেন্টের সময় ব্যবহৃত ট্রানজেকশন রেফারেন্সসহ ধারা ১৯-এ উল্লিখিত ইমেইলে পাঠাতে হবে, এবং যুক্তিসঙ্গত সময়ের মধ্যে তা প্রক্রিয়া করা হবে। অনুমোদিত হয়ে লাইভ হয়ে যাওয়া লিস্টিং-এর ফি ফেরতযোগ্য নয়, কারণ সেক্ষেত্রে সেবা (লিস্টিং প্রকাশ) ইতিমধ্যে প্রদান করা হয়ে গেছে।</div>
 
-    <div class="footer">
-        <p>টার্মস অ্যান্ড কন্ডিশনস | প্রাইভেসি পলিসি | যোগাযোগ</p>
-        <p>© 2026 Kushtia Smart Tutor | সর্বস্বত্ব সংরক্ষিত।</p>
-        <p>Developed by <strong>Md Nabil</strong></p>
-    </div>
+    <h2 class="section-title bn" id="t-conduct-bn">৬. আচরণবিধি</h2>
+    <p class="bn">প্ল্যাটফর্ম ব্যবহার করে আপনি সম্মত হচ্ছেন যে আপনি নিম্নলিখিত কাজ করবেন না:</p>
+    <ul class="bn">
+      <li>শিক্ষাগত যোগ্যতা বা পরিচয় সংক্রান্ত মিথ্যা, বিভ্রান্তিকর বা প্রতারণামূলক তথ্য প্রদান;</li>
+      <li>প্ল্যাটফর্মকে অবৈধ, হয়রানিমূলক, অপমানজনক, বৈষম্যমূলক বা শোষণমূলক কোনো উদ্দেশ্যে ব্যবহার, বিশেষত নাবালকদের প্রতি;</li>
+      <li>প্ল্যাটফর্মের নিরাপত্তা বা সঠিক কার্যকারিতা এড়িয়ে যাওয়া, নিষ্ক্রিয় করা বা ব্যাহত করার চেষ্টা;</li>
+      <li>অনুমতি ছাড়া প্ল্যাটফর্মের কনটেন্ট বা ব্যবহারকারীর তথ্য স্ক্র্যাপ, কপি বা পুনর্বিতরণ করা;</li>
+      <li>কোনো ব্যক্তি বা প্রতিষ্ঠানের ছদ্মবেশ ধারণ বা তাদের সাথে সম্পর্কের ভুল উপস্থাপন করা।</li>
+    </ul>
+    <p class="bn">এই আচরণবিধি লঙ্ঘন করলে কোনো রিফান্ড ছাড়াই তাৎক্ষণিকভাবে অ্যাকাউন্ট স্থগিত বা বাতিল করা হতে পারে এবং প্রযোজ্য ক্ষেত্রে আইন প্রয়োগকারী কর্তৃপক্ষকে অবহিত করা হতে পারে।</p>
+
+    <h2 class="section-title bn" id="t-liability-bn">৭. দায়বদ্ধতার সীমা</h2>
+    <p class="bn">প্ল্যাটফর্মটি <strong>"যেমন আছে"</strong> এবং <strong>"যেমন পাওয়া যায়"</strong> ভিত্তিতে প্রদান করা হয়। প্রযোজ্য আইনের সর্বোচ্চ সীমা পর্যন্ত, কুষ্টিয়া স্মার্ট টিউটর প্ল্যাটফর্ম, বা কোনো টিউটর বা শিক্ষার্থী/অভিভাবকের আচরণ, যোগ্যতা বা পারফরম্যান্স সংক্রান্ত সকল প্রকার ওয়ারেন্টি (প্রকাশিত বা অন্তর্নিহিত) অস্বীকার করে। প্ল্যাটফর্মের বাইরে বা এর মাধ্যমে ঘটা ব্যবহারকারীদের মধ্যকার কোনো বিরোধ, আর্থিক ক্ষতি, ব্যক্তিগত আঘাত, সম্পত্তির ক্ষতি বা অন্য কোনো ক্ষতির জন্য আমরা দায়ী নই। প্ল্যাটফর্ম ব্যবহার সংক্রান্ত যেকোনো দাবির ক্ষেত্রে আমাদের সামগ্রিক দায়বদ্ধতা, দাবির পূর্ববর্তী বারো (১২) মাসে আপনার প্ল্যাটফর্মে প্রদত্ত মোট অর্থের বেশি হবে না।</p>
+
+    <h2 class="section-title bn" id="t-indemnity-bn">৮. ক্ষতিপূরণ</h2>
+    <p class="bn">আপনি সম্মত হচ্ছেন যে, আপনার প্ল্যাটফর্ম ব্যবহার, এই শর্তাবলী লঙ্ঘন, বা অন্য কোনো ব্যবহারকারীর সাথে আপনার মিথস্ক্রিয়া থেকে উদ্ভূত যেকোনো দাবি, ক্ষতি, লোকসান, দায় ও ব্যয় (যুক্তিসঙ্গত আইনি খরচসহ) থেকে কুষ্টিয়া স্মার্ট টিউটর, এর প্রশাসক ও সহযোগীদের রক্ষা করবেন ও ক্ষতিপূরণ দেবেন।</p>
+
+    <h2 class="section-title bn" id="t-termination-bn">৯. স্থগিতকরণ ও বাতিলকরণ</h2>
+    <p class="bn">আমরা যেকোনো সময়, পূর্ব নোটিশ ছাড়াই এবং আমাদের একক বিবেচনায়, এই শর্তাবলী লঙ্ঘনকারী, অন্য ব্যবহারকারীর জন্য ঝুঁকিপূর্ণ, বা প্ল্যাটফর্মের সামগ্রিকতার জন্য ক্ষতিকর বলে যুক্তিসঙ্গতভাবে মনে হওয়া যেকোনো অ্যাকাউন্ট বা লিস্টিং স্থগিত, অপসারণ বা মুছে ফেলার অধিকার সংরক্ষণ করি।</p>
+
+    <h2 class="section-title bn" id="t-law-bn">১০. প্রযোজ্য আইন ও বিরোধ নিষ্পত্তি</h2>
+    <p class="bn">এই শর্তাবলী গণপ্রজাতন্ত্রী বাংলাদেশের আইন অনুযায়ী পরিচালিত ও ব্যাখ্যা করা হবে। এই শর্তাবলী বা প্ল্যাটফর্ম সংক্রান্ত যেকোনো বিরোধ প্রথমে পক্ষগুলোর মধ্যে সরল বিশ্বাসে আলোচনার মাধ্যমে সমাধানের চেষ্টা করা হবে, তারপর প্রযোজ্য আইনের অধীনে অন্য কোনো প্রতিকার নেওয়া যাবে।</p>
+
+    <h2 class="section-title bn" id="t-changes-bn">১১. শর্তাবলীর পরিবর্তন</h2>
+    <p class="bn">আমরা যেকোনো সময় এই শর্তাবলী সংশোধন করতে পারি। উল্লেখযোগ্য পরিবর্তন এই পৃষ্ঠার উপরে "সর্বশেষ আপডেট" তারিখ পরিবর্তনের মাধ্যমে এবং প্রয়োজনে প্ল্যাটফর্মে নোটিশের মাধ্যমে জানানো হবে। পরিবর্তনের পর প্ল্যাটফর্ম ব্যবহার চালিয়ে যাওয়া মানেই সংশোধিত শর্তাবলীতে সম্মতি।</p>
+
+    <div class="divider-block"></div>
+
+    <h2 class="section-title bn" id="p-intro-bn">১২. প্রাইভেসি পলিসি — ভূমিকা</h2>
+    <p class="bn">এই প্রাইভেসি পলিসি ব্যাখ্যা করে যে আপনি প্ল্যাটফর্ম ব্যবহার করার সময় কুষ্টিয়া স্মার্ট টিউটর কীভাবে তথ্য সংগ্রহ, ব্যবহার, প্রকাশ ও সুরক্ষিত রাখে। প্ল্যাটফর্ম ব্যবহার করে আপনি এই পলিসিতে বর্ণিত তথ্য চর্চায় সম্মতি প্রদান করছেন।</p>
+
+    <h2 class="section-title bn" id="p-collect-bn">১৩. আমরা যে তথ্য সংগ্রহ করি</h2>
+    <ul class="bn">
+      <li><strong>অ্যাকাউন্টের তথ্য:</strong> পুরো নাম, ফোন নম্বর, ইমেইল ঠিকানা এবং সুরক্ষিতভাবে হ্যাশ করা পাসওয়ার্ড।</li>
+      <li><strong>টিউটর-সংক্রান্ত তথ্য:</strong> শিক্ষাগত যোগ্যতা, পাঠদানের বিষয়, পছন্দের এলাকা এবং একটি প্রোফাইল ছবি।</li>
+      <li><strong>পেমেন্ট কনফার্মেশন তথ্য:</strong> লিস্টিং অ্যাক্টিভেশন ফি ম্যানুয়ালি যাচাইয়ের জন্য প্রেরকের মোবাইল নম্বর, ট্রানজেকশন রেফারেন্স আইডি এবং পরিমাণ। আমরা সম্পূর্ণ আর্থিক অ্যাকাউন্ট তথ্য সংগ্রহ বা সংরক্ষণ করি না।</li>
+      <li><strong>ব্যবহার সংক্রান্ত তথ্য:</strong> প্ল্যাটফর্ম সুরক্ষিত ও পরিচালনা করতে সহায়ক মৌলিক প্রযুক্তিগত তথ্য, যেমন অ্যাকাউন্ট কার্যক্রমের টাইমস্ট্যাম্প।</li>
+    </ul>
+
+    <h2 class="section-title bn" id="p-use-bn">১৪. তথ্যের ব্যবহার</h2>
+    <ul class="bn">
+      <li>অ্যাকাউন্ট তৈরি, পরিচালনা ও টিউটর আবেদন যাচাই করতে;</li>
+      <li>শিক্ষার্থী/অভিভাবকদের উপযুক্ত টিউটরের সাথে সংযুক্ত করতে;</li>
+      <li>লিস্টিং অ্যাক্টিভেশন পেমেন্ট ও রিফান্ড প্রক্রিয়া ও ম্যানুয়ালি যাচাই করতে;</li>
+      <li>গুরুত্বপূর্ণ আপডেট, নিরাপত্তা সতর্কতা ও প্রশাসনিক বার্তা পাঠাতে;</li>
+      <li>প্ল্যাটফর্মের নিরাপত্তা ও সামগ্রিকতা বজায় রাখতে এবং শর্তাবলী লঙ্ঘনের সন্দেহজনক ঘটনা তদন্ত করতে।</li>
+    </ul>
+
+    <h2 class="section-title bn" id="p-share-bn">১৫. তথ্য প্রকাশ</h2>
+    <p class="bn">আমরা আপনার ব্যক্তিগত তথ্য কোনো তৃতীয় পক্ষের কাছে <strong>বিক্রি করি না</strong>। তথ্য শুধুমাত্র নিম্নলিখিত ক্ষেত্রে প্রকাশ করা হতে পারে: (ক) প্ল্যাটফর্ম পরিচালনার জন্য অত্যাবশ্যকীয় বিশ্বস্ত সেবা প্রদানকারী (যেমন ইমেইল ও ক্লাউড হোস্টিং প্রদানকারী), যারা গোপনীয়তার শর্তে আবদ্ধ; (খ) বৈধ আইনি প্রক্রিয়া, আদালতের নির্দেশ বা সরকারি অনুরোধ মেনে চলার প্রয়োজনে; অথবা (গ) প্ল্যাটফর্ম, ব্যবহারকারী বা জনসাধারণের অধিকার, নিরাপত্তা বা সম্পত্তি রক্ষার জন্য।</p>
+
+    <h2 class="section-title bn" id="p-security-bn">১৬. তথ্যের নিরাপত্তা ও সংরক্ষণ</h2>
+    <p class="bn">আপনার তথ্য অননুমোদিত প্রবেশ, পরিবর্তন বা প্রকাশ থেকে রক্ষা করতে আমরা যুক্তিসঙ্গত প্রযুক্তিগত ও সাংগঠনিক সুরক্ষা ব্যবস্থা (যেমন পাসওয়ার্ড হ্যাশিং ও অ্যাক্সেস-নিয়ন্ত্রিত অবকাঠামো) প্রয়োগ করি। তবে কোনো ইলেকট্রনিক সংরক্ষণ বা ট্রান্সমিশন পদ্ধতিই সম্পূর্ণ নিরাপদ নয়, তাই আমরা পরম নিরাপত্তার নিশ্চয়তা দিতে পারি না। আপনার অ্যাকাউন্ট সক্রিয় থাকাকালীন, বা আইনি বাধ্যবাধকতা পূরণ, বিরোধ নিষ্পত্তি ও চুক্তি প্রয়োগের প্রয়োজনীয় সময় পর্যন্ত আমরা ব্যক্তিগত তথ্য সংরক্ষণ করি, এরপর তা নিরাপদে মুছে ফেলা বা অ্যানোনিমাইজ করা হয়।</p>
+
+    <h2 class="section-title bn" id="p-rights-bn">১৭. আপনার অধিকার</h2>
+    <p class="bn">আপনি যেকোনো সময় নিচের ইমেইলে যোগাযোগ করে আমাদের কাছে থাকা আপনার ব্যক্তিগত তথ্যে প্রবেশ, সংশোধন বা মুছে ফেলার অনুরোধ করতে পারেন। কোনো আইনি বাধ্যবাধকতা না থাকলে যাচাইকৃত অনুরোধের জবাব যুক্তিসঙ্গত সময়ের মধ্যে দেওয়া হবে।</p>
+
+    <h2 class="section-title bn" id="p-children-bn">১৮. শিশুদের গোপনীয়তা</h2>
+    <p class="bn">এই প্ল্যাটফর্ম স্বাধীনভাবে কাজ করা ১৮ বছরের কম বয়সী শিশুদের উদ্দেশ্যে নয়। বাবা-মা বা আইনগত অভিভাবকের সম্পৃক্ততা ছাড়া আমরা জেনেশুনে ১৮ বছরের কম বয়সী কারো কাছ থেকে সরাসরি ব্যক্তিগত তথ্য সংগ্রহ করি না। যথাযথ সম্মতি ছাড়া এমন তথ্য অনিচ্ছাকৃতভাবে সংগৃহীত হয়েছে জানতে পারলে আমরা দ্রুত তা মুছে ফেলার ব্যবস্থা নেব।</p>
+
+    <h2 class="section-title bn" id="p-contact-bn">১৯. যোগাযোগ</h2>
+    <p class="bn">এই শর্তাবলী, প্রাইভেসি পলিসি, রিফান্ড অনুরোধ, বা প্ল্যাটফর্ম সংক্রান্ত কোনো উদ্বেগ জানাতে যোগাযোগ করুন:</p>
+    <p class="bn"><strong>Kushtia Smart Tutor সাপোর্ট</strong><br>ইমেইল: <a href="mailto:kushtiahometutorinfo@gmail.com">kushtiahometutorinfo@gmail.com</a></p>
+
+  </div>
+
+  <div class="footer">
+    <p data-lang="en" class="active en">Terms and Conditions | Privacy Policy | Contact</p>
+    <p data-lang="bn" class="bn">টার্মস অ্যান্ড কন্ডিশনস | প্রাইভেসি পলিসি | যোগাযোগ</p>
+    <p>© 2026 Kushtia Smart Tutor. <span data-lang="en" class="active en">All rights reserved.</span><span data-lang="bn" class="bn">সর্বস্বত্ব সংরক্ষিত।</span></p>
+    <p><span data-lang="en" class="active en">Developed by</span><span data-lang="bn" class="bn">Developed by</span> <strong>Md Nabil</strong></p>
+  </div>
+
 </div>
+
+<script>
+  const btnEn = document.getElementById("btnEn");
+  const btnBn = document.getElementById("btnBn");
+
+  function setLang(lang){
+    document.querySelectorAll("[data-lang]").forEach(el => {
+      el.classList.toggle("active", el.dataset.lang === lang);
+    });
+    btnEn.classList.toggle("active", lang === "en");
+    btnBn.classList.toggle("active", lang === "bn");
+    document.documentElement.lang = lang;
+    localStorage.setItem("kst_policy_lang", lang);
+  }
+
+  btnEn.addEventListener("click", () => setLang("en"));
+  btnBn.addEventListener("click", () => setLang("bn"));
+
+  const savedLang = localStorage.getItem("kst_policy_lang");
+  if(savedLang) setLang(savedLang);
+</script>
 
 </body>
 </html>

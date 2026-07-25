@@ -379,6 +379,34 @@
   }
   .bn-fab:active{transform:scale(.9) rotate(90deg);}
 
+  /* ---------- Desktop / Windows mode: compact floating pill nav ---------- */
+  @media (min-width:861px){
+    .bottom-nav{
+      display:block;
+      left:50%;right:auto;
+      bottom:22px;
+      transform:translateX(-50%);
+      width:auto;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:8px 12px;
+      box-shadow:0 18px 40px -18px rgba(14,59,34,.4);
+    }
+    .bottom-nav-inner{
+      max-width:none;
+      gap:4px;
+    }
+    .bn-item{
+      padding:6px 12px;
+      font-size:10px;
+    }
+    .bn-item svg{width:19px;height:19px;}
+    .bn-fab{
+      width:40px;height:40px;
+      margin-top:0;margin-left:2px;margin-right:2px;
+    }
+  }
+
   /* ---------- Responsive ---------- */
   @media (max-width:860px){
     nav.primary-links{display:none;}

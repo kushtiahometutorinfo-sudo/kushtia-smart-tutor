@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin-login.html
+Disallow: /admin-panel.html
+Disallow: /profile.html
+Disallow: /saved-tutors.html
+Disallow: /tutor-profile.html
+Disallow: /forgot-password.html
+Disallow: /worker/
+Disallow: /*.sql$
+
+Sitemap: https://www.kushtiasmarttutor.shop/sitemap.xml

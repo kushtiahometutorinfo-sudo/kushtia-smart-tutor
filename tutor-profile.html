@@ -117,7 +117,7 @@
     max-width:100%; /* FIX: prevent overflow */
     box-sizing:border-box; /* FIX: include padding in width */
   }
-  .tab-nav{display:flex;gap:8px;border-bottom:1.5px solid var(--line);padding-bottom:12px;margin-bottom:20px;overflow-x:auto;}
+  .tab-nav{display:flex;gap:8px;border-bottom:1.5px solid var(--line);padding-bottom:12px;margin-bottom:10px;overflow-x:auto;}
   .tab-item{
     padding:8px 16px;border-radius:10px;font-size:14px;font-weight:700;color:var(--ink-soft);
     cursor:pointer;white-space:nowrap;transition:background .2s ease,color .2s ease;
@@ -126,12 +126,17 @@
   .tab-item:hover{background:var(--mint-50);color:var(--green-700);}
   .tab-item.active{background:var(--green-900);color:#fff;}
 
+  /* Dot slider indicator - shows how many tabs & which one is active */
+  .tab-dots{display:flex;gap:7px;justify-content:center;align-items:center;margin-bottom:20px;}
+  .tab-dots .dot{width:6px;height:6px;border-radius:50%;background:var(--line);transition:background .2s ease,transform .2s ease;}
+  .tab-dots .dot.active{background:var(--green-600);transform:scale(1.35);}
+
   .tab-pane{display:none;}
   .tab-pane.active{display:block;animation:fadein .3s ease;}
   @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 
   .edu-block{
-    background:var(--mint-50);border:1px solid var(--line);border-radius:14px;
+    background:var(--mint-50);border:1.5px solid rgba(47,168,90,.35);border-radius:14px;
     padding:16px;margin-bottom:14px;
     min-width:0; /* FIX: prevent overflow */
     word-break:break-word;
@@ -234,8 +239,12 @@
       <div class="tab-nav">
         <div class="tab-item active bn" data-tab="education">🎓 শিক্ষা (Education)</div>
         <div class="tab-item bn" data-tab="subjects">📚 বিষয় (Subjects)</div>
-        <div class="tab-item bn" data-tab="experience">💼 অভিজ্ঞতা & বেতন</div>
         <div class="tab-item bn" data-tab="extra">📝 অতিরিক্ত বায়ো (Extra)</div>
+      </div>
+      <div class="tab-dots" id="tabDots">
+        <span class="dot active" data-dot="education"></span>
+        <span class="dot" data-dot="subjects"></span>
+        <span class="dot" data-dot="extra"></span>
       </div>
 
       <!-- Tab 1: Education -->
@@ -262,19 +271,7 @@
         <div id="subjectsContent" style="margin-top:14px;"></div>
       </div>
 
-      <!-- Tab 3: Experience -->
-      <div class="tab-pane" id="tab-experience">
-        <div class="edu-block">
-          <div class="edu-title bn">অভিজ্ঞতা (Experience)</div>
-          <div class="edu-sub bn" id="expSub">—</div>
-        </div>
-        <div class="edu-block">
-          <div class="edu-title bn">প্রত্যাশিত বেতন (Expected Salary)</div>
-          <div class="edu-sub bn" id="salarySub">—</div>
-        </div>
-      </div>
-
-      <!-- Tab 4: Extra -->
+      <!-- Tab 3: Extra -->
       <div class="tab-pane" id="tab-extra">
         <h3 class="bn" style="margin-top:0;font-size:16px;color:var(--green-900);">টিউটরের বায়ো ও পড়ানোর কৌশল:</h3>
         <div class="text-box bn" id="extraContent">—</div>
@@ -350,9 +347,11 @@
     item.addEventListener("click", () => {
       document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
       document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-dots .dot").forEach(d => d.classList.remove("active"));
 
       item.classList.add("active");
       document.getElementById(`tab-${item.dataset.tab}`).classList.add("active");
+      document.querySelector(`.tab-dots .dot[data-dot="${item.dataset.tab}"]`).classList.add("active");
     });
   });
 
@@ -418,11 +417,7 @@
         <span class="subject-pill bn">📖 ${escapeHtml(s.trim())}</span>
       `).join("");
 
-      // Tab 3: Experience
-      document.getElementById("expSub").textContent = t.experienceYears || "অভিজ্ঞতা উল্লেখ নেই";
-      document.getElementById("salarySub").textContent = t.expectedSalary || "আলোচনা সাপেক্ষে";
-
-      // Tab 4: Extra
+      // Tab 3: Extra
       document.getElementById("extraContent").textContent = t.extraInfo || "কোনো অতিরিক্ত বায়ো যুক্ত করা হয়নি।";
 
     }catch(err){
@@ -438,12 +433,29 @@
     navigator.clipboard.writeText(window.location.href).then(() => toast("প্রোফাইল লিংক কপি হয়েছে! 📋"));
   });
 
+  // Normalizes a BD number to international format for wa.me (no +, no spaces, no dashes).
+  // DB stores numbers as local 01XXXXXXXXX (11 digits, validated by isPhone() in the worker),
+  // so this strips a leading 0 and prepends 880. Already-international numbers pass through.
+  //
+  // NOTE: this only works once the worker's GET /api/public/tutors/:id route
+  // includes `phone` in its SELECT — right now it's deliberately excluded
+  // there for privacy, so currentTutor.phone will be undefined until that's
+  // changed, and this will keep falling back to CONTACT_WHATSAPP.
+  function toWhatsappFormat(raw){
+    const digits = (raw || "").toString().replace(/[^0-9]/g, "");
+    if(!digits) return "";
+    if(digits.startsWith("880")) return digits;
+    if(digits.startsWith("0")) return "880" + digits.slice(1);
+    return digits;
+  }
+
   // Request modal
   document.getElementById("requestBtn").addEventListener("click", () => {
     if(!currentTutor) return;
+    const tutorPhone = toWhatsappFormat(currentTutor.phone) || CONTACT_WHATSAPP;
     document.getElementById("modalTitle").textContent = `${currentTutor.name} (ID: #${currentTutor.tutorId || currentTutor.id})`;
     const msg = encodeURIComponent(`হ্যালো! আমি Kushtia Smart Tutor ওয়েবসাইট থেকে টিউটর ${currentTutor.name} (Tutor ID: #${currentTutor.tutorId || currentTutor.id}) এর সাথে যোগাযোগের জন্য রিকুয়েস্ট দিতে চাই।`);
-    document.getElementById("whatsappLink").href = `https://wa.me/${CONTACT_WHATSAPP}?text=${msg}`;
+    document.getElementById("whatsappLink").href = `https://wa.me/${tutorPhone}?text=${msg}`;
     document.getElementById("contactModal").classList.add("show");
   });
 

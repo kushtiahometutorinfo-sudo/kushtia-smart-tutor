@@ -118,7 +118,7 @@ async function sendOtpEmail(env, email, otp) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: env.RESEND_FROM,
+      from: "Kushtia Smart Tutor <onboarding@kushtiasmarttutor.shop>",
       to: [email],
       subject: "আপনার Kushtia Smart Tutor OTP কোড",
       html: `

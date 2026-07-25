@@ -23,6 +23,9 @@
  * Endpoints:
  *   POST /api/send-otp           { contact, method, fallbackEmail? }   method: "mobile" | "email"
  *   POST /api/verify-otp         { contact, otp }
+ *   POST /api/forgot-password/request     { identifier }                     -- emails a 6-digit OTP if an account matches
+ *   POST /api/forgot-password/verify-otp  { identifier, otp }                -- { ok, resetToken } on success
+ *   POST /api/forgot-password/reset       { identifier, resetToken, newPassword }
  *   POST /api/register           { identifier, email, phone, name, role, password, agreedTerms }
  *                                 -- both roles are active immediately, no pending state, no ad-request fields here anymore.
  *   POST /api/login               { identifier, password }
@@ -314,6 +317,110 @@ export default {
 
         await env.OTP_KV.delete(`otp:${contact}`);
         await env.OTP_KV.put(`verified:${contact}`, "1", { expirationTtl: 900 }); // 15 min
+
+        return json({ ok: true }, 200, env);
+      }
+
+      // ================= Forgot password (OTP-based reset) =================
+      // Uses its own KV key prefixes (fpotp: / fpreset:) so it never collides
+      // with the signup OTP flow (otp: / verified:) above, even if someone
+      // runs both flows for the same contact at the same time.
+
+      // ---------- POST /api/forgot-password/request ----------
+      // body: { identifier }  (email or 01XXXXXXXXX phone, whichever the account uses)
+      // Always responds { ok: true } when the input itself is well-formed, even
+      // if no account matches — this avoids leaking which numbers/emails are
+      // registered. The OTP is only actually sent when an account is found.
+      if (pathname === "/api/forgot-password/request" && request.method === "POST") {
+        const { identifier } = await request.json();
+
+        if (!identifier || (!isEmail(identifier) && !isPhone(identifier))) {
+          return json({ error: "সঠিক মোবাইল নম্বর অথবা ইমেইল দিন" }, 400, env);
+        }
+
+        // Rate-limit: 1 OTP per 45s per identifier (same pattern as signup OTP)
+        const lastSent = await env.OTP_KV.get(`fpcooldown:${identifier}`);
+        if (lastSent) {
+          return json({ error: "একটু পরে আবার চেষ্টা করুন" }, 429, env);
+        }
+
+        const column = isPhone(identifier) ? "phone" : "email";
+        const user = await env.DB.prepare(`SELECT id, email, phone FROM users WHERE ${column} = ?`).bind(identifier).first();
+
+        if (user) {
+          // Figure out where the OTP can actually be delivered — SMS isn't
+          // wired up yet, so a phone identifier needs an email on file.
+          const targetEmail = isEmail(identifier) ? identifier : user.email;
+          if (!targetEmail) {
+            return json({
+              error: "এই অ্যাকাউন্টে কোনো ইমেইল নেই, তাই এখনই কোড পাঠানো যাচ্ছে না — SMS চালু হলে এটি কাজ করবে",
+            }, 400, env);
+          }
+
+          const otp = generateOtp();
+          try {
+            await sendOtpEmail(env, targetEmail, otp);
+          } catch (err) {
+            return json({ error: "ইমেইল পাঠাতে সমস্যা হয়েছে, আবার চেষ্টা করুন" }, 500, env);
+          }
+
+          await env.OTP_KV.put(`fpotp:${identifier}`, otp, { expirationTtl: 300 }); // 5 min
+        }
+
+        // Cooldown applies regardless of whether an account was found, so a
+        // brute-force "does this number exist" loop can't bypass it either.
+        await env.OTP_KV.put(`fpcooldown:${identifier}`, "1", { expirationTtl: 60 });
+
+        return json({ ok: true }, 200, env);
+      }
+
+      // ---------- POST /api/forgot-password/verify-otp ----------
+      // body: { identifier, otp } -> { ok: true, resetToken }
+      if (pathname === "/api/forgot-password/verify-otp" && request.method === "POST") {
+        const { identifier, otp } = await request.json();
+        if (!identifier || !otp) return json({ error: "তথ্য অসম্পূর্ণ" }, 400, env);
+
+        const stored = await env.OTP_KV.get(`fpotp:${identifier}`);
+        if (!stored || stored !== otp) {
+          return json({ error: "কোড সঠিক নয় বা মেয়াদ শেষ হয়ে গেছে" }, 400, env);
+        }
+
+        await env.OTP_KV.delete(`fpotp:${identifier}`);
+
+        const resetToken = crypto.randomUUID();
+        await env.OTP_KV.put(`fpreset:${identifier}`, resetToken, { expirationTtl: 900 }); // 15 min to finish reset
+
+        return json({ ok: true, resetToken }, 200, env);
+      }
+
+      // ---------- POST /api/forgot-password/reset ----------
+      // body: { identifier, resetToken, newPassword }
+      if (pathname === "/api/forgot-password/reset" && request.method === "POST") {
+        const { identifier, resetToken, newPassword } = await request.json();
+        if (!identifier || !resetToken || !newPassword) {
+          return json({ error: "তথ্য অসম্পূর্ণ" }, 400, env);
+        }
+        if (newPassword.length < 6) {
+          return json({ error: "পাসওয়ার্ড কমপক্ষে ৬ ক্যারেক্টার হতে হবে" }, 400, env);
+        }
+
+        const storedToken = await env.OTP_KV.get(`fpreset:${identifier}`);
+        if (!storedToken || storedToken !== resetToken) {
+          return json({ error: "সেশনের মেয়াদ শেষ হয়ে গেছে, আবার শুরু করুন" }, 401, env);
+        }
+
+        const column = isPhone(identifier) ? "phone" : "email";
+        const user = await env.DB.prepare(`SELECT id FROM users WHERE ${column} = ?`).bind(identifier).first();
+        if (!user) {
+          return json({ error: "অ্যাকাউন্ট পাওয়া যায়নি" }, 404, env);
+        }
+
+        const { hash, salt } = await hashPassword(newPassword);
+        await env.DB.prepare(
+          `UPDATE users SET password_hash = ?, password_salt = ? WHERE id = ?`
+        ).bind(hash, salt, user.id).run();
+
+        await env.OTP_KV.delete(`fpreset:${identifier}`);
 
         return json({ ok: true }, 200, env);
       }

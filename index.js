@@ -41,6 +41,13 @@
  *   POST /api/admin/reject-ad-request  { requestId, note }        (Authorization: Bearer <admin token>)  -- LEGACY
  *   GET  /api/tutors             (public — LEGACY, status='running' ad_requests, includes photo_url)
  *
+ *   -- Free Ads Offer toggle (global, stored in OTP_KV) --
+ *   GET  /api/settings/free-ads-mode                    (public)  -> { enabled }
+ *   GET  /api/admin/settings/free-ads-mode  (Authorization: Bearer <admin token>) -> { ok, enabled }
+ *   POST /api/admin/settings/free-ads-mode  { enabled }  (Authorization: Bearer <admin token>)
+ *                                 -- when enabled, /api/ad-request-submit no longer requires
+ *                                    paySender/payTrx/payAmount (they're defaulted to FREE placeholders).
+ *
  *   -- Admin dashboard (admin-panel.html) --
  *   GET  /api/admin/dashboard-stats                    (Authorization: Bearer <admin token>)
  *   GET  /api/admin/ads?status=pending|running|paused|rejected|cancelled   (comma-separated statuses allowed)
@@ -207,6 +214,17 @@ function getBearerToken(request) {
   const auth = request.headers.get("Authorization") || "";
   const m = auth.match(/^Bearer\s+(.+)$/i);
   return m ? m[1].trim() : null;
+}
+
+// ---------- "Free Ads Offer" global toggle (stored in OTP_KV, no new table needed) ----------
+// When ON: profile.html hides the payment section (SECTION 7) and
+// /api/ad-request-submit no longer requires paySender/payTrx/payAmount.
+async function getFreeAdsMode(env) {
+  const val = await env.OTP_KV.get("settings:freeAdsMode");
+  return val === "1";
+}
+async function setFreeAdsMode(env, enabled) {
+  await env.OTP_KV.put("settings:freeAdsMode", enabled ? "1" : "0");
 }
 
 // ---------- tutor_id auto-generation (e.g. "Rajshahi University" -> RU_1240) ----------
@@ -550,7 +568,9 @@ export default {
           extraInfo,
         } = body;
 
-        if (!userId || !name || !phone || !subject || !area || !paySender || !payTrx || !payAmount) {
+        const freeAdsMode = await getFreeAdsMode(env);
+
+        if (!userId || !name || !phone || !subject || !area || (!freeAdsMode && (!paySender || !payTrx || !payAmount))) {
           return json({ error: "সব তথ্য পূরণ করুন" }, 400, env);
         }
 
@@ -574,7 +594,9 @@ export default {
 
         const fieldValues = [
           name, phone, subject, qualification || "", area, photoUrl || "",
-          paySender, payTrx, payAmount,
+          freeAdsMode ? (paySender || "FREE") : paySender,
+          freeAdsMode ? (payTrx || "FREE-ADS-OFFER") : payTrx,
+          freeAdsMode ? (payAmount || "0") : payAmount,
           gender || "", university || "", department || "", session || "", currentLocation || "",
           expectedSalary || "", experienceYears || "", subjects || "",
           eduBachelorDept || "", eduBachelorSession || "", eduBachelorCurrent ? 1 : 0,
@@ -649,6 +671,14 @@ export default {
           autoExpired: !!row.auto_expired,
           note: row.note || null,
         }, 200, env);
+      }
+
+      // ---------- GET /api/settings/free-ads-mode ----------
+      // Public, no auth — profile.html চেক করে বুঝবে পেমেন্ট সেকশন (৭ নম্বর)
+      // দেখাবে নাকি লুকিয়ে "ফ্রি" মোডে ফর্ম দেখাবে।
+      if (pathname === "/api/settings/free-ads-mode" && request.method === "GET") {
+        const enabled = await getFreeAdsMode(env);
+        return json({ enabled }, 200, env);
       }
 
       // ---------- POST /api/admin-login ----------
@@ -782,6 +812,30 @@ export default {
         }
 
         return json({ ok: true, stats }, 200, env);
+      }
+
+      // ---------- GET /api/admin/settings/free-ads-mode ----------
+      // অ্যাডমিন প্যানেল লোড হওয়ার সময় বর্তমান টগল-স্ট্যাটাস জানার জন্য।
+      if (pathname === "/api/admin/settings/free-ads-mode" && request.method === "GET") {
+        const payload = await verifyAdminToken(env, getBearerToken(request));
+        if (!payload) return json({ error: "Admin session মেয়াদোত্তীর্ণ, আবার লগইন করুন" }, 401, env);
+
+        const enabled = await getFreeAdsMode(env);
+        return json({ ok: true, enabled }, 200, env);
+      }
+
+      // ---------- POST /api/admin/settings/free-ads-mode ----------
+      // body: { enabled: true|false }
+      // চালু (true) করলে সব টিউটর ফ্রিতে অ্যাড পোস্ট করতে পারবে এবং
+      // profile.html-এ পেমেন্ট সেকশন (৭ নম্বর) লুকিয়ে যাবে।
+      if (pathname === "/api/admin/settings/free-ads-mode" && request.method === "POST") {
+        const payload = await verifyAdminToken(env, getBearerToken(request));
+        if (!payload) return json({ error: "Admin session মেয়াদোত্তীর্ণ, আবার লগইন করুন" }, 401, env);
+
+        const body = await request.json().catch(() => ({}));
+        const enabled = !!body.enabled;
+        await setFreeAdsMode(env, enabled);
+        return json({ ok: true, enabled }, 200, env);
       }
 
       // ---------- GET /api/admin/ads?status=pending|running|paused|rejected|cancelled ----------

@@ -363,7 +363,17 @@
     </div>
     <div class="preview-row" id="previewRow"></div>
 
-    <!-- SECTION 7: PAYMENT -->
+    <!-- Free Ads Offer banner — shown instead of the payment section when admin turns the offer ON -->
+    <div class="status-banner running bn" id="freeAdsBanner" style="display:none;">
+      <div class="s-icon">🎉</div>
+      <div>
+        <strong class="bn">সুখবর! এখন সম্পূর্ণ ফ্রি-তে অ্যাড পোস্ট করা যাচ্ছে</strong>
+        <span class="bn">কোনো পেমেন্ট বা ট্রানজেকশন আইডি লাগবে না — সরাসরি নিচের বাটনে ক্লিক করে জমা দিন।</span>
+      </div>
+    </div>
+
+    <!-- SECTION 7: PAYMENT (admin থেকে ফ্রি অফার চালু থাকলে এই সেকশন লুকানো থাকবে) -->
+    <div id="paymentSection7">
     <div class="form-sub-title bn">💳 ৭. পেমেন্ট ভেরিফিকেশন (নতুন সাবমিট বা রিনিউ এর জন্য)(1 Day Ads 1 TAKA )</div>
     <div class="pay-grid">
       <div class="pay-tile">
@@ -398,6 +408,7 @@
         <input type="text" placeholder="সর্বনিম্ন পেমেন্ট ১০ টাকা" id="payAmountInput">
       </div>
     </div>
+    </div><!-- /#paymentSection7 -->
 
     <div class="error-msg bn" id="adReqErr"></div>
     <button class="btn bn" id="submitAdRequestBtn">
@@ -607,6 +618,29 @@
 
   fetchFreshStatus();
 
+  // ---- Free Ads Offer: hides Section 7 (payment) when admin turns it on ----
+  let freeAdsModeEnabled = false;
+  async function checkFreeAdsMode(){
+    try{
+      const res = await fetch(`${API_BASE}/api/settings/free-ads-mode`);
+      const data = await res.json();
+      freeAdsModeEnabled = !!data.enabled;
+    }catch(err){
+      console.warn("Could not check free ads mode", err);
+      freeAdsModeEnabled = false;
+    }
+    const paymentSection = document.getElementById("paymentSection7");
+    const banner = document.getElementById("freeAdsBanner");
+    if(freeAdsModeEnabled){
+      paymentSection.style.display = "none";
+      banner.style.display = "flex";
+    } else {
+      paymentSection.style.display = "";
+      banner.style.display = "none";
+    }
+  }
+  checkFreeAdsMode();
+
   // Collapsible form toggle
   const toggleBtn = document.getElementById("toggleFormBtn");
   const toggleBtnLabel = document.getElementById("toggleFormBtnLabel");
@@ -707,9 +741,9 @@
       extraInfo: document.getElementById("extraInfoInput").value.trim(),
 
       photoUrl: uploadedPhotoUrl,
-      paySender: document.getElementById("paySenderInput").value.trim(),
-      payTrx: document.getElementById("payTrxInput").value.trim(),
-      payAmount: document.getElementById("payAmountInput").value.trim()
+      paySender: document.getElementById("paySenderInput").value.trim() || (freeAdsModeEnabled ? "FREE" : ""),
+      payTrx: document.getElementById("payTrxInput").value.trim() || (freeAdsModeEnabled ? "FREE-ADS-OFFER" : ""),
+      payAmount: document.getElementById("payAmountInput").value.trim() || (freeAdsModeEnabled ? "0" : "")
     };
 
     if(!payload.phone || !payload.subject || !payload.university){

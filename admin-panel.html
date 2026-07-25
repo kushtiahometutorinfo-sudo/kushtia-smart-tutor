@@ -58,6 +58,20 @@
   .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green-500);margin-right:6px;animation:pulse 1.6s ease infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 
+  /* Free Ads Offer toggle switch */
+  .settings-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;max-width:560px;box-shadow:0 12px 30px -22px rgba(14,59,34,.25);}
+  .settings-row{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .settings-title{font-size:15px;font-weight:700;color:var(--green-900);}
+  .settings-desc{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+  .switch{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .switch .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.25s;border-radius:999px;}
+  .switch .slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:#fff;transition:.25s;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.2);}
+  .switch input:checked + .slider{background-color:var(--green-600);}
+  .switch input:checked + .slider:before{transform:translateX(20px);}
+  .switch input:disabled + .slider{opacity:.6;cursor:not-allowed;}
+  .settings-status{margin-top:16px;font-size:13px;font-weight:700;}
+
   .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:10px;}
   .stat-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 30px -22px rgba(14,59,34,.25);}
   .stat-card .lbl{font-size:12px;color:var(--ink-soft);font-weight:600;}
@@ -158,6 +172,7 @@
 
   <div class="nav-item active bn" data-view="dashboard">📊 Dashboard</div>
   <div class="nav-item bn" data-view="all">🔍 সব Ads (Search)</div>
+  <div class="nav-item bn" data-view="settings">⚙️ ফ্রি অ্যাড অফার</div>
 
   <div class="nav-group-label bn">Ads</div>
   <div class="nav-sub">
@@ -226,6 +241,24 @@
     <p class="page-sub bn">রিজেক্ট করা বা বাতিল করা আবেদনসমূহ</p>
     <div class="req-list" id="list-rejected"></div>
     <div class="empty-state bn" id="empty-rejected" style="display:none;"><p>কোনো বাতিল/রিজেক্টেড আবেদন নেই।</p></div>
+  </div>
+
+  <div class="view" id="view-settings">
+    <h1 class="page-title en">Settings</h1>
+    <p class="page-sub bn">ফ্রি অ্যাড অফার চালু থাকলে সব টিউটর পেমেন্ট ছাড়াই অ্যাড পোস্ট করতে পারবে, এবং প্রোফাইল পেজে পেমেন্ট অপশন (৭ নম্বর) স্বয়ংক্রিয়ভাবে লুকানো থাকবে।</p>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div>
+          <div class="settings-title bn">🎉 ফ্রি অ্যাড অফার</div>
+          <div class="settings-desc bn">চালু করলে প্রোফাইল পেজে পেমেন্ট অপশন বন্ধ থাকবে এবং সবাই ফ্রিতে অ্যাড দিতে পারবে</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="freeAdsModeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="settings-status bn" id="freeAdsModeStatus">লোড হচ্ছে...</div>
+    </div>
   </div>
 
 </main>
@@ -611,6 +644,39 @@
 
   loadDashboardStats();
   setInterval(loadDashboardStats, POLL_MS);
+
+  // ---- Free Ads Offer toggle ----
+  function updateFreeAdsModeStatus(enabled){
+    const el = document.getElementById("freeAdsModeStatus");
+    el.textContent = enabled
+      ? "✅ বর্তমানে চালু আছে — সব টিউটর প্রোফাইলে পেমেন্ট অপশন ছাড়াই ফ্রিতে অ্যাড দিতে পারছে"
+      : "⏸️ বর্তমানে বন্ধ আছে — প্রোফাইলে পেমেন্ট সেকশন স্বাভাবিকভাবে দেখানো হচ্ছে";
+    el.style.color = enabled ? "var(--green-700)" : "var(--ink-soft)";
+  }
+  async function loadFreeAdsMode(){
+    try{
+      const data = await apiCall("/api/admin/settings/free-ads-mode", "GET");
+      document.getElementById("freeAdsModeToggle").checked = !!data.enabled;
+      updateFreeAdsModeStatus(!!data.enabled);
+    }catch(err){
+      console.error("free-ads-mode load:", err.message);
+      document.getElementById("freeAdsModeStatus").textContent = "স্ট্যাটাস লোড করা যায়নি: " + err.message;
+    }
+  }
+  document.getElementById("freeAdsModeToggle").addEventListener("change", async (e) => {
+    const enabled = e.target.checked;
+    e.target.disabled = true;
+    try{
+      const data = await apiCall("/api/admin/settings/free-ads-mode", "POST", { enabled });
+      updateFreeAdsModeStatus(!!data.enabled);
+    }catch(err){
+      e.target.checked = !enabled; // revert on failure
+      alert("পরিবর্তন সেভ করতে ব্যর্থ হয়েছে: " + err.message);
+    }finally{
+      e.target.disabled = false;
+    }
+  });
+  loadFreeAdsMode();
 
   // ---------- All Ads — Search by phone (across every status) ----------
   const listAllEl = document.getElementById("list-all");
